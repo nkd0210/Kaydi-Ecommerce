@@ -43,11 +43,6 @@ export const getRecentProduct = async (req, res, next) => {
 };
 
 export const getAllProduct = async (req, res, next) => {
-  if (!req.user.isAdmin) {
-    return res
-      .status(401)
-      .json({ message: "You are not allowed to view all product" });
-  }
   try {
     const allProducts = await Product.find();
     const totalNumber = await Product.countDocuments();
@@ -124,6 +119,19 @@ export const getProductByCategory = async (req, res, next) => {
       numberOfProductFound,
       findProductByCategory,
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getEachProduct = async (req, res, next) => {
+  const { productId } = req.params;
+  try {
+    const findProduct = await Product.findById(productId);
+    if (findProduct.length === 0) {
+      return res.status(404).json({ message: "No product found!" });
+    }
+    res.status(200).json(findProduct);
   } catch (error) {
     next(error);
   }

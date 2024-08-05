@@ -4,6 +4,7 @@ import {
   createProduct,
   deleteProduct,
   getAllProduct,
+  getEachProduct,
   getProductByCategory,
   getRecentProduct,
   updateProduct,
@@ -13,9 +14,10 @@ const router = express.Router();
 
 router.post("/create", verifyToken, createProduct);
 router.get("/getRecentProduct/:limitNumber", getRecentProduct);
-router.get("/getAllProduct", verifyToken, getAllProduct);
+router.get("/getAllProduct", getAllProduct);
 router.put("/update/:productId", verifyToken, updateProduct);
 router.delete("/delete/:productId", verifyToken, deleteProduct);
 router.get("/getByCategory/:category", getProductByCategory);
+router.get("/getEachProduct/:productId", getEachProduct);
 
 export default router;

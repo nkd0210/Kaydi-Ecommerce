@@ -2,9 +2,9 @@ import React from 'react'
 import Navbar from '../components/Navbar'
 import Navigation from '../components/Navigation'
 import Hero from '../components/Hero'
-import AdminDashBoard from '../components/AdminDashBoard'
 
 import { useSelector } from 'react-redux'
+import RecentProduct from '../components/RecentProduct'
 
 const Home = () => {
 
@@ -12,20 +12,12 @@ const Home = () => {
 
   return (
     <>
-      {
-        currentUser?.isAdmin ? (
-          <>
-            <Navigation />
-            <AdminDashBoard />
-          </>
-        ) : (
-          <>
-            <Navigation />
-            <Navbar />
-            <Hero />
-          </>
-        )
-      }
+      <>
+        <Navigation />
+        <Navbar />
+        <Hero />
+        <RecentProduct />
+      </>
     </>
   )
 }
