@@ -50,8 +50,35 @@ export const getAllProduct = async (req, res, next) => {
     if (allProducts.length === 0) {
       return res.status(404).json({ message: "No product found" });
     }
+
+    const now = new Date();
+
+    const oneMonthAgo = new Date(
+      now.getFullYear(),
+      now.getMonth() - 1,
+      now.getDate()
+    );
+
+    const oneWeekAgo = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate() - 7
+    );
+
+    const lastWeekProduct = await Product.find({
+      createdAt: { $gte: oneWeekAgo },
+    });
+
+    const lastMonthProduct = await Product.find({
+      createdAt: { $gte: oneMonthAgo },
+    });
+
     res.status(200).json({
       totalNumber: totalNumber,
+      lastWeekProductCount: lastWeekProduct.length,
+      lastMonthProductCount: lastMonthProduct.length,
+      lastWeekProduct: lastWeekProduct,
+      lastMonthProduct: lastMonthProduct,
       allProducts: allProducts,
     });
   } catch (error) {

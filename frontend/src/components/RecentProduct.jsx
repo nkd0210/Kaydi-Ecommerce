@@ -66,7 +66,6 @@ const RecentProduct = () => {
         fetchRecentProduct();
     }, []);
 
-
     return (
         <div className='mt-[50px] p-[20px]'>
             <div className='rounded-[20px] w-[150px] border border-black px-[10px] py-[5px] text-center font-semibold'>Sản phẩm mới</div>

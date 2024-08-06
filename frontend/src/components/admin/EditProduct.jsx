@@ -387,7 +387,7 @@ const EditProduct = ({ productId, setOpenEdit, setOpenShow }) => {
                                         <input onChange={handleInputCategory} value={categoryInput} id='categories' type='text' placeholder='Enter categories' className='border w-[500px] rounded-[5px] p-[10px] ' />
                                         <div onClick={handleAddCategory} className='border cursor-pointer text-center rounded-[10px] p-[10px] mx-[10px] w-[60px]'>Add</div>
                                     </div>
-                                    <div className='flex items-center gap-[20px] ml-[150px] max-md:ml-0 pb-[20px] w-full overflow-x-scroll'>
+                                    <div className='flex items-center gap-[20px] ml-[150px] max-md:ml-0 pb-[20px] w-full max-md:flex-wrap'>
                                         {categories?.map((category, index) => (
                                             <div key={index} className='relative'>
                                                 <div className='border py-[10px] px-[15px] rounded-[5px] shadow-md text-center'>
@@ -404,7 +404,7 @@ const EditProduct = ({ productId, setOpenEdit, setOpenShow }) => {
                                         <input onChange={handleInputSize} value={sizeInput} id='categories' type='text' placeholder='Enter sizes' className='border w-[500px] rounded-[5px] p-[10px] ' />
                                         <div onClick={handleAddSize} className='border rou cursor-pointer text-center rounded-[10px] p-[10px] mx-[10px] w-[60px]'>Add</div>
                                     </div>
-                                    <div className='flex items-center gap-[20px] ml-[150px] max-md:ml-0 pb-[20px] w-full overflow-x-scroll'>
+                                    <div className='flex items-center gap-[20px] ml-[150px] max-md:ml-0 pb-[20px] w-full max-md:flex-wrap'>
                                         {sizes?.map((size, index) => (
                                             <div key={index} className='relative'>
                                                 <div className='border py-[10px] px-[15px] rounded-[5px] shadow-md text-center'>

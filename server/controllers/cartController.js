@@ -4,9 +4,14 @@ import Product from "../models/productModel.js";
 
 export const addToCart = async (req, res, next) => {
   const { userId, productId, quantity } = req.body;
+  if (req.user.id !== userId) {
+    return res
+      .status(401)
+      .json({ message: "You are not allowed to add this product to cart" });
+  }
   try {
     //find the cart for the user
-    const cart = await Cart.findOne({ userId });
+    let cart = await Cart.findOne({ userId });
     if (!cart) {
       // if no cart exits, create a new one
       cart = new Cart({ userId, products: [] });
@@ -36,7 +41,7 @@ export const addToCart = async (req, res, next) => {
       0
     );
 
-    const updatedCart = await Cart.save();
+    const updatedCart = await cart.save();
     res.status(200).json(updatedCart);
   } catch (error) {
     next(error);
@@ -71,7 +76,7 @@ export const removeFromCart = async (req, res, next) => {
     );
 
     // Save the updated cart
-    const updatedCart = await Cart.save();
+    const updatedCart = await cart.save();
     res.status(200).json(updatedCart);
   } catch (error) {
     next(error);
@@ -81,8 +86,10 @@ export const removeFromCart = async (req, res, next) => {
 export const getUserCart = async (req, res, next) => {
   const { userId } = req.body;
 
-  if (!req.user.id) {
-    return res.status(401).json({ message: "You are not logged in" });
+  if (req.user.id !== userId) {
+    return res
+      .status(401)
+      .json({ message: "You are not allowed to view this" });
   }
 
   try {
@@ -90,7 +97,19 @@ export const getUserCart = async (req, res, next) => {
     if (!cart) {
       return res.status(404).json({ message: "Cart not found" });
     }
-    res.status(200).json(cart);
+
+    const uniqueProductCount = cart.products.length;
+
+    const totalProducts = cart.products.reduce(
+      (total, item) => total + item.quantity,
+      0
+    );
+
+    res.status(200).json({
+      totalProducts,
+      uniqueProductCount,
+      cart,
+    });
   } catch (error) {
     next(error);
   }

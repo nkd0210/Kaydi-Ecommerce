@@ -188,7 +188,7 @@ const CreateProduct = ({ setOpenCreate, setOpenShow }) => {
 
 
     return (
-        <form onSubmit={handleCreateProduct} className='border w-[1200px] p-[30px] max-md:p-[5px] flex flex-col justify-center gap-[30px] shadow-lg ml-[10px]'>
+        <form onSubmit={handleCreateProduct} className='border w-[1200px] max-md:w-full p-[30px] max-md:p-[5px] flex flex-col justify-center gap-[30px] shadow-lg mx-[10px] max-md:mx-[5px]'>
             <ToastContainer />
             <div className='flex items-center'>
                 <span className='w-[150px]'>Name: </span>

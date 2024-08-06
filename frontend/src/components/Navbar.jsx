@@ -22,14 +22,27 @@ const Navbar = () => {
 
     const { currentUser } = useSelector((state) => state.user);
 
-    const categories = [
-        { name: "SALE" },
-        { name: "SẢN PHẨM" },
-        { name: "ĐỒ LÓT" },
-        { name: "THỂ THAO" },
-        { name: "MẶC HÀNG NGÀY" },
-        { name: "NƯỚC HOA" },
-    ];
+    const [categories, setCategories] = useState([]);
+
+    const handleFetchCategories = async () => {
+        try {
+            const res = await fetch('/api/category/getAllCategories', {
+                method: "GET",
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                console.log(data.message);
+            } else {
+                setCategories(data.allCategories);
+            }
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+
+    useEffect(() => {
+        handleFetchCategories();
+    }, [])
 
     const [userModal, setUserModal] = useState(false);
 
@@ -48,9 +61,9 @@ const Navbar = () => {
                 {/* CATEGORY */}
                 <div className="max-md:hidden">
                     <ul className="flex gap-[20px]">
-                        {categories.map((category, index) => (
+                        {categories?.map((category, index) => (
                             <li className="relative group" key={index}>
-                                {category.name}
+                                {category.title}
                             </li>
                         ))}
                     </ul>

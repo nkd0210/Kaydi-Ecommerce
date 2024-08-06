@@ -22,8 +22,17 @@ export const getAllUsers = async (req, res, next) => {
       now.getMonth() - 1,
       now.getDate()
     );
+    const oneWeekAgo = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate() - 7
+    );
 
-    const lastMonthUsers = await User.countDocuments({
+    const lastWeekUsers = await User.find({
+      createdAt: { $gte: oneWeekAgo },
+    });
+
+    const lastMonthUsers = await User.find({
       createdAt: { $gte: oneMonthAgo },
     });
 
@@ -32,7 +41,10 @@ export const getAllUsers = async (req, res, next) => {
     }
     res.status(200).json({
       userCount,
-      lastMonthUsers,
+      lastWeekUsersCount: lastWeekUsers.length,
+      lastWeekUsers: lastWeekUsers,
+      lastMonthUsersCount: lastMonthUsers.length,
+      lastMonthUsers: lastMonthUsers,
       users,
     });
   } catch (error) {

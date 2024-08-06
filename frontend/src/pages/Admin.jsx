@@ -12,11 +12,12 @@ import Dashboard from '../components/admin/Dashboard';
 import Category from '../components/admin/Category';
 import Order from '../components/admin/Order';
 import Products from '../components/admin/Products';
-import { getStorage, uploadBytesResumable } from 'firebase/storage';
+import { getDownloadURL, getStorage, ref, uploadBytesResumable, deleteObject } from 'firebase/storage';
 import { app } from '../firebase';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Loader from '../components/Loader';
 
 const AdminDashboard = () => {
 
@@ -46,12 +47,15 @@ const AdminDashboard = () => {
     // update profile
     const [formData, setFormData] = useState({});
 
-    const fileRef = useRef();
+    const fileRef = useRef(null);
     const [photo, setPhoto] = useState('');
     const [imageFileUploadProgress, setImageFileUploadProgress] = useState(null);
     const [imageFileUploadError, setImageFileUploadError] = useState(null);
+    const [imagePending, setImagePending] = useState(false);
 
     const handleFileUploadImage = async (image) => {
+        setImagePending(true);
+
         const storage = getStorage(app);
         const fileName = new Date().getTime() + image.name;
         const storageRef = ref(storage, fileName);
@@ -72,6 +76,7 @@ const AdminDashboard = () => {
                     .then((downloadURL) => {
                         setFormData({ ...formData, profilePic: downloadURL })
                     })
+                setImagePending(false);
             }
         )
     }
@@ -118,6 +123,7 @@ const AdminDashboard = () => {
             } else {
                 handleShowSuccessMessage("Update profile successfully");
                 dispatch(updateSuccess(data));
+                setOpenModal(false);
             }
         } catch (error) {
             console.log(error.message);
@@ -172,7 +178,11 @@ const AdminDashboard = () => {
                         <h3>Edit Profile</h3>
                         <div className='flex gap-[10px] mt-[20px]'>
                             <input onChange={(e) => setPhoto(e.target.files[0])} type="file" className='hidden' accept='image/*' ref={fileRef} />
-                            <img onClick={() => fileRef.current.click()} src={currentUser.profilePic} alt="" className='w-[50px] h-[50px] rounded-[50%]' />
+                            {imagePending ? (
+                                <Loader />
+                            ) : (
+                                <img onClick={() => fileRef.current.click()} src={formData?.profilePic || currentUser.profilePic} alt="" className='w-[50px] h-[50px] rounded-[50%]' />
+                            )}
                             <div className='flex flex-col gap-[5px]'>
                                 <input onChange={handleChange} id='username' type="text" defaultValue={currentUser.username} />
                                 {currentUser.isAdmin && (

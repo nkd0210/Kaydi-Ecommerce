@@ -54,10 +54,12 @@ const ProductDetail = () => {
 
     const { productId } = useParams();
     const [detailProduct, setDetailProduct] = useState({});
+
     const [showImage, setShowImage] = useState('');
     const [showColor, setShowColor] = useState('');
     const [showSize, setShowSize] = useState('');
     const [showQuantity, setShowQuantity] = useState(1);
+
     const [isDragging, setIsDragging] = useState(false);
     const [loading, setLoading] = useState(true);
 
@@ -145,7 +147,7 @@ const ProductDetail = () => {
                                             onClick={(e) => setShowColor(color)}
                                             key={index}
                                             id='color'
-                                            className={`w-[20px] h-[20px] rounded-[50%] border-[2px] ${showColor === color ? 'border-red-400' : 'border-black'}`}
+                                            className={`w-[20px] h-[20px] rounded-[50%] border-[2px] cursor-pointer ${showColor === color ? 'border-red-400' : 'border-black'}`}
                                             style={{ backgroundColor: color }}
                                         >
                                         </div>
@@ -158,7 +160,7 @@ const ProductDetail = () => {
                                             onClick={(e) => setShowSize(size)}
                                             key={index}
                                             id='sizes'
-                                            className="w-[80px] h-[40px] rounded-[10px] text-center border border-black py-[10px] px-[20px]"
+                                            className="w-[80px] h-[40px] rounded-[10px] text-center border border-black py-[10px] px-[20px] cursor-pointer hover:bg-gray-100"
                                         >
                                             {size}
                                         </div>
@@ -166,11 +168,11 @@ const ProductDetail = () => {
                                 </div>
                                 <p>Tồn kho: {detailProduct.stock}</p>
                                 <div className='w-[100px] border border-black p-[10px] rounded-[20px] flex justify-between items-center text-center'>
-                                    <CiCircleMinus className='text-[20px]' onClick={handleDecreaseQuantity} />
+                                    <CiCircleMinus className='text-[20px] cursor-pointer' onClick={handleDecreaseQuantity} />
                                     <p className='text-[18px]'>
                                         {showQuantity}
                                     </p>
-                                    <CiCirclePlus className='text-[20px]' onClick={() => setShowQuantity(showQuantity + 1)} />
+                                    <CiCirclePlus className='text-[20px] cursor-pointer' onClick={() => setShowQuantity(showQuantity + 1)} />
                                 </div>
                                 <div className='grid grid-cols-2 gap-[20px] mt-[10px]'>
                                     <div className='flex gap-[10px] items-center border shadow-lg rounded-[20px] p-[10px]'>
