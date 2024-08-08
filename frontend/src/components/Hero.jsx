@@ -21,7 +21,7 @@ const Hero = () => {
   };
 
   return (
-    <div className='w-full h-[600px] max-md:h-[200px] '>
+    <div className='w-full max-h-[600px] max-md:h-[200px] mb-[50px] 3xl:mb-[300px]'>
       <Slider {...settings}>
         <div className='w-full h-full'>
           <img src={hero1} alt="" className='w-full h-full object-cover' />

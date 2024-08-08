@@ -28,7 +28,9 @@ const Navigation = () => {
   return (
     <div className='relative flex px-[20px] py-[10px] justify-between'>
       <div className='flex gap-[20px]'>
-        <span className='cursor-pointer hover:opacity-70'>Kaydi Blog</span>
+        <a href="https://blog-app-pd5x.onrender.com" target="_blank" rel="noopener noreferrer">
+          <span className='cursor-pointer hover:opacity-70'>Kaydi Blog</span>
+        </a>
         <span className='cursor-pointer hover:opacity-70'>Kaydi Tourist</span>
         <span className='cursor-pointer hover:opacity-70'>Kaydi FoodStore</span>
       </div>

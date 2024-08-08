@@ -5,6 +5,7 @@ import SignUp from './pages/SignUp';
 import Profile from './pages/Profile';
 import ProductDetail from './pages/ProductDetail';
 import Admin from './pages/Admin';
+import UserCart from './pages/UserCart';
 
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
         <Route path='/profile/:activeParam' element={<Profile />} />
         <Route path='/productDetail/:productId' element={<ProductDetail />} />
         <Route path='/admin' element={<Admin />} />
+        <Route path='/cart' element={<UserCart />} />
       </Routes>
     </BrowserRouter>
   )

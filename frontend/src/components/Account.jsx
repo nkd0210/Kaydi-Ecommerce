@@ -214,7 +214,7 @@ const Account = () => {
 
             {updateAccount && (
                 <div className='fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm'>
-                    <div className="relative flex flex-col gap-[20px] overflow-y-scroll w-[500px] max-md:w-[300px] h-[400px] mx-auto bg-white rounded-[10px] p-[20px] mt-[100px]">
+                    <div className="relative flex flex-col gap-[20px] overflow-y-scroll w-[500px] max-md:w-[300px] h-[600px] mx-auto bg-white rounded-[10px] p-[20px] mt-[100px]">
                         <h3 className="text-[20px] font-semibold">Chỉnh sửa thông tin tài khoản</h3>
                         <div className="w-[100px] h-[100px]">
                             <input onChange={(e) => setImage(e.target.files[0])} type="file" className="hidden" accept="image/*" ref={fileRef} />

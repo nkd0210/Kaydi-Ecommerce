@@ -6,6 +6,9 @@ export default {
       backgroundImage: {
         laptop: "url(/laptop.jpg)",
       },
+      screens: {
+        "3xl": "1920px",
+      },
     },
   },
   plugins: [],

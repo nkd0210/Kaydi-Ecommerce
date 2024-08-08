@@ -9,10 +9,15 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import { CiCirclePlus } from "react-icons/ci";
 import { CiCircleMinus } from "react-icons/ci";
 import { LuRefreshCcw } from "react-icons/lu";
 import { FiPhoneCall } from "react-icons/fi";
+import { BsArrowsCollapse } from "react-icons/bs";
+import { BsArrowsExpand } from "react-icons/bs";
 
 import styled from 'styled-components';
 
@@ -60,12 +65,13 @@ const ProductDetail = () => {
     const [showSize, setShowSize] = useState('');
     const [showQuantity, setShowQuantity] = useState(1);
 
-    const [isDragging, setIsDragging] = useState(false);
-    const [loading, setLoading] = useState(true);
+    const [isDragging, setIsDragging] = useState(false); // for not clicking open other product when using slider
+    const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
 
     const fetchDetailProduct = async () => {
+        setLoading(true)
         const res = await fetch(`/api/product/getEachProduct/${productId}`, {
             method: "GET"
         });
@@ -98,8 +104,10 @@ const ProductDetail = () => {
 
     // Handle fetch recommend product
     const [recommendProduct, setReCommendProduct] = useState([]);
+    const [loadingRecommentProduct, setLoadingRecommentProduct] = useState(false);
 
     const fetchRecommendProduct = async () => {
+        setLoadingRecommentProduct(true);
         const res = await fetch(`/api/product/getRecentProduct/4`, {
             method: "GET"
         });
@@ -108,6 +116,58 @@ const ProductDetail = () => {
             console.log(data.message);
         } else {
             setReCommendProduct(data);
+            setLoadingRecommentProduct(false);
+        }
+    }
+
+    // add to cart
+    const [openBox, setOpenBox] = useState(true);
+    const { currentUser } = useSelector((state) => state.user);
+
+    const handleShowErrorMessage = (message) => {
+        toast.error(message)
+    }
+
+    const handleShowSucccessMessage = (message) => {
+        toast.success(message)
+    }
+
+    const handleAddToCart = async () => {
+        const addForm = {
+            userId: currentUser._id,
+            productId: detailProduct._id,
+            quantity: showQuantity,
+            color: showColor,
+            size: showSize
+        };
+
+        if (addForm.color === '' && addForm.size === '') {
+            handleShowErrorMessage('Vui lòng chọn màu sắc và kích thước mong muốn');
+            return;
+        } else if (addForm.color === '') {
+            handleShowErrorMessage('Vui lòng chọn màu sắc mong muốn');
+            return;
+        } else if (addForm.size === '') {
+            handleShowErrorMessage('Vui lòng chọn kích thước mong muốn');
+            return;
+        }
+        try {
+            const res = await fetch(`/api/cart/addToCart`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(addForm)
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                handleShowErrorMessage("Thêm vào giỏ hàng thất bại !")
+            } else {
+                setOpenBox(false);
+                navigate('/cart');
+            }
+        } catch (error) {
+
         }
     }
 
@@ -118,8 +178,9 @@ const ProductDetail = () => {
             {loading ? (
                 <Loader />
             ) : (
-                <div className='py-[20px] px-[70px] max-md:p-[0px]'>
-                    <div className='box2 h-[600px] max-md:h-screen'>
+                <div className='relative py-[20px] px-[70px] max-md:p-[10px] w-full overflow-x-scroll'>
+                    <ToastContainer />
+                    <div className='box2 h-[600px] max-md:h-full'>
                         {/* IMAGES */}
                         <div className='h-[500px] flex max-md:flex-col max-md:p-[10px] gap-[10px]'>
                             {/* list images */}
@@ -201,28 +262,62 @@ const ProductDetail = () => {
                     {/* RECOMMEND */}
                     <div className='mt-[100px]'>
                         <h3 className='text-center text-[30px] uppercase font-semibold mb-[40px]'>Gợi ý sản phẩm</h3>
-                        <div>
-                            <Slider {...settings}>
-                                {recommendProduct?.map((product, index) => (
-                                    <div onClick={() => {
-                                        if (!isDragging) {
-                                            navigate(`/productDetail/${product._id}`)
-                                        }
-                                    }}
-                                        key={index}
-                                        className='flex flex-col gap-[10px]'>
-                                        <div className='w-[300px] h-[400px]'>
-                                            <img src={product?.listingPhotoPaths[0]} alt="image" className='w-full h-full object-cover rounded-[5px]' />
+                        {loadingRecommentProduct ? (
+                            <Loader />
+                        ) : (
+                            <div className='mt-[20px] max-md:ml-[40px]'>
+                                <Slider {...settings}>
+                                    {recommendProduct?.map((product, index) => (
+                                        <div onClick={() => {
+                                            if (!isDragging) {
+                                                navigate(`/productDetail/${product._id}`)
+                                            }
+                                        }}
+                                            key={index}
+                                            className='flex flex-col gap-[10px]'>
+                                            <div className='w-[300px] h-[400px]'>
+                                                <img src={product?.listingPhotoPaths[0]} alt="image" className='w-full h-full object-cover rounded-[5px]' />
+                                            </div>
+                                            <div className='flex flex-col my-[10px]'>
+                                                <span>{product.name}</span>
+                                                <span className='font-semibold text-[12px]'>{product.price}&#8363;</span>
+                                            </div>
                                         </div>
-                                        <div className='flex flex-col my-[10px]'>
-                                            <span>{product.name}</span>
-                                            <span className='font-semibold text-[12px]'>{product.price}&#8363;</span>
-                                        </div>
-                                    </div>
-                                ))}
-                            </Slider>
-                        </div>
+                                    ))}
+                                </Slider>
+                            </div>
+                        )}
                     </div>
+
+                    {/* Add item to cart */}
+                    {openBox ? (
+                        <div className='fixed bottom-[10px] right-[10px] w-[400px] rounded-[20px] shadow-xl z-20 bg-gray-50 px-[10px] py-[30px] flex flex-col gap-[20px]'>
+                            <BsArrowsCollapse onClick={() => setOpenBox(false)} className='absolute top-[10px] right-[10px] cursor-pointer hover:text-red-400 text-[20px]' />
+                            <div className='flex flex-wrap gap-[10px]'>
+                                <p> Sản phẩm:</p>
+                                <p className='font-semibold'>{detailProduct?.name}</p>
+                            </div>
+                            <div className='flex flex-wrap gap-[10px]'>
+                                <p> Màu sắc:</p>
+                                <p className='font-semibold'>{showColor}</p>
+                            </div>
+                            <div className='flex flex-wrap gap-[10px]'>
+                                <p> Kích thước:</p>
+                                <p className='font-semibold'>{showSize}</p>
+                            </div>
+                            <div className='flex flex-wrap gap-[10px]'>
+                                <p> Số lượng:</p>
+                                <p className='font-semibold'>{showQuantity}</p>
+                            </div>
+                            <div onClick={handleAddToCart} className='w-full h-[50px] bg-red-400 text-white rounded-[30px] flex items-center justify-center cursor-pointer hover:bg-opacity-70 hover:text-black'>
+                                Thêm vào giỏ hàng
+                            </div>
+                        </div>
+                    ) : (
+                        <div className='fixed border bottom-[10px] right-[10px] w-[50px] h-[50px] rounded-[20px] shadow-xl z-20 bg-gray-50 p-[10px] flex justify-center items-center'>
+                            <BsArrowsExpand onClick={() => setOpenBox(true)} className='cursor-pointer hover:text-red-400 text-[20px]' />
+                        </div>
+                    )}
                 </div>
             )}
         </Wrapper>

@@ -7,6 +7,8 @@ import { FaRegUser } from "react-icons/fa";
 import { HiOutlineShoppingBag } from "react-icons/hi";
 import styled from "styled-components";
 
+import { setCartStart, setCartSuccess } from "../redux/cart/cartSlice";
+
 import { CiSettings } from "react-icons/ci";
 import { FaHistory } from "react-icons/fa";
 import { FaAddressBook } from "react-icons/fa";
@@ -21,6 +23,7 @@ const Navbar = () => {
     const dispatch = useDispatch();
 
     const { currentUser } = useSelector((state) => state.user);
+    const { items, cartCount } = useSelector((state) => state.cart);
 
     const [categories, setCategories] = useState([]);
 
@@ -40,15 +43,38 @@ const Navbar = () => {
         }
     }
 
-    useEffect(() => {
-        handleFetchCategories();
-    }, [])
-
     const [userModal, setUserModal] = useState(false);
 
     const toggleUser = (booleanOpen) => {
         setUserModal(booleanOpen);
     };
+
+    const [userCart, setUserCart] = useState({}); // contain the data of the cart in redux
+
+    const handleFetchUserCart = async () => {
+        dispatch(setCartStart());
+        try {
+            const res = await fetch(`/api/cart/getUserCart/${currentUser._id}`, {
+                method: "GET",
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                console.log(data.message);
+            } else {
+                setUserCart(data);
+                dispatch(setCartSuccess(data));
+            }
+        } catch (error) {
+            console.log(error.message);
+        }
+    };
+
+    useEffect(() => {
+        handleFetchCategories();
+        handleFetchUserCart();
+    }, []);
+
+    // console.log(userCart)
 
     return (
         <Wrapper>
@@ -85,17 +111,20 @@ const Navbar = () => {
                         {currentUser ? (
                             <FaRegUser
                                 onClick={() => toggleUser(true)}
-                                className="text-[20px] cursor-pointer"
+                                className="text-[24px] cursor-pointer"
                             />
                         ) : (
                             <Link to="/signIn">
-                                <FaRegUser className="text-[20px]" />
+                                <FaRegUser className="text-[24px]" />
                             </Link>
                         )}
                     </div>
                     <div>
                         {currentUser ? (
-                            <HiOutlineShoppingBag className="text-[20px]" />
+                            <div className="relative">
+                                <HiOutlineShoppingBag onClick={() => navigate('/cart')} className="text-[30px] cursor-pointer" />
+                                <div className="absolute top-[-5px] right-[-4px] font-semibold text-white text-[12px] rounded-[50%] px-[5px] cursor-pointer bg-red-400">{cartCount}</div>
+                            </div>
                         ) : (
                             <Link to="/signIn">
                                 <HiOutlineShoppingBag className="text-[20px]" />
