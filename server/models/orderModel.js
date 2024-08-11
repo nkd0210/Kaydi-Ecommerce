@@ -6,17 +6,58 @@ const orderSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-    productId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Product",
+    receiverName: {
+      type: String,
       required: true,
     },
+    receiverPhone: {
+      type: String,
+      required: true,
+    },
+    receiverNote: {
+      type: String,
+    },
+    products: [
+      {
+        productId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Product",
+          required: true,
+        },
+        name: {
+          type: String,
+          required: true,
+        },
+        quantity: {
+          type: Number,
+          required: true,
+          min: 1,
+        },
+        price: {
+          type: Number,
+          required: true,
+        },
+        color: {
+          type: String,
+          required: true,
+        },
+        size: {
+          type: String,
+          required: true,
+        },
+        image: {
+          type: String,
+          // required: true,
+        },
+      },
+    ],
     totalAmount: {
       type: Number,
       required: true,
     },
     status: {
       type: String,
+      enum: ["pending", "processing", "shipped", "delivered"],
       default: "pending", // pending -> processing -> shipped -> delivered
     },
     shippingAddress: {

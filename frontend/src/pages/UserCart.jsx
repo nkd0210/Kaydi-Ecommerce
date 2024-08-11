@@ -4,9 +4,14 @@ import Navigation from '../components/Navigation'
 import { useSelector, useDispatch } from 'react-redux'
 import { setCartStart, setCartSuccess } from "../redux/cart/cartSlice";
 import Loader from '../components/Loader';
+import { setClearOrder, setOrderSuccess } from '../redux/order/orderSlice';
 
 import { CiCirclePlus } from "react-icons/ci";
 import { CiCircleMinus } from "react-icons/ci";
+import { useNavigate } from 'react-router-dom';
+
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const UserCart = () => {
 
@@ -16,6 +21,7 @@ const UserCart = () => {
     const [userCart, setUserCart] = useState({}); // contain the data of the cart
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const handleFetchUserCart = async () => {
         dispatch(setCartStart());
@@ -43,7 +49,8 @@ const UserCart = () => {
         handleFetchUserCart();
     }, []);
 
-    const handleIncrease = async (item) => {
+    const handleIncrease = async (item, e) => {
+        e.stopPropagation();
         if (item) {
             const formToggle = {
                 productId: item.productId,
@@ -77,7 +84,8 @@ const UserCart = () => {
 
         }
     }
-    const handleDecrease = async (item) => {
+    const handleDecrease = async (item, e) => {
+        e.stopPropagation();
         if (item) {
             const formToggle = {
                 productId: item.productId,
@@ -112,12 +120,61 @@ const UserCart = () => {
     };
 
 
+    // order item
+    const [chooseItems, setChooseItems] = useState([]);
+
+    const handleChooseItem = (e, item) => {
+        const isChecked = e.target.checked;
+
+        setChooseItems(prevItems => {
+            if (isChecked) {
+                if (!prevItems.find(i => i.productId === item.productId && i.color === item.color && i.size === item.size)) {
+                    return [...prevItems, item];
+                }
+            } else {
+                return prevItems.filter(i => !(i.productId === item.productId && i.color === item.color && i.size === item.size));
+            }
+            return prevItems;
+        })
+    }
+
+    const handleShowErrorMessage = (message) => {
+        toast.error(message)
+    }
+
+    const handleClickBuy = async () => {
+
+        dispatch(setClearOrder());
+
+        const totalPrice = chooseItems.reduce(
+            (total, item) => total + item.quantity * item.price, 0
+        )
+
+        const formOrder = {
+            items: chooseItems,
+            totalPrice: totalPrice
+        }
+
+        if (formOrder.items.length === 0) {
+            handleShowErrorMessage('Vui lòng chọn ít nhất một sản phẩm');
+            return;
+        }
+        try {
+            dispatch(setOrderSuccess(formOrder));
+            navigate('/order')
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+
+
     return (
         <div>
             <Navigation />
             <Navbar />
             <div className='p-[20px] max-md:p-[10px] w-full overflow-x-scroll'>
                 <h1 className='text-center text-[24px] font-semibold'>Your Shopping Cart</h1>
+                <ToastContainer />
                 {loading ? (
                     <Loader />
                 ) : (
@@ -131,6 +188,7 @@ const UserCart = () => {
                                 <table className='w-full border-collapse'>
                                     <thead>
                                         <tr className="border-b-[2px] ">
+                                            <th className="p-[10px] text-left"> <input type="checkbox" /></th>
                                             <th className="p-[10px] text-left">#</th>
                                             <th className="p-[10px] text-left">Name</th>
                                             <th className="p-[10px] text-left">Image</th>
@@ -142,7 +200,15 @@ const UserCart = () => {
                                     </thead>
                                     <tbody>
                                         {items.map((item, index) => (
-                                            <tr key={index} className="border-b-[2px]">
+                                            <tr onClick={() => navigate(`/productDetail/${item?.productId}`)} key={index} className="border-b-[2px]">
+                                                <td className="p-[10px]">
+                                                    <input
+                                                        type="checkbox"
+                                                        onClick={(e) => e.stopPropagation()}
+                                                        onChange={(e) => handleChooseItem(e, item)}
+                                                        checked={chooseItems.some(i => i.productId === item.productId && i.color === item.color && i.size === item.size)}
+                                                    />
+                                                </td>
                                                 <td className="p-[10px]">{index + 1}</td>
                                                 <td className="p-[10px]">{item.name}</td>
                                                 <td className="p-[10px]">
@@ -153,9 +219,9 @@ const UserCart = () => {
                                                 <td className="p-[10px]">{item.price}</td>
                                                 <td className="p-[10px]">
                                                     <div className='flex gap-[5px] items-center'>
-                                                        <CiCircleMinus className='text-[20px]' onClick={() => handleDecrease(item)} />
+                                                        <CiCircleMinus className='text-[20px]' onClick={(e) => handleDecrease(item, e)} />
                                                         {item.quantity}
-                                                        <CiCirclePlus className='text-[20px]' onClick={() => handleIncrease(item)} />
+                                                        <CiCirclePlus className='text-[20px]' onClick={(e) => handleIncrease(item, e)} />
                                                     </div>
                                                 </td>
                                             </tr>
@@ -166,7 +232,46 @@ const UserCart = () => {
                         )}
                     </>
                 )}
+            </div>
 
+            <div className='fixed bottom-0 overflow-y-scroll w-full h-[300px] bg-gray-100 p-[20px] max-md:p-[10px]'>
+                <h3 className='pb-[20px] font-semibold text-[20px]'>Thanh toán: </h3>
+                {chooseItems.map((chooseItem, index) => (
+                    <div key={index} className='flex justify-between max-md:flex-col max-md:gap-[20px] border-b-[2px] py-[20px]'>
+                        <div className='flex'>
+                            <p className='w-[40px]'>{`${index + 1})`}</p>
+                            <div className='flex flex-col gap-[10px] w-[400px]'>
+                                <p className='uppercase'>{chooseItem.name}</p>
+                                <p className='uppercase'>{chooseItem.color} / {chooseItem.size}</p>
+                            </div>
+                        </div>
+                        <div className='flex gap-[10px] w-[100px]'>
+                            <p className='uppercase'>Số lượng: </p>
+                            <p className='font-semibold'>{chooseItem.quantity}</p>
+                        </div>
+                        <div className='flex gap-[10px] w-[200px]'>
+                            <p className='uppercase'>Giá sản phẩm:  </p>
+                            <p className='font-semibold'>{chooseItem.price}&#8363;</p>
+                        </div>
+
+                    </div>
+                ))}
+                <div className='flex flex-col items-end py-[20px] gap-[10px] '>
+                    <div className='w-[200px] flex'>
+                        <p className='uppercase mr-[10px]'>Tổng tiền: </p>
+                        <p className='font-semibold text-red-400'>
+                            {
+                                chooseItems.reduce(
+                                    (total, item) => total + item.quantity * item.price, 0
+                                )
+                            }
+                            &#8363;
+                        </p>
+                    </div>
+                    <div onClick={handleClickBuy} className='w-[200px] bg-red-400 text-center rounded-[10px] py-[5px] text-white hover:text-black cursor-pointer'>
+                        Mua hàng
+                    </div>
+                </div>
             </div>
         </div>
     )

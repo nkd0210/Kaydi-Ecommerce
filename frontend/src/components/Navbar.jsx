@@ -71,7 +71,9 @@ const Navbar = () => {
 
     useEffect(() => {
         handleFetchCategories();
-        handleFetchUserCart();
+        if (currentUser) {
+            handleFetchUserCart();
+        }
     }, []);
 
     // console.log(userCart)
@@ -111,11 +113,11 @@ const Navbar = () => {
                         {currentUser ? (
                             <FaRegUser
                                 onClick={() => toggleUser(true)}
-                                className="text-[24px] cursor-pointer"
+                                className="text-[20px] cursor-pointer"
                             />
                         ) : (
                             <Link to="/signIn">
-                                <FaRegUser className="text-[24px]" />
+                                <FaRegUser className="text-[20px]" />
                             </Link>
                         )}
                     </div>

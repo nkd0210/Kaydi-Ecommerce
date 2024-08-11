@@ -199,3 +199,35 @@ export const updateUserCart = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getItemsInCart = async (req, res, next) => {
+  const { userId, chooseItems } = req.body;
+  if (req.user.id !== userId) {
+    return res
+      .status(401)
+      .json({ message: "You are not allowed to access this function" });
+  }
+  try {
+    const cart = await Cart.findOne({ userId });
+    if (!cart) {
+      return res.status(404).json({ message: "Cart not found" });
+    }
+
+    const foundItems = cart.products.filter((item) =>
+      chooseItems.some(
+        (searchItem) =>
+          item.productId.toString() === searchItem.productId &&
+          item.size === searchItem.size &&
+          item.color === searchItem.color
+      )
+    );
+
+    if (foundItems.length === 0) {
+      return res.status(404).json({ message: "No items found in cart" });
+    }
+
+    res.status(200).json(foundItems);
+  } catch (error) {
+    next(error);
+  }
+};

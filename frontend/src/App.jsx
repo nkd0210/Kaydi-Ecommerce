@@ -6,6 +6,7 @@ import Profile from './pages/Profile';
 import ProductDetail from './pages/ProductDetail';
 import Admin from './pages/Admin';
 import UserCart from './pages/UserCart';
+import OrderPage from './pages/OrderPage';
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
         <Route path='/productDetail/:productId' element={<ProductDetail />} />
         <Route path='/admin' element={<Admin />} />
         <Route path='/cart' element={<UserCart />} />
+        <Route path='/order' element={<OrderPage />} />
       </Routes>
     </BrowserRouter>
   )

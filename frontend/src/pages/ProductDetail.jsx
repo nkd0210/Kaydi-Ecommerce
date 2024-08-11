@@ -133,6 +133,11 @@ const ProductDetail = () => {
     }
 
     const handleAddToCart = async () => {
+        if (!currentUser) {
+            navigate('/signIn');
+            return;
+        }
+
         const addForm = {
             userId: currentUser._id,
             productId: detailProduct._id,
@@ -291,7 +296,7 @@ const ProductDetail = () => {
 
                     {/* Add item to cart */}
                     {openBox ? (
-                        <div className='fixed bottom-[10px] right-[10px] w-[400px] rounded-[20px] shadow-xl z-20 bg-gray-50 px-[10px] py-[30px] flex flex-col gap-[20px]'>
+                        <div className='fixed bottom-[10px] right-[10px] w-[400px] rounded-[20px] shadow-xl z-20 bg-gray-100 border px-[10px] py-[30px] flex flex-col gap-[20px]'>
                             <BsArrowsCollapse onClick={() => setOpenBox(false)} className='absolute top-[10px] right-[10px] cursor-pointer hover:text-red-400 text-[20px]' />
                             <div className='flex flex-wrap gap-[10px]'>
                                 <p> Sản phẩm:</p>
@@ -314,7 +319,7 @@ const ProductDetail = () => {
                             </div>
                         </div>
                     ) : (
-                        <div className='fixed border bottom-[10px] right-[10px] w-[50px] h-[50px] rounded-[20px] shadow-xl z-20 bg-gray-50 p-[10px] flex justify-center items-center'>
+                        <div className='fixed border bottom-[10px] right-[10px] w-[50px] h-[50px] rounded-[20px] shadow-xl z-20 bg-gray-100 p-[10px] flex justify-center items-center'>
                             <BsArrowsExpand onClick={() => setOpenBox(true)} className='cursor-pointer hover:text-red-400 text-[20px]' />
                         </div>
                     )}

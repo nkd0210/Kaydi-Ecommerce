@@ -2,24 +2,7 @@ import Order from "../models/orderModel.js";
 import User from "../models/userModel.js";
 import Product from "../models/productModel.js";
 
-export const createOrder = async (req, res, next) => {
-  if (!req.user.id) {
-    return res.status(401).json({ message: "You are not logged in" });
-  }
-  const orderProduct = new Order({
-    userId: req.body.userId,
-    productId: req.body.productId,
-    totalAmount: req.body.totalAmount,
-    shippingAddress: req.body.shippingAddress,
-    paymentMethod: req.body.paymentMethod,
-  });
-  try {
-    const savedOrder = await orderProduct.save();
-    res.status(200).json(savedOrder);
-  } catch (error) {
-    next(error);
-  }
-};
+export const createOrder = async (req, res, next) => {};
 
 export const getAllOrder = async (req, res, next) => {
   if (!req.user.id) {

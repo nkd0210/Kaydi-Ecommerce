@@ -12,12 +12,14 @@ import Dashboard from '../components/admin/Dashboard';
 import Category from '../components/admin/Category';
 import Order from '../components/admin/Order';
 import Products from '../components/admin/Products';
+import Voucher from '../components/admin/Voucher';
+import Loader from '../components/Loader';
+
 import { getDownloadURL, getStorage, ref, uploadBytesResumable, deleteObject } from 'firebase/storage';
 import { app } from '../firebase';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Loader from '../components/Loader';
 
 const AdminDashboard = () => {
 
@@ -135,14 +137,18 @@ const AdminDashboard = () => {
         <div className='flex'>
             <ToastContainer />
             <div className='flex flex-col justify-between items-center p-[20px] gap-[20px] h-screen w-[200px] text-[18px] bg-black text-white max-md:hidden'>
-                <div onClick={() => setOpenModal(true)} className='w-[80px] h-[80px] cursor-pointer hover:opacity-70'>
-                    <img src={currentUser?.profilePic} alt="" className='w-full h-full object-cover rounded-[50%]' />
-                </div>
-                <div className='flex flex-col gap-[50px]'>
-                    <div onClick={() => setActive('dashboard')} className={`cursor-pointer hover:text-red-400 ${active === 'dashboard' ? 'text-red-400' : 'text-white'}`}>Dashboard</div>
-                    <div onClick={() => setActive('products')} className={`cursor-pointer hover:text-red-400 ${active === 'products' ? 'text-red-400' : 'text-white'}`}>Products</div>
-                    <div onClick={() => setActive('category')} className={`cursor-pointer hover:text-red-400 ${active === 'category' ? 'text-red-400' : 'text-white'}`}>Category</div>
-                    <div onClick={() => setActive('order')} className={`cursor-pointer hover:text-red-400 ${active === 'order' ? 'text-red-400' : 'text-white'}`}>Order</div>
+
+                <div>
+                    <div onClick={() => setOpenModal(true)} className='w-[80px] h-[80px] cursor-pointer hover:opacity-70 my-[20px]'>
+                        <img src={currentUser?.profilePic} alt="" className='w-full h-full object-cover rounded-[50%]' />
+                    </div>
+                    <div className='flex flex-col gap-[50px]'>
+                        <div onClick={() => setActive('dashboard')} className={`cursor-pointer hover:text-red-400 ${active === 'dashboard' ? 'text-red-400' : 'text-white'}`}>Dashboard</div>
+                        <div onClick={() => setActive('products')} className={`cursor-pointer hover:text-red-400 ${active === 'products' ? 'text-red-400' : 'text-white'}`}>Products</div>
+                        <div onClick={() => setActive('category')} className={`cursor-pointer hover:text-red-400 ${active === 'category' ? 'text-red-400' : 'text-white'}`}>Category</div>
+                        <div onClick={() => setActive('order')} className={`cursor-pointer hover:text-red-400 ${active === 'order' ? 'text-red-400' : 'text-white'}`}>Order</div>
+                        <div onClick={() => setActive('voucher')} className={`cursor-pointer hover:text-red-400 ${active === 'voucher' ? 'text-red-400' : 'text-white'}`}>Voucher</div>
+                    </div>
                 </div>
                 <div onClick={handleLogout} className={`cursor-pointer hover:text-red-400`}> Log out</div>
             </div>
@@ -164,6 +170,7 @@ const AdminDashboard = () => {
                     <div onClick={() => { setActive('products'), setOpenSidebar(false) }} className={`cursor-pointer hover:text-red-400 ${active === 'products' ? 'text-red-400' : 'text-white'}`}>Products</div>
                     <div onClick={() => { setActive('category'), setOpenSidebar(false) }} className={`cursor-pointer hover:text-red-400 ${active === 'category' ? 'text-red-400' : 'text-white'}`}>Category</div>
                     <div onClick={() => { setActive('order'), setOpenSidebar(false) }} className={`cursor-pointer hover:text-red-400 ${active === 'order' ? 'text-red-400' : 'text-white'}`}>Order</div>
+                    <div onClick={() => { setActive('voucher'), setOpenSidebar(false) }} className={`cursor-pointer hover:text-red-400 ${active === 'voucher' ? 'text-red-400' : 'text-white'}`}>Voucher</div>
                     <div onClick={handleLogout} className={`cursor-pointer hover:text-red-400`}>Log out</div>
                 </div>
             </Drawer>
@@ -205,11 +212,12 @@ const AdminDashboard = () => {
                 </div>
             </Modal>
 
-            <div className='w-full h-screen max-md:mt-[20px]'>
+            <div className='w-full h-screen'>
                 {active === 'dashboard' && <Dashboard />}
                 {active === 'products' && <Products />}
                 {active === 'category' && <Category />}
                 {active === 'order' && <Order />}
+                {active === 'voucher' && <Voucher />}
 
             </div>
         </div>

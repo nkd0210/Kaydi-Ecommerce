@@ -10,6 +10,7 @@ import productRoute from "./routes/productRoute.js";
 import orderRoute from "./routes/orderRoute.js";
 import cartRoute from "./routes/cartRoute.js";
 import categoryRoute from "./routes/categoryRoute.js";
+import voucherRoute from "./routes/voucherRoute.js";
 
 dotenv.config();
 
@@ -39,3 +40,4 @@ app.use("/api/product", productRoute);
 app.use("/api/order", orderRoute);
 app.use("/api/cart", cartRoute);
 app.use("/api/category", categoryRoute);
+app.use("/api/voucher", voucherRoute);
