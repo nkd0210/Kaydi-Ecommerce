@@ -13,6 +13,8 @@ import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import 'animate.css'
+
 const UserCart = () => {
 
     const { currentUser } = useSelector((state) => state.user);
@@ -172,7 +174,7 @@ const UserCart = () => {
         <div>
             <Navigation />
             <Navbar />
-            <div className='p-[20px] max-md:p-[10px] w-full overflow-x-scroll'>
+            <div className='p-[20px] max-md:p-[10px] w-full overflow-x-scroll h-[400px] max-md:h-[600px] overflow-y-scroll'>
                 <h1 className='text-center text-[24px] font-semibold'>Your Shopping Cart</h1>
                 <ToastContainer />
                 {loading ? (
@@ -185,7 +187,7 @@ const UserCart = () => {
                             </div>
                         ) : (
                             <div className="w-full max-md:w-[500px] mt-[20px]">
-                                <table className='w-full border-collapse'>
+                                <table className='w-full border-collapse overflow-y-scroll animate__animated animate__fadeInUp'>
                                     <thead>
                                         <tr className="border-b-[2px] ">
                                             <th className="p-[10px] text-left"> <input type="checkbox" /></th>
@@ -234,7 +236,7 @@ const UserCart = () => {
                 )}
             </div>
 
-            <div className='fixed bottom-0 overflow-y-scroll w-full h-[300px] bg-gray-100 p-[20px] max-md:p-[10px]'>
+            <div className='fixed bottom-0 overflow-y-scroll w-full h-[200px] bg-gray-100 p-[20px] max-md:p-[10px] animate__animated animate__fadeInUp'>
                 <h3 className='pb-[20px] font-semibold text-[20px]'>Thanh toán: </h3>
                 {chooseItems.map((chooseItem, index) => (
                     <div key={index} className='flex justify-between max-md:flex-col max-md:gap-[20px] border-b-[2px] py-[20px]'>

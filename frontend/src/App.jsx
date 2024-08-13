@@ -7,6 +7,7 @@ import ProductDetail from './pages/ProductDetail';
 import Admin from './pages/Admin';
 import UserCart from './pages/UserCart';
 import OrderPage from './pages/OrderPage';
+import OrderDetail from './pages/OrderDetail';
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
         <Route path='/admin' element={<Admin />} />
         <Route path='/cart' element={<UserCart />} />
         <Route path='/order' element={<OrderPage />} />
+        <Route path='/orderDetail/:orderId' element={<OrderDetail />} />
       </Routes>
     </BrowserRouter>
   )

@@ -170,6 +170,7 @@ export const applyVoucher = async (req, res, next) => {
     }
 
     if (voucher.usedCount >= voucher.usageLimit) {
+      voucher.status = "expired";
       return res.status(400).json({ message: "Voucher usage limit reached" });
     }
 
@@ -178,12 +179,6 @@ export const applyVoucher = async (req, res, next) => {
       await voucher.save();
       return res.status(400).json({ message: "Voucher has expired" });
     }
-
-    // if (voucher.applyUserIds.length && !voucher.applyUserIds.includes(userId)) {
-    //   return res
-    //     .status(400)
-    //     .json({ message: "Voucher not apply to this user" });
-    // }
 
     if (voucher.applyProducts.length) {
       // return an array of product ID
@@ -196,7 +191,7 @@ export const applyVoucher = async (req, res, next) => {
       if (!isProductApply) {
         return res
           .status(400)
-          .json({ message: "Voucher not apply to these product" });
+          .json({ message: "Voucher not applicable to these product" });
       }
     }
 
@@ -210,13 +205,37 @@ export const applyVoucher = async (req, res, next) => {
       if (!isApplyCategory) {
         return res
           .status(400)
-          .json({ message: "Voucher not apply to these category" });
+          .json({ message: "Voucher not applicable to these category" });
       }
     }
 
     voucher.usedCount += 1;
     await voucher.save();
     res.status(200).json({ message: "Voucher applied successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getVoucherByProductIds = async (req, res, next) => {
+  const { productIds } = req.params;
+  if (!req.user.id) {
+    return res.status(401).json({ message: "You are not authenticated" });
+  }
+  try {
+    const productIdArray = productIds ? productIds.split(",") : [];
+    const allVouchers = await Voucher.find();
+    // some() : at least one productId match >< every()
+    const applicableVouchers = allVouchers.filter((voucher) => {
+      const appliesToProducts = voucher.applyProducts.some((productId) =>
+        productIdArray.includes(productId.toString())
+      );
+      return appliesToProducts;
+    });
+    if (applicableVouchers.length === 0) {
+      return res.status(404).json({ message: "No vouchers found" });
+    }
+    res.status(200).json(applicableVouchers);
   } catch (error) {
     next(error);
   }

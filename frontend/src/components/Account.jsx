@@ -21,6 +21,8 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import { updateStart, updateSuccess, updateFailure } from "../redux/user/userSlice";
 
+import "animate.css"
+
 const Account = () => {
     const { currentUser } = useSelector((state) => state.user);
 
@@ -170,10 +172,10 @@ const Account = () => {
     }
 
     return (
-        <>
+        <div className="p-[20px]">
             <ToastContainer />
 
-            <div>
+            <div className="animate__animated animate__fadeInRight">
                 <h2 className="text-[24px] font-semibold mb-[20px]">Thông tin tài khoản</h2>
                 <div className="w-[100px] h-[100px] ">
                     <img
@@ -213,7 +215,7 @@ const Account = () => {
             </div>
 
             {updateAccount && (
-                <div className='fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm'>
+                <div className='fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm animate__animated animate__fadeIn'>
                     <div className="relative flex flex-col gap-[20px] overflow-y-scroll w-[500px] max-md:w-[300px] h-[600px] mx-auto bg-white rounded-[10px] p-[20px] mt-[100px]">
                         <h3 className="text-[20px] font-semibold">Chỉnh sửa thông tin tài khoản</h3>
                         <div className="w-[100px] h-[100px]">
@@ -279,7 +281,7 @@ const Account = () => {
             )}
 
             {updateAuth && (
-                <div className='fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm'>
+                <div className='fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm  animate__animated animate__fadeIn'>
                     <div className="relative flex flex-col gap-[20px] overflow-y-scroll w-[500px] max-md:w-[300px] h-[400px] mx-auto bg-white rounded-[10px] p-[20px] mt-[100px]">
                         <h3 className="text-[20px] font-semibold">Chỉnh sửa thông tin đăng nhập</h3>
                         <button className="absolute top-0 right-0 " onClick={() => setUpdateAuth(false)}>
@@ -293,7 +295,7 @@ const Account = () => {
                     </div>
                 </div>
             )}
-        </>
+        </div>
     )
 }
 

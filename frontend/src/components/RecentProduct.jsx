@@ -7,6 +7,9 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 
+// ANIMATE
+import 'animate.css';
+
 const RecentProduct = () => {
 
     var settings = {
@@ -47,17 +50,24 @@ const RecentProduct = () => {
 
     const [recentProducts, setRecentProducts] = useState([]);
     const [isDragging, setIsDragging] = useState(false);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     const fetchRecentProduct = async () => {
-        const res = await fetch(`/api/product/getRecentProduct/4`, {
-            method: "GET"
-        });
-        const data = await res.json();
-        if (!res.ok) {
-            console.log(data.message);
-        } else {
-            setRecentProducts(data);
+        setLoading(true);
+        try {
+            const res = await fetch(`/api/product/getRecentProduct/6`, {
+                method: "GET"
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                console.log(data.message);
+            } else {
+                setRecentProducts(data);
+                setLoading(false);
+            }
+        } catch (error) {
+            console.log(error.message);
+        } finally {
             setLoading(false);
         }
     }
@@ -81,7 +91,7 @@ const RecentProduct = () => {
                                 }
                             }}
                                 key={index}
-                                className='flex flex-col gap-[10px]'>
+                                className='flex flex-col gap-[10px] animate__animated animate__zoomIn'>
                                 <div className='w-[300px] h-[400px]'>
                                     <img src={product?.listingPhotoPaths[0]} alt="image" className='w-full h-full object-cover rounded-[5px]' />
                                 </div>

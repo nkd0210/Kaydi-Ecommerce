@@ -21,6 +21,8 @@ import { app } from '../firebase';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import 'animate.css'
+
 const AdminDashboard = () => {
 
     const [openSidebar, setOpenSidebar] = useState(false);
@@ -137,7 +139,6 @@ const AdminDashboard = () => {
         <div className='flex'>
             <ToastContainer />
             <div className='flex flex-col justify-between items-center p-[20px] gap-[20px] h-screen w-[200px] text-[18px] bg-black text-white max-md:hidden'>
-
                 <div>
                     <div onClick={() => setOpenModal(true)} className='w-[80px] h-[80px] cursor-pointer hover:opacity-70 my-[20px]'>
                         <img src={currentUser?.profilePic} alt="" className='w-full h-full object-cover rounded-[50%]' />

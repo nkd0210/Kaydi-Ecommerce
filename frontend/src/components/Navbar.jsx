@@ -136,10 +136,10 @@ const Navbar = () => {
                 </div>
 
                 <Drawer anchor="right" open={userModal} onClose={() => toggleUser(false)}>
-                    <div className="w-[400px] bg-white shadow-lg p-6 text-black">
+                    <div className="w-[400px] max-md:w-[200px] h-full bg-white shadow-lg p-6 text-black">
                         <h2>Hi, {currentUser?.username}</h2>
                         <hr className="w-full mt-[20px] h-[2px] bg-gray-200" />
-                        <div className="grid grid-cols-3 max-md:grid-cols-1 gap-[10px] ">
+                        <div className="flex flex-wrap gap-[20px] ">
                             <div
                                 onClick={() => navigate("/profile/account")}
                                 className="cursor-pointer hover:bg-opacity-70 flex flex-col justify-center items-center w-[100px] h-[80px] text-center border bg-gray-200 rounded-[10px] mt-[10px] p-[10px]"

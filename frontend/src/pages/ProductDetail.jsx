@@ -21,6 +21,8 @@ import { BsArrowsExpand } from "react-icons/bs";
 
 import styled from 'styled-components';
 
+// ANIMATE
+import 'animate.css';
 const ProductDetail = () => {
 
     var settings = {
@@ -185,14 +187,15 @@ const ProductDetail = () => {
             ) : (
                 <div className='relative py-[20px] px-[70px] max-md:p-[10px] w-full overflow-x-scroll'>
                     <ToastContainer />
-                    <div className='box2 h-[600px] max-md:h-full'>
+                    {/* PRODUCT */}
+                    <div className='box2 h-[700px] max-md:h-full'>
                         {/* IMAGES */}
-                        <div className='h-[500px] flex max-md:flex-col max-md:p-[10px] gap-[10px]'>
+                        <div className='h-[500px] flex max-md:flex-col max-md:p-[10px] gap-[10px] animate__animated animate__lightSpeedInLeft'>
                             {/* list images */}
                             <div className='flex flex-col max-md:flex-row gap-[10px]'>
                                 {detailProduct?.listingPhotoPaths?.map((photo, index) => (
-                                    <div onClick={() => setShowImage(photo)} key={index} className='w-[50px] h-[70px]'>
-                                        <img src={photo} alt="" className='w-full h-full object-cover' />
+                                    <div onClick={() => setShowImage(photo)} key={index} className='w-[50px] h-[70px] '>
+                                        <img src={photo} alt="" className='w-full h-full object-cover animate__animated animate__zoomIn' />
                                     </div>
                                 ))}
                             </div>
@@ -200,8 +203,8 @@ const ProductDetail = () => {
                             <img src={showImage} alt="" className='w-full h-full object-cover rounded-[10px]' />
                         </div>
                         {/* DETAIL */}
-                        <div className='flex flex-col max-md:p-[10px] h-[700px] max-md:h-screen overflow-y-scroll'>
-                            <h3 className='text-[30px] font-semibold'>{detailProduct?.name}</h3>
+                        <div className='flex flex-col max-md:p-[10px] h-[700px] max-md:h-screen overflow-y-scroll animate__animated animate__lightSpeedInRight'>
+                            <h3 className='text-[30px] font-semibold '>{detailProduct?.name}</h3>
                             <p className='text-gray-600 whitespace-pre-wrap'>{detailProduct?.description}</p>
                             <p className='font-semibold py-[10px]'>{detailProduct?.price}&#8363;</p>
                             <p> Miễn phí giao hàng | Giao hàng 1-2 ngày - Hà Nội & TP. Hồ Chí Minh</p>
@@ -265,7 +268,7 @@ const ProductDetail = () => {
                     </div>
 
                     {/* RECOMMEND */}
-                    <div className='mt-[100px]'>
+                    <div className='mt-[100px] animate__animated animate__fadeInDown'>
                         <h3 className='text-center text-[30px] uppercase font-semibold mb-[40px]'>Gợi ý sản phẩm</h3>
                         {loadingRecommentProduct ? (
                             <Loader />
@@ -296,7 +299,7 @@ const ProductDetail = () => {
 
                     {/* Add item to cart */}
                     {openBox ? (
-                        <div className='fixed bottom-[10px] right-[10px] w-[400px] rounded-[20px] shadow-xl z-20 bg-gray-100 border px-[10px] py-[30px] flex flex-col gap-[20px]'>
+                        <div className='fixed bottom-[10px] right-[10px] w-[400px] rounded-[20px] shadow-xl z-20 bg-gray-100 border px-[10px] py-[30px] flex flex-col gap-[20px] animate__animated animate__rotateInUpRight'>
                             <BsArrowsCollapse onClick={() => setOpenBox(false)} className='absolute top-[10px] right-[10px] cursor-pointer hover:text-red-400 text-[20px]' />
                             <div className='flex flex-wrap gap-[10px]'>
                                 <p> Sản phẩm:</p>
@@ -319,7 +322,7 @@ const ProductDetail = () => {
                             </div>
                         </div>
                     ) : (
-                        <div className='fixed border bottom-[10px] right-[10px] w-[50px] h-[50px] rounded-[20px] shadow-xl z-20 bg-gray-100 p-[10px] flex justify-center items-center'>
+                        <div className='fixed border bottom-[10px] right-[10px] w-[50px] h-[50px] rounded-[20px] shadow-xl z-20 bg-gray-100 p-[10px] flex justify-center items-center '>
                             <BsArrowsExpand onClick={() => setOpenBox(true)} className='cursor-pointer hover:text-red-400 text-[20px]' />
                         </div>
                     )}

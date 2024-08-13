@@ -4,13 +4,15 @@ import Navigation from "../components/Navigation";
 import Navbar from "../components/Navbar";
 import styled from "styled-components";
 import Account from '../components/Account';
-import History from '../components/History'; 
+import History from '../components/History';
 import Address from '../components/Address';
 import Reply from '../components/Reply';
 import Policy from '../components/Policy';
 import { useParams } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
 import { FaLongArrowAltRight } from "react-icons/fa";
+
+import "animate.css"
 
 const Profile = () => {
 
@@ -18,8 +20,11 @@ const Profile = () => {
 
     const [active, setActive] = useState(activeParam);
 
+    const navigate = useNavigate();
+
     const handleSelectActive = (e) => {
         setActive(e.target.id);
+        navigate(`/profile/${e.target.id}`)
     }
 
     return (
@@ -28,7 +33,7 @@ const Profile = () => {
             <Navbar />
             <div className="box">
                 {/* MENU */}
-                <div>
+                <div className="animate__animated animate__fadeInLeft">
                     <div onClick={handleSelectActive} id='account' className={`flex justify-between border p-[10px] ${active === 'account' ? 'bg-black text-white' : 'bg-white text-black'} cursor-pointer hover:bg-opacity-70`}>
                         Thông tin tài khoản
                         <FaLongArrowAltRight className="text-[20px]" />
@@ -52,7 +57,7 @@ const Profile = () => {
                 </div>
 
                 {/* DETAIL */}
-                <div className="border rounded-[10px] p-[20px]">
+                <div className="border rounded-[10px] animate__animated animate__fadeIn">
                     {active === 'account' && <Account />}
                     {active === 'history' && <History />}
                     {active === 'address' && <Address />}
