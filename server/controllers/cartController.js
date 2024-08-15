@@ -10,14 +10,11 @@ export const addToCart = async (req, res, next) => {
       .json({ message: "You are not allowed to add this product to cart" });
   }
   try {
-    //find the cart for the user
     let cart = await Cart.findOne({ userId });
     if (!cart) {
-      // if no cart exits, create a new one
       cart = new Cart({ userId, products: [] });
     }
 
-    //find the product to get the price
     const product = await Product.findById(productId);
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
@@ -227,6 +224,57 @@ export const getItemsInCart = async (req, res, next) => {
     }
 
     res.status(200).json(foundItems);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const removeItemsFromCart = async (req, res, next) => {
+  const { userId, productsRemove } = req.body;
+  if (req.user.id !== userId) {
+    return res
+      .status(401)
+      .json({ message: "You are not allowed to access this function" });
+  }
+  try {
+    const userCart = await Cart.findOne({ userId });
+    if (!userCart) {
+      return res.status(404).json({ message: "Cart not found" });
+    }
+
+    productsRemove.forEach(({ productId, color, size }) => {
+      const productIndex = userCart.products.findIndex(
+        (item) =>
+          item.productId.toString() === productId &&
+          item.color === color &&
+          item.size === size
+      );
+
+      if (productIndex === -1) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+
+      if (productIndex !== -1) {
+        userCart.products.splice(productIndex, 1);
+      }
+    });
+
+    userCart.subtotal = userCart.products.reduce(
+      (total, item) => total + item.quantity * item.price,
+      0
+    );
+
+    const totalProducts = userCart.products.reduce(
+      (total, item) => total + item.quantity,
+      0
+    );
+
+    const updatedCart = await userCart.save();
+    res.status(200).json({
+      message: "Items removed from cart successfully",
+      totalProducts: totalProducts,
+      cart: updatedCart,
+    });
   } catch (error) {
     next(error);
   }

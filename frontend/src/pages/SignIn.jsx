@@ -78,9 +78,9 @@ const SignIn = () => {
       <Navbar />
       <div className='w-full h-screen flex flex-col justify-center items-center'>
         <ToastContainer />
-        <div className='w-3/4 h-[500px] rounded-[10px] flex gap-[20px]'>
+        <div className='w-3/4 h-[500px] rounded-[10px] flex gap-[20px] animate__animated animate__fadeInLeft'>
 
-          <div className='w-1/2 max-md:w-full bg-gray-100 max-md:bg-laptop max-md:bg-cover border border-gray-300 rounded-[10px] text-black max-md:text-white backdrop-blur-sm text-center p-[10px] animate__animated animate__fadeIn'>
+          <div className='w-1/2 max-md:w-full bg-gray-100 max-md:bg-laptop max-md:bg-cover border border-gray-300 rounded-[10px] text-black max-md:text-white backdrop-blur-sm text-center p-[10px] '>
             <h1 className='text-[20px] font-semibold pb-[30px]'>Welcome to Kaydi Ecommerce</h1>
             <form onSubmit={handleSubmit} className='flex flex-col gap-[20px] justify-center items-center '>
 
@@ -121,7 +121,7 @@ const SignIn = () => {
             </form>
           </div>
 
-          <div className='relative max-md:hidden w-1/2 rounded-[10px] bg-laptop bg-cover text-white p-[10px] animate__animated animate__fadeInRight'>
+          <div className='relative max-md:hidden w-1/2 rounded-[10px] bg-laptop bg-cover text-white p-[10px]'>
             <div className='absolute w-[95%] bg-gray-400 bg-opacity-20 rounded-[10px] h-[100px] bottom-[10px] left-1/2 transform -translate-x-1/2 backdrop-blur-sm flex justify-between items-center animated__animated animate__fadeIn '>
               {/* IMAGE */}
               <div className='avatar flex items-center '>
@@ -149,6 +149,7 @@ const SignIn = () => {
               </div>
             </div>
           </div>
+
         </div>
       </div>
     </>

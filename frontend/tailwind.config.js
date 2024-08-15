@@ -11,5 +11,21 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    function ({ addUtilities }) {
+      addUtilities({
+        ".no-scrollbar": {
+          overflow: "hidden",
+        },
+        ".hide-scrollbar": {
+          overflow: "auto",
+          "-ms-overflow-style": "none" /* Internet Explorer 10+ */,
+          "scrollbar-width": "none" /* Firefox */,
+        },
+        ".hide-scrollbar::-webkit-scrollbar": {
+          display: "none" /* WebKit */,
+        },
+      });
+    },
+  ],
 };

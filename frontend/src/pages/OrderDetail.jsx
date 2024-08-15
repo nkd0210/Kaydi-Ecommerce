@@ -93,17 +93,17 @@ const OrderDetail = () => {
                         <ToastContainer />
                         {/* status */}
                         <div className='border-black w-[150px] max-md:w-full flex flex-col max-md:flex-row gap-[20px] max-md:gap-[5px] items-center justify-center'>
-                            <div className='animate__animated animate__fadeIn flex flex-col max-md:flex-row items-center justify-center' style={{ animationDuration: '2s' }}>
+                            <div className='animate__animated animate__fadeIn flex flex-col gap-[20px] max-md:flex-row items-center justify-center' style={{ animationDuration: '2s' }}>
                                 <p className={`${orderDetail.status === 'pending' ? 'text-red-500 font-semibold text-[18px]' : 'text-[14px]'}`}>Pending</p>
                                 <FiArrowDownCircle className='text-[30px] max-md:hidden ' />
                                 <MdOutlineArrowCircleRight className='text-[30px] md:hidden ' />
                             </div>
-                            <div className='animate__animated animate__fadeIn flex flex-col max-md:flex-row items-center justify-center' style={{ animationDuration: '3s' }}>
+                            <div className='animate__animated animate__fadeIn flex flex-col gap-[20px] max-md:flex-row items-center justify-center' style={{ animationDuration: '3s' }}>
                                 <p className={`${orderDetail.status === 'processing' ? 'text-red-500 font-semibold text-[18px]' : 'text-[14px]'}`}>Processing</p>
                                 <FiArrowDownCircle className='text-[30px] max-md:hidden ' />
                                 <MdOutlineArrowCircleRight className='text-[30px] md:hidden' />
                             </div>
-                            <div className='animate__animated animate__fadeIn flex flex-col max-md:flex-row items-center justify-center' style={{ animationDuration: '4s' }}>
+                            <div className='animate__animated animate__fadeIn flex flex-col gap-[20px] max-md:flex-row items-center justify-center' style={{ animationDuration: '4s' }}>
                                 <p className={`${orderDetail.status === 'shipped' ? 'text-red-500 font-semibold text-[18px]' : 'text-[14px]'}`}>Shipped</p>
                                 <FiArrowDownCircle className='text-[30px] max-md:hidden ' />
                                 <MdOutlineArrowCircleRight className='text-[30px] md:hidden' />

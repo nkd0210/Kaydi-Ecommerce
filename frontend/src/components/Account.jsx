@@ -181,7 +181,7 @@ const Account = () => {
                     <img
                         src={currentUser?.profilePic}
                         alt="avatar"
-                        className="w-full h-full object-cover rounded-[50%]"
+                        className="w-full h-full object-cover border rounded-[50%]"
                     />
                 </div>
                 <div className="flex justify-start my-[20px]">
@@ -224,7 +224,7 @@ const Account = () => {
                                 onClick={() => fileRef.current.click()}
                                 src={formDataImage || currentUser?.profilePic}
                                 alt="avatar"
-                                className="w-full h-full object-cover rounded-[50%] cursor-pointer"
+                                className="w-full h-full object-cover rounded-[50%] border cursor-pointer"
                             />
                         </div>
                         {imageFileUploadProgress > 0 && imageFileUploadProgress < 100 && (

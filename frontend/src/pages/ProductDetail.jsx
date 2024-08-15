@@ -188,9 +188,9 @@ const ProductDetail = () => {
                 <div className='relative py-[20px] px-[70px] max-md:p-[10px] w-full overflow-x-scroll'>
                     <ToastContainer />
                     {/* PRODUCT */}
-                    <div className='box2 h-[700px] max-md:h-full'>
+                    <div className='box2 h-[700px] max-md:h-full '>
                         {/* IMAGES */}
-                        <div className='h-[500px] flex max-md:flex-col max-md:p-[10px] gap-[10px] animate__animated animate__lightSpeedInLeft'>
+                        <div className='h-[500px] flex max-md:flex-col max-md:p-[10px] gap-[10px] animate__animated animate__fadeInLeft '>
                             {/* list images */}
                             <div className='flex flex-col max-md:flex-row gap-[10px]'>
                                 {detailProduct?.listingPhotoPaths?.map((photo, index) => (
@@ -203,7 +203,7 @@ const ProductDetail = () => {
                             <img src={showImage} alt="" className='w-full h-full object-cover rounded-[10px]' />
                         </div>
                         {/* DETAIL */}
-                        <div className='flex flex-col max-md:p-[10px] h-[700px] max-md:h-screen overflow-y-scroll animate__animated animate__lightSpeedInRight'>
+                        <div className='flex flex-col max-md:p-[10px] h-[700px] max-md:h-screen overflow-y-scroll hide-scrollbar animate__animated animate__fadeInRight'>
                             <h3 className='text-[30px] font-semibold '>{detailProduct?.name}</h3>
                             <p className='text-gray-600 whitespace-pre-wrap'>{detailProduct?.description}</p>
                             <p className='font-semibold py-[10px]'>{detailProduct?.price}&#8363;</p>

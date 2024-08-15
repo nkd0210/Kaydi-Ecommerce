@@ -39,11 +39,13 @@ const History = () => {
 
 
   return (
-    <div className='w-full h-[600px] overflow-y-scroll bg-gray-50 p-[20px] rounded-[10px]'>
+    <div className='w-full max-h-[800px] overflow-y-scroll bg-gray-50 p-[20px] rounded-[10px] hide-scrollbar'>
       <h2 className="text-[24px] font-semibold mb-[20px] animate__animated animate__fadeIn">Lịch sử đơn hàng</h2>
       {
         loadingUserOrders ? (
           <Loader />
+        ) : userOrders.length === 0 ? (
+          <div>Chưa có đơn hàng nào được đặt!</div>
         ) : (
           <div className='flex flex-col gap-[20px]'>
             {userOrders.map((order, index) => (

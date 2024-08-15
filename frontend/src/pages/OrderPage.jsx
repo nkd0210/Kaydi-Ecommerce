@@ -20,6 +20,8 @@ import { IoIosCloseCircleOutline } from "react-icons/io";
 import VoucherCard from '../components/VoucherCard';
 import { setVoucher } from '../redux/order/voucherSlice';
 
+import { setCartSuccess } from '../redux/cart/cartSlice';
+
 import 'animate.css'
 
 import { loadStripe } from '@stripe/stripe-js';
@@ -28,6 +30,7 @@ const OrderPage = () => {
 
   const { currentUser } = useSelector((state) => state.user);
   const { products, totalPrice } = useSelector((state) => state.order);
+  const { items, cartCount } = useSelector((state) => state.cart);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -198,11 +201,37 @@ const OrderPage = () => {
           return;
         }
       }
+
+      await handleRemoveProductInCart();
+
     } catch (error) {
       console.log(error.message);
     } finally {
       setLoadingOrder(false);
     }
+  }
+
+  const handleRemoveProductInCart = async () => {
+    try {
+      const res = await fetch(`/api/cart/removeItemsInCart`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: currentUser?._id,
+          productsRemove: products
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        console.log(data.message);
+        return;
+      } else {
+        dispatch(setCartSuccess(data));
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+
   }
 
   return (

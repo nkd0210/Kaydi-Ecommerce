@@ -5,6 +5,7 @@ import {
   getItemsInCart,
   getUserCart,
   removeFromCart,
+  removeItemsFromCart,
   updateUserCart,
 } from "../controllers/cartController.js";
 
@@ -15,5 +16,6 @@ router.delete("/removeFromCart", verifyToken, removeFromCart);
 router.get("/getUserCart/:userId", verifyToken, getUserCart);
 router.put("/updateUserCart/:userId", verifyToken, updateUserCart);
 router.get("/getItemInCart", verifyToken, getItemsInCart);
+router.delete("/removeItemsInCart", verifyToken, removeItemsFromCart);
 
 export default router;
