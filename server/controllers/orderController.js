@@ -1,6 +1,11 @@
 import Order from "../models/orderModel.js";
 import User from "../models/userModel.js";
 import Product from "../models/productModel.js";
+import Stripe from "stripe";
+import dotenv from "dotenv";
+dotenv.config();
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export const createOrder = async (req, res, next) => {
   if (!req.user.id) {
@@ -181,6 +186,104 @@ export const getOrderById = async (req, res, next) => {
     if (findOrder.length === 0) {
       return res.status(404).json({ message: "Order not found" });
     }
+    res.status(200).json(findOrder);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const paymentWithStripe = async (req, res, next) => {
+  if (!req.user.id) {
+    return res.status(401).json({ message: "You are not logged in" });
+  }
+
+  const {
+    userId,
+    receiverName,
+    receiverPhone,
+    receiverNote,
+    products,
+    totalAmount,
+    shippingAddress,
+    paymentMethod,
+  } = req.body;
+
+  if (paymentMethod === "COD") {
+    return res
+      .status(404)
+      .json({ message: "This method does not need to pay by Stripe" });
+  }
+
+  const lineItems = products.map((product) => ({
+    price_data: {
+      currency: "vnd",
+      product_data: {
+        name: `${product.name} - ${product.size} - ${product.color}`,
+        images: [product.image],
+        metadata: {
+          color: product.color,
+          size: product.size,
+        },
+      },
+      unit_amount: product.price,
+    },
+    quantity: product.quantity,
+  }));
+  try {
+    // tuong tu nhu new Order({}) + await newOrder.save()
+    const newOrder = await Order.create({
+      userId,
+      receiverName,
+      receiverPhone,
+      receiverNote,
+      products,
+      totalAmount,
+      shippingAddress,
+      paymentMethod,
+      paymentCheck: false,
+    });
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      mode: "payment",
+      shipping_address_collection: {
+        allowed_countries: ["VN"],
+      },
+      shipping_options: [
+        {
+          shipping_rate: "shr_1PnhJ3ELWvlzH2IqYGJRn3KR", // free ship
+          // shipping_rate: "shr_1PnhI3ELWvlzH2IqQxOkTi8p", //ship
+        },
+      ],
+      line_items: lineItems,
+      client_reference_id: userId,
+      success_url: `${process.env.ECOMMERCE_STORE_URL}/paymentSuccess/${newOrder._id}`,
+      cancel_url: `${process.env.ECOMMERCE_STORE_URL}/cart`,
+      metadata: {
+        receiverName,
+        receiverPhone,
+        receiverNote,
+        shippingAddress,
+        totalAmount,
+      },
+    });
+
+    res.status(200).json({ id: session.id });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateOrderPaymentCheck = async (req, res, next) => {
+  const { orderId } = req.params;
+
+  try {
+    const findOrder = await Order.findById(orderId);
+    if (!findOrder) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    findOrder.paymentCheck = true;
+    await findOrder.save();
     res.status(200).json(findOrder);
   } catch (error) {
     next(error);

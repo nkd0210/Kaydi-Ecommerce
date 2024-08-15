@@ -8,7 +8,7 @@ import Admin from './pages/Admin';
 import UserCart from './pages/UserCart';
 import OrderPage from './pages/OrderPage';
 import OrderDetail from './pages/OrderDetail';
-
+import PaymentSuccess from './pages/PaymentSuccess';
 
 function App() {
   return (
@@ -23,6 +23,7 @@ function App() {
         <Route path='/cart' element={<UserCart />} />
         <Route path='/order' element={<OrderPage />} />
         <Route path='/orderDetail/:orderId' element={<OrderDetail />} />
+        <Route path='/paymentSuccess/:orderId' element={<PaymentSuccess />} />
       </Routes>
     </BrowserRouter>
   )

@@ -65,8 +65,13 @@ const History = () => {
                   <p>{order.products.length} sản phẩm</p>
                   <p>Thành tiền: <span className='text-red-500'>{order.totalAmount}&#8363;</span></p>
                 </div>
-              </div>
 
+                {order?.paymentCheck ? (
+                  <p className='text-green-500'>Đã thanh toán</p>
+                ) : (
+                  <p className='text-blue-500'>Chưa thanh toán</p>
+                )}
+              </div>
             ))}
           </div>
         )

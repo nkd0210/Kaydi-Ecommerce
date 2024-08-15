@@ -16,6 +16,7 @@
     "@mui/x-data-grid": "^7.11.1",
     "@mui/x-date-pickers": "^7.11.0",
     "@reduxjs/toolkit": "^2.2.6",
+    "@stripe/stripe-js": "^4.2.0",
     "animate.css": "^4.1.1",
     "chartjs": "^0.3.24",
     "date-fns": "^3.6.0",

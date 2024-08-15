@@ -92,17 +92,23 @@ const OrderDetail = () => {
                     <div className='p-[20px] max-md:p-[10px] border w-full flex flex-wrap gap-[20px] h-[450px] max-md:h-full'>
                         <ToastContainer />
                         {/* status */}
-                        <div className='border-black w-[150px] max-md:w-full flex flex-col max-md:flex-row gap-[20px] max-md:gap-[5px] items-center justify-center animate__animated animate__fadeInLeft'>
-                            <p className={`${orderDetail.status === 'pending' ? 'text-red-500 font-semibold text-[18px]' : 'text-[14px]'}`}>Pending</p>
-                            <FiArrowDownCircle className='text-[30px] max-md:hidden' />
-                            <MdOutlineArrowCircleRight className='text-[30px] md:hidden ' />
-                            <p className={`${orderDetail.status === 'processing' ? 'text-red-500 font-semibold text-[18px]' : 'text-[14px]'}`}>Processing</p>
-                            <FiArrowDownCircle className='text-[30px] max-md:hidden' />
-                            <MdOutlineArrowCircleRight className='text-[30px] md:hidden' />
-                            <p className={`${orderDetail.status === 'shipped' ? 'text-red-500 font-semibold text-[18px]' : 'text-[14px]'}`}>Shipped</p>
-                            <FiArrowDownCircle className='text-[30px] max-md:hidden' />
-                            <MdOutlineArrowCircleRight className='text-[30px] md:hidden' />
-                            <p className={`${orderDetail.status === 'delivered' ? 'text-red-500 font-semibold text-[18px]' : 'text-[14px]'}`}>Delivered</p>
+                        <div className='border-black w-[150px] max-md:w-full flex flex-col max-md:flex-row gap-[20px] max-md:gap-[5px] items-center justify-center'>
+                            <div className='animate__animated animate__fadeIn flex flex-col max-md:flex-row items-center justify-center' style={{ animationDuration: '2s' }}>
+                                <p className={`${orderDetail.status === 'pending' ? 'text-red-500 font-semibold text-[18px]' : 'text-[14px]'}`}>Pending</p>
+                                <FiArrowDownCircle className='text-[30px] max-md:hidden ' />
+                                <MdOutlineArrowCircleRight className='text-[30px] md:hidden ' />
+                            </div>
+                            <div className='animate__animated animate__fadeIn flex flex-col max-md:flex-row items-center justify-center' style={{ animationDuration: '3s' }}>
+                                <p className={`${orderDetail.status === 'processing' ? 'text-red-500 font-semibold text-[18px]' : 'text-[14px]'}`}>Processing</p>
+                                <FiArrowDownCircle className='text-[30px] max-md:hidden ' />
+                                <MdOutlineArrowCircleRight className='text-[30px] md:hidden' />
+                            </div>
+                            <div className='animate__animated animate__fadeIn flex flex-col max-md:flex-row items-center justify-center' style={{ animationDuration: '4s' }}>
+                                <p className={`${orderDetail.status === 'shipped' ? 'text-red-500 font-semibold text-[18px]' : 'text-[14px]'}`}>Shipped</p>
+                                <FiArrowDownCircle className='text-[30px] max-md:hidden ' />
+                                <MdOutlineArrowCircleRight className='text-[30px] md:hidden' />
+                            </div>
+                            <p className={`animate__animated animate__fadeIn ${orderDetail.status === 'delivered' ? 'text-red-500 font-semibold text-[18px]' : 'text-[14px]'}`} style={{ animationDuration: '5s' }}>Delivered</p>
                         </div>
                         {/* products */}
                         <div className='bg-white w-[500px] max-md:w-[400px] max-h-[400px] flex flex-col gap-[20px] overflow-y-scroll animate__animated animate__fadeInDown'>

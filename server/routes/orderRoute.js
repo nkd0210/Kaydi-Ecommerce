@@ -7,6 +7,8 @@ import {
   getAllOrder,
   getOrderById,
   getUserOrder,
+  paymentWithStripe,
+  updateOrderPaymentCheck,
 } from "../controllers/orderController.js";
 
 const router = express.Router();
@@ -17,5 +19,11 @@ router.put("/editOrder/:orderId", verifyToken, editOrder);
 router.delete("/cancelOrder/:userId/:orderId", verifyToken, cancelOrder);
 router.get("/getUserOrder/:userId", verifyToken, getUserOrder);
 router.get("/getOrderById/:orderId", verifyToken, getOrderById);
+router.post("/paymentWithStripe", verifyToken, paymentWithStripe);
+router.put(
+  "/updatePaymentCheck/:orderId",
+  verifyToken,
+  updateOrderPaymentCheck
+);
 
 export default router;

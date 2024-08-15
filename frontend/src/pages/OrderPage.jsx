@@ -2,9 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react'
 import Navbar from '../components/Navbar'
 import Navigation from '../components/Navigation'
 import { useSelector, useDispatch } from 'react-redux'
-import { setCartStart, setCartSuccess } from "../redux/cart/cartSlice";
 import Loader from '../components/Loader';
-import { setClearOrder, setOrderSuccess } from '../redux/order/orderSlice';
+import { setClearOrder } from '../redux/order/orderSlice';
 import { useNavigate } from 'react-router-dom';
 import { removeSingleItemInOrder } from '../redux/order/orderSlice';
 
@@ -22,6 +21,8 @@ import VoucherCard from '../components/VoucherCard';
 import { setVoucher } from '../redux/order/voucherSlice';
 
 import 'animate.css'
+
+import { loadStripe } from '@stripe/stripe-js';
 
 const OrderPage = () => {
 
@@ -158,28 +159,50 @@ const OrderPage = () => {
     }
     setLoadingOrder(true);
     try {
-      const res = await fetch(`/api/order/createOrder`, {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(orderForm)
-      });
-      if (!res.ok) {
-        handleShowErrorMessage("Đã xảy ra lỗi khi đặt hàng!");
-        return;
-      } else {
-        setLoadingOrder(false);
-        dispatch(setClearOrder());
-        navigate('/profile/history');
+      if (paymentMethod === "COD") {
+        const res = await fetch(`/api/order/createOrder`, {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(orderForm)
+        });
+        if (!res.ok) {
+          handleShowErrorMessage("Đã xảy ra lỗi khi đặt hàng!");
+          return;
+        } else {
+          setLoadingOrder(false);
+          dispatch(setClearOrder());
+          navigate('/profile/history');
+        }
+      } else if (paymentMethod === "Stripe") {
+
+        const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY)
+
+        const res = await fetch(`/api/order/paymentWithStripe`, {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(orderForm)
+        });
+
+        const session = await res.json();
+        const result = await stripe.redirectToCheckout({
+          sessionId: session.id,
+        });
+
+        if (result.error) {
+          console.log(result.error);
+          handleShowErrorMessage("Đã xảy ra lỗi khi thanh toán với Stripe!");
+          return;
+        }
       }
     } catch (error) {
       console.log(error.message);
     } finally {
       setLoadingOrder(false);
     }
-
-
   }
 
   return (
@@ -313,7 +336,14 @@ const OrderPage = () => {
                 {/*  voucher */}
                 <div className='flex gap-[20px]'>
                   <h3 className='uppercase font-semibold'>Voucher khuyến mãi</h3>
-                  <p onClick={() => setVoucherModal(true)} className='underline cursor-pointer'>{`Xem tất cả >`} </p>
+                  {
+                    paymentMethod === "Stripe" ? (
+                      <p className='text-gray-400'>(không thể áp dụng voucher đối với phương thức này)</p>
+                    ) : (
+                      <p onClick={() => setVoucherModal(true)} className='underline cursor-pointer'>{`Xem tất cả >`} </p>
+
+                    )
+                  }
                 </div>
 
                 <button type='submit' className='flex items-center justify-center w-[200px] rounded-[20px] bg-red-400 py-[10px] cursor-pointer hover:opacity-70 hover:text-white '>Đặt hàng</button>

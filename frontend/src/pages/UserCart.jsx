@@ -4,7 +4,7 @@ import Navigation from '../components/Navigation'
 import { useSelector, useDispatch } from 'react-redux'
 import { setCartStart, setCartSuccess } from "../redux/cart/cartSlice";
 import Loader from '../components/Loader';
-import { setClearOrder, setOrderSuccess } from '../redux/order/orderSlice';
+import { setClearOrder, setOrderStart } from '../redux/order/orderSlice';
 
 import { CiCirclePlus } from "react-icons/ci";
 import { CiCircleMinus } from "react-icons/ci";
@@ -162,7 +162,7 @@ const UserCart = () => {
             return;
         }
         try {
-            dispatch(setOrderSuccess(formOrder));
+            dispatch(setOrderStart(formOrder));
             navigate('/order')
         } catch (error) {
             console.log(error.message);
@@ -239,7 +239,7 @@ const UserCart = () => {
             <div className='fixed bottom-0 overflow-y-scroll w-full h-[200px] bg-gray-100 p-[20px] max-md:p-[10px] animate__animated animate__fadeInUp'>
                 <h3 className='pb-[20px] font-semibold text-[20px]'>Thanh toán: </h3>
                 {chooseItems.map((chooseItem, index) => (
-                    <div key={index} className='flex justify-between max-md:flex-col max-md:gap-[20px] border-b-[2px] py-[20px]'>
+                    <div key={index} className='flex justify-between max-md:flex-col max-md:gap-[20px] border-b-[2px] py-[20px] animate__animated animate__fadeInUp'>
                         <div className='flex'>
                             <p className='w-[40px]'>{`${index + 1})`}</p>
                             <div className='flex flex-col gap-[10px] w-[400px]'>

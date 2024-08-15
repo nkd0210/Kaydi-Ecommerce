@@ -13,7 +13,7 @@ const orderSlice = createSlice({
       state.products = [];
       state.totalPrice = 0;
     },
-    setOrderSuccess: (state, action) => {
+    setOrderStart: (state, action) => {
       state.products = action.payload.items;
       state.totalPrice = action.payload.totalPrice;
     },
@@ -37,7 +37,7 @@ const orderSlice = createSlice({
   },
 });
 
-export const { setClearOrder, setOrderSuccess, removeSingleItemInOrder } =
+export const { setClearOrder, setOrderStart, removeSingleItemInOrder } =
   orderSlice.actions;
 
 export default orderSlice.reducer;

@@ -404,12 +404,12 @@ const Voucher = () => {
     }
 
     return (
-        <div className='py-[20px] px-[40px] max-md:px-[10px] h-full overflow-y-scroll bg-gray-100'>
+        <div className='py-[20px] px-[40px] max-md:px-[10px] max-w-full overflow-x-scroll h-full overflow-y-scroll bg-gray-100'>
             <>
                 {loadingVoucher ? (
                     <Loader />
                 ) : (
-                    <div className='flex flex-col gap-[20px]'>
+                    <div className='flex flex-col gap-[20px] max-w-full overflow-x-scroll'>
                         <div className='flex justify-between max-md:flex-col max-md:flex-start max-md:my-[20px]'>
                             <div className='flex gap-[20px] items-center'>
                                 <MdDashboard className='text-[30px]' />
@@ -461,7 +461,7 @@ const Voucher = () => {
                             <h3 className='text-[16px] font-semibold'>All Voucher</h3>
                         </div>
 
-                        <div className='border rounded-[20px] mt-[20px] p-[10px] bg-white max-h-[500px] overflow-y-scroll'>
+                        <div className='border rounded-[20px] mt-[20px] p-[10px] bg-white max-h-[500px] w-full overflow-y-scroll'>
                             {Object.keys(allVouchers).length === 0 ? (
                                 <div>Empty voucher! </div>
                             ) : (
