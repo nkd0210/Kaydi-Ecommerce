@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Logo from "/Kaydi.png";
+import Logo2 from "/logo/logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { CiSearch } from "react-icons/ci";
@@ -17,6 +18,7 @@ import { MdOutlinePolicy } from "react-icons/md";
 
 import Drawer from "@mui/material/Drawer";
 
+import 'animate.css'
 
 const Navbar = () => {
     const navigate = useNavigate();
@@ -76,22 +78,67 @@ const Navbar = () => {
         }
     }, []);
 
-    // console.log(userCart)
+    const handleClickCategory = async (category) => {
+        navigate(`/collections/${category}`);
+    }
+
+    const [isScroll, setIsScroll] = useState(false);
+
+    // const handleScroll = () => {
+    //     if (window.scrollY > 42) {
+    //         setIsScroll(true);
+    //     } else {
+    //         setIsScroll(false);
+    //     }
+    // }
+
+    // useEffect(() => {
+    //     window.addEventListener("scroll", handleScroll);
+    //     return () => window.removeEventListener("scroll", handleScroll);
+    // }, [])
+
+    // CSS: className={`fixed transition-all duration-300 ${isScroll ? 'top-[0px]' : 'top-[42px]'} w-full z-[50]`}
 
     return (
-        <Wrapper>
-            <div className="flex justify-between items-center px-[20px] bg-[#000] text-white">
+        <Wrapper >
+            <div className="relative w-full flex justify-between items-center px-[20px] bg-[#212121] text-white">
                 {/* LOGO */}
                 <div onClick={() => navigate("/")} className="w-[80px] h-[80px]">
-                    <img src={Logo} alt="logo" className="w-full h-full object-cover cursor-pointer" />
+                    <img src={Logo2} alt="logo" className="w-full h-full object-cover cursor-pointer" />
                 </div>
 
                 {/* CATEGORY */}
                 <div className="max-md:hidden">
-                    <ul className="flex gap-[20px]">
+                    <ul className="flex ">
                         {categories?.map((category, index) => (
-                            <li className="relative group" key={index}>
-                                {category.title}
+                            <li className="group px-[20px] py-[30px] cursor-pointer hover:bg-[#505050]" key={index}>
+                                <div onClick={() => { handleClickCategory(category.name) }} className="cursor-pointer hover:font-semibold uppercase text-[16px]">
+                                    {category.title}
+                                </div>
+                                {/* expand */}
+                                <div className="absolute bottom-[-200px] text-black p-[20px] left-1/2 transform -translate-x-1/2 bg-white border rounded-b-[10px] h-[200px] w-[1000px] shadow-xl hidden group-hover:block z-[10] animate__animated animate__fadeIn">
+                                    <div className="flex gap-[20px]">
+                                        <div className="w-[600px]">
+                                            <h3 className="text-[20px] text-red-400 uppercase font-semibold pb-[10px] border-b-[2px] border-black w-[120px]">Bộ sưu tập</h3>
+                                            <div className="flex gap-[20px]">
+                                                <div className="flex flex-wrap border-black gap-[30px] pt-[20px]">
+                                                    {category.description.map((item, index) => (
+                                                        <p key={index} className="cursor-pointer text-[18px] hover:font-semibold" onClick={() => handleClickCategory(item)}>
+                                                            {item}
+                                                        </p>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {
+                                            category.heroImage && (
+                                                <div className="w-[400px] h-[150px] border shadow-md">
+                                                    <img src={category.heroImage} alt="hero" className="w-full h-full object-cover" />
+                                                </div>
+                                            )
+                                        }
+                                    </div>
+                                </div>
                             </li>
                         ))}
                     </ul>

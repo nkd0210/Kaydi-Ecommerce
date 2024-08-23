@@ -166,7 +166,7 @@ export const getUserOrder = async (req, res, next) => {
       .json({ message: "You are not authorized to get this user order " });
   }
   try {
-    const findUserOrder = await Order.find({ userId });
+    const findUserOrder = await Order.find({ userId }).sort({ createdAt: -1 });
     if (findUserOrder.length === 0) {
       return res.status(404).json({ message: "No order found for this user" });
     }

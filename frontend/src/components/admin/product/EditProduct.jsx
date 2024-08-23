@@ -1,9 +1,9 @@
 import React, { useRef, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom';
-import Loader from '../Loader';
+import Loader from '../../Loader';
 // IMAGE UPLOAD
-import { app } from '../../firebase';
+import { app } from '../../../firebase';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable, deleteObject } from 'firebase/storage';
 // TOAST
 import { ToastContainer, toast } from 'react-toastify';

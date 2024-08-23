@@ -12,39 +12,7 @@ import 'animate.css';
 
 const RecentProduct = () => {
 
-    var settings = {
-        dots: true,
-        infinite: true,
-        speed: 500,
-        slidesToShow: 4,
-        slidesToScroll: 4,
-        arrows: true,
-        beforeChange: () => setIsDragging(true),
-        afterChange: () => setIsDragging(false),
-        responsive: [
-            {
-                breakpoint: 1200,
-                settings: {
-                    slidesToShow: 3,
-                    slidesToScroll: 3
-                }
-            },
-            {
-                breakpoint: 900,
-                settings: {
-                    slidesToShow: 2,
-                    slidesToScroll: 2
-                }
-            },
-            {
-                breakpoint: 600,
-                settings: {
-                    slidesToShow: 1,
-                    slidesToScroll: 1
-                }
-            }
-        ]
-    };
+
 
     const navigate = useNavigate();
 
@@ -76,26 +44,66 @@ const RecentProduct = () => {
         fetchRecentProduct();
     }, []);
 
+    var settings = {
+        dots: true,
+        infinite: true,
+        speed: 500,
+        slidesToShow: Math.min(recentProducts.length, 6),
+        slidesToScroll: Math.min(recentProducts.length, 6),
+        arrows: true,
+        beforeChange: () => setIsDragging(true),
+        afterChange: () => setIsDragging(false),
+        responsive: [
+            {
+                breakpoint: 2000,
+                settings: {
+                    slidesToShow: Math.min(recentProducts.length, 4),
+                    slidesToScroll: Math.min(recentProducts.length, 4)
+                }
+            },
+            {
+                breakpoint: 1200,
+                settings: {
+                    slidesToShow: Math.min(recentProducts.length, 3),
+                    slidesToScroll: Math.min(recentProducts.length, 3)
+                }
+            },
+            {
+                breakpoint: 900,
+                settings: {
+                    slidesToShow: Math.min(recentProducts.length, 2),
+                    slidesToScroll: Math.min(recentProducts.length, 2)
+                }
+            },
+            {
+                breakpoint: 600,
+                settings: {
+                    slidesToShow: Math.min(recentProducts.length, 1),
+                    slidesToScroll: Math.min(recentProducts.length, 1)
+                }
+            }
+        ]
+    };
+
     return (
         <div className='p-[20px]'>
-            <div className='rounded-[20px] w-[150px] border border-black px-[10px] py-[5px] text-center font-semibold'>Sản phẩm mới</div>
+            <div className='rounded-[20px] w-[200px] max-md:w-[150px] text-[20px] max-md:text-[14px] border border-black px-[10px] py-[5px] text-center font-semibold'>Sản phẩm mới</div>
             {loading ? (
                 <Loader />
             ) : (
-                <div className='mt-[20px] max-md:ml-[40px]'>
+                <div className='mt-[20px] ml-[40px] max-w-full'>
                     <Slider {...settings}>
                         {recentProducts?.map((product, index) => (
-                            <div onClick={() => {
-                                if (!isDragging) {
-                                    navigate(`/productDetail/${product._id}`)
-                                }
-                            }}
+                            <div
+                                onClick={() => {
+                                    if (!isDragging) { navigate(`/productDetail/${product._id}`) }
+                                }}
                                 key={index}
-                                className='flex flex-col gap-[10px] animate__animated animate__zoomIn'>
-                                <div className='w-[300px] h-[400px]'>
-                                    <img src={product?.listingPhotoPaths[0]} alt="image" className='w-full h-full object-cover rounded-[5px]' />
+                                className='flex flex-col px-[10px] gap-[10px] animate__animated animate__zoomIn'>
+                                <div className='w-[300px] h-[400px] overflow-hidden'>
+                                    <img src={product?.listingPhotoPaths[0]} alt="image" className='w-full h-full object-cover rounded-[10px] transform transition-transform ease-in hover:scale-110 cursor-pointer' />
                                 </div>
-                                <div className='flex flex-col my-[10px]'>
+                                <div className='flex flex-col my-[20px] gap-[10px]'>
                                     <span>{product.name}</span>
                                     <span className='font-semibold text-[12px]'>{product.price}&#8363;</span>
                                 </div>

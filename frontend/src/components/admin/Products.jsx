@@ -2,9 +2,9 @@ import React, { useRef, useState } from 'react'
 import styled from 'styled-components'
 import { CiCirclePlus } from "react-icons/ci";
 import { CiCircleMinus } from "react-icons/ci";
-import CreateProduct from './CreateProduct';
-import ShowProduct from './ShowProduct';
-import EditProduct from './EditProduct';
+import CreateProduct from './product/CreateProduct';
+import ShowProduct from './product/ShowProduct';
+import EditProduct from './product/EditProduct';
 
 const Products = () => {
 

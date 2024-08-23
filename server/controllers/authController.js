@@ -49,19 +49,41 @@ export const signIn = async (req, res, next) => {
     if (!validPassword) {
       return res.status(401).json({ message: "Invalid password" });
     }
-    const token = jwt.sign(
+
+    // Generate Access Token
+    const accessToken = jwt.sign(
       {
         id: validUser._id,
         username: validUser.username,
         isAdmin: validUser.isAdmin,
       },
-      process.env.JWT_SECRET
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
     );
+
+    // Generate Refresh Token
+    const refreshToken = jwt.sign(
+      {
+        id: validUser._id,
+        username: validUser.username,
+        isAdmin: validUser.isAdmin,
+      },
+      process.env.JWT_REFRESH_SECRET,
+      { expiresIn: "7d" }
+    );
+
     const { password: past, ...rest } = validUser._doc;
     res
       .status(200)
-      .cookie("access_token", token, {
+      .cookie("access_token", accessToken, {
         httpOnly: true,
+        // secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+      })
+      .cookie("refresh_token", refreshToken, {
+        httpOnly: true,
+        // secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
       })
       .json(rest);
   } catch (error) {
@@ -71,9 +93,13 @@ export const signIn = async (req, res, next) => {
 
 export const signOut = async (req, res, next) => {
   try {
-    res.clearCookie("access_token").status(200).json({
-      message: "User signed out successfully",
-    });
+    res
+      .clearCookie("access_token")
+      .clearCookie("refresh_token")
+      .status(200)
+      .json({
+        message: "User signed out successfully",
+      });
   } catch (error) {
     next(error);
   }
@@ -141,4 +167,36 @@ export const google = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+};
+
+export const refreshToken = async (req, res, next) => {
+  const token = req.cookies.refresh_token;
+  if (!token) {
+    return res.status(403).json({ message: "Refresh token is missing" });
+  }
+
+  jwt.verify(token, process.env.JWT_REFRESH_SECRET, (err, user) => {
+    if (err) {
+      return res.status(403).json({ message: "Invalid refresh token" });
+    }
+
+    // Generate a new access token
+    const newAccessToken = jwt.sign(
+      {
+        id: user.id,
+        username: user.username,
+        isAdmin: user.isAdmin,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "30m" }
+    );
+
+    res.cookie("access_token", newAccessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
+
+    res.status(200).json({ message: "Token refreshed successfully" });
+  });
 };

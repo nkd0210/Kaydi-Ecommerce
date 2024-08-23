@@ -26,7 +26,7 @@ const Navigation = () => {
   const [openBar, setOpenBar] = useState(false);
 
   return (
-    <div className='relative flex px-[20px] py-[10px] justify-between'>
+    <div className='relative w-full flex h-[42px] px-[20px] py-[10px] justify-between'>
       <div className='flex gap-[20px]'>
         <a href="https://blog-app-pd5x.onrender.com" target="_blank" rel="noopener noreferrer">
           <span className='cursor-pointer hover:opacity-70'>Kaydi Blog</span>

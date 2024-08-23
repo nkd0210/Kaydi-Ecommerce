@@ -23,41 +23,8 @@ import styled from 'styled-components';
 
 // ANIMATE
 import 'animate.css';
-const ProductDetail = () => {
 
-    var settings = {
-        dots: true,
-        infinite: true,
-        speed: 500,
-        slidesToShow: 4,
-        slidesToScroll: 4,
-        arrows: true,
-        beforeChange: () => setIsDragging(true),
-        afterChange: () => setIsDragging(false),
-        responsive: [
-            {
-                breakpoint: 1200,
-                settings: {
-                    slidesToShow: 3,
-                    slidesToScroll: 1
-                }
-            },
-            {
-                breakpoint: 900,
-                settings: {
-                    slidesToShow: 2,
-                    slidesToScroll: 1
-                }
-            },
-            {
-                breakpoint: 600,
-                settings: {
-                    slidesToShow: 1,
-                    slidesToScroll: 1
-                }
-            }
-        ]
-    };
+const ProductDetail = () => {
 
     const { productId } = useParams();
     const [detailProduct, setDetailProduct] = useState({});
@@ -110,7 +77,7 @@ const ProductDetail = () => {
 
     const fetchRecommendProduct = async () => {
         setLoadingRecommentProduct(true);
-        const res = await fetch(`/api/product/getRecentProduct/4`, {
+        const res = await fetch(`/api/product/getRecentProduct/8`, {
             method: "GET"
         });
         const data = await res.json();
@@ -178,6 +145,47 @@ const ProductDetail = () => {
         }
     }
 
+    var settings = {
+        dots: true,
+        infinite: true,
+        speed: 500,
+        slidesToShow: Math.min(recommendProduct.length, 6),
+        slidesToScroll: Math.min(recommendProduct.length, 6),
+        arrows: true,
+        beforeChange: () => setIsDragging(true),
+        afterChange: () => setIsDragging(false),
+        responsive: [
+            {
+                breakpoint: 2000,
+                settings: {
+                    slidesToShow: Math.min(recommendProduct.length, 4),
+                    slidesToScroll: Math.min(recommendProduct.length, 4)
+                }
+            },
+            {
+                breakpoint: 1200,
+                settings: {
+                    slidesToShow: Math.min(recommendProduct.length, 3),
+                    slidesToScroll: Math.min(recommendProduct.length, 3)
+                }
+            },
+            {
+                breakpoint: 900,
+                settings: {
+                    slidesToShow: Math.min(recommendProduct.length, 2),
+                    slidesToScroll: Math.min(recommendProduct.length, 2)
+                }
+            },
+            {
+                breakpoint: 600,
+                settings: {
+                    slidesToShow: Math.min(recommendProduct.length, 1),
+                    slidesToScroll: Math.min(recommendProduct.length, 1)
+                }
+            }
+        ]
+    };
+
     return (
         <Wrapper>
             <Navigation />
@@ -185,22 +193,22 @@ const ProductDetail = () => {
             {loading ? (
                 <Loader />
             ) : (
-                <div className='relative py-[20px] px-[70px] max-md:p-[10px] w-full overflow-x-scroll'>
+                <div className='relative py-[20px] px-[70px] max-md:p-[10px]'>
                     <ToastContainer />
                     {/* PRODUCT */}
                     <div className='box2 h-[700px] max-md:h-full '>
                         {/* IMAGES */}
-                        <div className='h-[500px] flex max-md:flex-col max-md:p-[10px] gap-[10px] animate__animated animate__fadeInLeft '>
+                        <div className='h-[500px] overflow-y-scroll  flex max-md:flex-col max-md:p-[10px] gap-[10px] animate__animated animate__fadeInLeft '>
                             {/* list images */}
                             <div className='flex flex-col max-md:flex-row gap-[10px]'>
                                 {detailProduct?.listingPhotoPaths?.map((photo, index) => (
                                     <div onClick={() => setShowImage(photo)} key={index} className='w-[50px] h-[70px] '>
-                                        <img src={photo} alt="" className='w-full h-full object-cover animate__animated animate__zoomIn' />
+                                        <img src={photo} alt="" className='w-full h-full object-cover animate__animated animate__zoomIn ' />
                                     </div>
                                 ))}
                             </div>
                             {/* show image */}
-                            <img src={showImage} alt="" className='w-full h-full object-cover rounded-[10px]' />
+                            <img src={showImage} alt="" className='w-full h-full object-cover rounded-[10px] animate__animated animate__fadeIn ' />
                         </div>
                         {/* DETAIL */}
                         <div className='flex flex-col max-md:p-[10px] h-[700px] max-md:h-screen overflow-y-scroll hide-scrollbar animate__animated animate__fadeInRight'>
@@ -283,8 +291,8 @@ const ProductDetail = () => {
                                         }}
                                             key={index}
                                             className='flex flex-col gap-[10px]'>
-                                            <div className='w-[300px] h-[400px]'>
-                                                <img src={product?.listingPhotoPaths[0]} alt="image" className='w-full h-full object-cover rounded-[5px]' />
+                                            <div className='w-[300px] h-[400px] overflow-hidden'>
+                                                <img src={product?.listingPhotoPaths[0]} alt="image" className='w-full h-full object-cover rounded-[10px] transform transition-transform ease-in hover:scale-110 cursor-pointer' />
                                             </div>
                                             <div className='flex flex-col my-[10px]'>
                                                 <span>{product.name}</span>
@@ -299,7 +307,7 @@ const ProductDetail = () => {
 
                     {/* Add item to cart */}
                     {openBox ? (
-                        <div className='fixed bottom-[10px] right-[10px] w-[400px] rounded-[20px] shadow-xl z-20 bg-gray-100 border px-[10px] py-[30px] flex flex-col gap-[20px] animate__animated animate__rotateInUpRight'>
+                        <div className='fixed  bottom-[10px] right-[10px] w-[400px] rounded-[20px] shadow-xl z-20 bg-gray-100 border px-[10px] py-[30px] flex flex-col gap-[20px] animate__animated animate__rotateInUpRight'>
                             <BsArrowsCollapse onClick={() => setOpenBox(false)} className='absolute top-[10px] right-[10px] cursor-pointer hover:text-red-400 text-[20px]' />
                             <div className='flex flex-wrap gap-[10px]'>
                                 <p> Sản phẩm:</p>

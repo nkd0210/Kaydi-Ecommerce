@@ -1,10 +1,13 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 // TOAST
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { BiTrash } from 'react-icons/bi';
 import Loader from '../Loader';
+
+import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
+import { app } from '../../firebase';
 
 import Modal from '@mui/material/Modal';
 import { IoIosCloseCircleOutline } from "react-icons/io";
@@ -17,19 +20,20 @@ import { FaBusinessTime } from "react-icons/fa";
 import { MdCalendarMonth } from "react-icons/md";
 import { LiaCalendarWeekSolid } from "react-icons/lia";
 import { SiVirustotal } from "react-icons/si";
+import { CiImageOn } from "react-icons/ci";
+import EditCategory from './category/EditCategory';
 
 const Category = () => {
 
     const [categories, setCategories] = useState([]);
     const [totalCategory, setTotalCategory] = useState('');
-    const [loading, setLoading] = useState(true);
-    const [categoryId, setCategoryId] = useState('');
     const [lastWeekCategoryCount, setLastWeekCategoryCount] = useState('');
     const [lastMonthCategoryCount, setLastMonthCategoryCount] = useState('');
+    const [loading, setLoading] = useState(true);
 
     const handleFetchCategories = async () => {
         try {
-            const res = await fetch('/api/category/getAllCategories', {
+            const res = await fetch('/api/category/getCategoriesFromNewest', {
                 method: "GET",
             });
             const data = await res.json();
@@ -51,134 +55,7 @@ const Category = () => {
         handleFetchCategories();
     }, []);
 
-
-    // EDIT CATEGORY
-
-    const [openModal, setOpenModal] = useState(false);
-
-    const [formData, setFormData] = useState({});
-    const [eachCategory, setEachCategory] = useState({});
-    const [name, setName] = useState('');
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState([]);
-
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.id]: e.target.value });
-    }
-
-    const handleFetchSingleCategory = async (categoryId) => {
-        setLoading(true);
-        try {
-            const res = await fetch(`/api/category/getEachCategory/${categoryId}`, {
-                method: "GET"
-            });
-            const data = await res.json();
-            if (!res.ok) {
-                console.log(data.message);
-            } else {
-                setEachCategory(data);
-                setLoading(false);
-            }
-        } catch (error) {
-            console.log(error.message);
-        }
-    }
-
-    useEffect(() => {
-        if (eachCategory) {
-            setName(eachCategory.name);
-            setTitle(eachCategory.title);
-            setDescription(eachCategory.description);
-        }
-    }, [eachCategory])
-
-    const removeDesc = (index) => {
-        setDescription((prevDesc) => prevDesc.filter((_, id) => id !== index))
-    }
-
-    const [descInput, setDescInput] = useState('');
-
-    const handleInputDesc = (e) => {
-        setDescInput(e.target.value)
-    }
-
-    const handlAddDesc = () => {
-        if (descInput.trim()) {
-            setDescription([...description, descInput.trim()]);
-            setDescInput('');
-        }
-    }
-
-    const handleShowErrorMessage = (message) => {
-        toast.error(message)
-    }
-
-    const handleShowSucccessMessage = (message) => {
-        toast.success(message)
-    }
-
-    const [loadingUpdate, setLoadingUpdate] = useState(false);
-
-    const handleSubmitForm = async (e) => {
-        e.preventDefault();
-        setLoadingUpdate(true);
-        const updateForm = {};
-        if (!formData.name) updateForm.name = formData.name;
-        if (!formData.title) updateForm.title = formData.title;
-        if (description.length > 0) updateForm.description = description;
-
-        try {
-            const res = await fetch(`/api/category/update/${categoryId}`, {
-                method: "PUT",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(updateForm)
-            });
-            const data = await res.json();
-            if (!res.ok) {
-                handleShowErrorMessage("Update category failed");
-                return;
-            } else {
-                setLoadingUpdate(false);
-                handleShowSucccessMessage("Update category successfully");
-                setOpenModal(false);
-                setCategoryId('');
-                handleFetchCategories();
-            }
-
-        } catch (error) {
-            console.log(error.message);
-        }
-    }
-
-    const [openDeleteModal, setOpenDeleteModal] = useState(false);
-
-    const handleDeleteCategory = async (e) => {
-        e.preventDefault();
-        try {
-            const res = await fetch(`/api/category/delete/${categoryId}`, {
-                method: "DELETE",
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-            const data = await res.json();
-            if (!res.ok) {
-                handleShowErrorMessage("Delete category failed");
-                return;
-            } else {
-                handleShowSucccessMessage("Delete category successfully");
-                setCategoryId('');
-                setOpenDeleteModal(false);
-                handleFetchCategories();
-            }
-        } catch (error) {
-            console.log(error.messasge)
-        }
-    }
-
-    // CREATE
+    // CREATE CATEGORY
 
     const [openCreateCategory, setOpenCreateCategory] = useState(false);
     const [createDesc, setCreateDesc] = useState([]);
@@ -205,6 +82,43 @@ const Category = () => {
         setFormCreate({ ...formCreate, [e.target.id]: e.target.value });
     }
 
+    // HANDLE UPLOAD IMAGE
+
+    const fileRef = useRef(null);
+    const [image, setImage] = useState('');
+    const [imageFileUploadProgress, setImageFileUploadProgress] = useState(null);
+    const [imageFileUploadError, setImageFileUploadError] = useState(null);
+    const [formDataImage, setFormDataImage] = useState('');
+
+    const handleFileUploadImage = async (image) => {
+        const storage = getStorage(app);
+        const fileName = new Date().getTime() + image.name;
+        const storageRef = ref(storage, fileName);
+        const uploadTask = uploadBytesResumable(storageRef, image);
+
+        uploadTask.on(
+            'state_changed',
+            (snapshot) => {
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                setImageFileUploadProgress(progress.toFixed(0));
+            },
+            (error) => {
+                setImageFileUploadError('Could not upload image (File must be less than 2MB)');
+                console.log(error)
+            },
+            () => {
+                getDownloadURL(uploadTask.snapshot.ref)
+                    .then((downloadURL) => {
+                        setFormDataImage(downloadURL)
+                    })
+            }
+        )
+    }
+
+    const handleClickSave = () => {
+        handleFileUploadImage(image);
+    }
+
     const handleCreateForm = async (e) => {
         e.preventDefault();
         setLoadingCreate(true);
@@ -217,7 +131,8 @@ const Category = () => {
                 body: JSON.stringify({
                     name: formCreate.name,
                     title: formCreate.title,
-                    description: createDesc
+                    description: createDesc,
+                    heroImage: formDataImage
                 })
             });
             const data = await res.json();
@@ -236,8 +151,6 @@ const Category = () => {
             console.log(error.message);
         }
     }
-
-
 
     return (
         <div className='py-[20px] px-[40px] max-md:px-[10px] h-full overflow-y-scroll bg-gray-100'>
@@ -297,38 +210,11 @@ const Category = () => {
                             <h3 className='text-[16px] font-semibold'>All Categories</h3>
                         </div>
 
-                        <div className='border rounded-[20px] mt-[20px] p-[10px] bg-white'>
-                            {categories?.map((category, index) => (
-                                <div key={index} className='border-b-[2px] py-[40px] flex flex-col gap-[20px]'>
+                        <EditCategory
+                            categories={categories}
+                            handleFetchCategories={handleFetchCategories}
+                        />
 
-                                    {/* name+title */}
-                                    <div className='flex gap-[20px]'>
-                                        <p className='font-semibold w-[100px]'>Name:</p>
-                                        <p>{category.name}</p>
-                                    </div>
-                                    <div className='flex gap-[20px]'>
-                                        <p className='font-semibold w-[100px]'>Title:</p>
-                                        <p>{category.title}</p>
-                                    </div>
-
-                                    {/* description */}
-                                    <div className='flex flex-col'>
-                                        <p className='font-semibold w-[100px]'>Description: </p>
-                                        <div className='flex flex-wrap gap-[20px] w-[full] mt-[20px]'>
-                                            {category.description?.map((item, index) => (
-                                                <div key={index} className='relative p-[10px] rounded-[5px] w-[160px] bg-red-50'>
-                                                    {item}
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                    <div className='flex gap-[50px]'>
-                                        <button onClick={() => { setOpenModal(true); setCategoryId(category._id); handleFetchSingleCategory(category._id) }} type='submit' className='rounded-[30px] bg-blue-400 text-white w-[160px] p-[10px] hover:bg-opacity-70'>Edit</button>
-                                        <button onClick={() => { setOpenDeleteModal(true); setCategoryId(category._id) }} className='rounded-[30px] bg-red-400 text-white w-[160px] p-[10px] hover:bg-opacity-70'>Delete</button>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
                     </>
                 )}
             </>
@@ -338,7 +224,7 @@ const Category = () => {
                 open={openCreateCategory}
                 onClose={() => setOpenCreateCategory(false)}
             >
-                <div className='absolute top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%] shadow-lg w-[600px] max-md:w-[400px] bg-white text-black h-[500px] overflow-y-scroll rounded-[20px] flex flex-col gap-[20px] p-[20px] max-md:p-[10px] '>
+                <div className='absolute top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%] shadow-lg w-[600px] max-md:w-[400px] bg-white text-black h-[550px] overflow-y-scroll rounded-[20px] flex flex-col gap-[20px] p-[20px] max-md:p-[10px] '>
                     {loadingCreate ? (
                         <Loader />
                     ) : (
@@ -367,70 +253,27 @@ const Category = () => {
                                         </div>
                                     ))}
                                 </div>
-                                <button type='submit' className='rounded-[30px] w-[200px] text-center p-[10px] mt-[50px] bg-red-400 text-white hover:opacity-70'>Save</button>
+                                <div className='flex flex-col gap-[20px] '>
+                                    <div className='flex gap-[20px] items-center'>
+                                        <p className='w-[160px] font-semibold'>Hero Image:</p>
+                                        <input onChange={(e) => setImage(e.target.files[0])} type="file" className="hidden" accept="image/*" ref={fileRef} />
+                                        <CiImageOn className='text-[30px] cursor-pointer' onClick={() => fileRef.current.click()} />
+                                    </div>
+                                    {image && (
+                                        <div className=' relative w-[300px] h-[100px]'>
+                                            <img src={URL.createObjectURL(image)} alt="hero image" className='w-full h-full rounded-[10px] object-cover' />
+                                            <div onClick={() => setImage('')} className='absolute top-[5px] right-[5px] text-black cursor-pointer hover:text-red-400'><BiTrash /></div>
+
+                                        </div>
+                                    )}
+                                    {image && (
+                                        <div onClick={handleClickSave} className='rounded-[20px] bg-blue-400 w-[100px] p-[5px] text-center hover:bg-opacity-70 hover:text-white cursor-pointer'>Save</div>
+                                    )}
+                                </div>
+                                <button type='submit' className='rounded-[30px] w-[200px] text-center p-[10px] mt-[50px] bg-red-400 text-white hover:opacity-70'>Create</button>
                             </form>
                         </>
                     )}
-                </div>
-            </Modal>
-
-            {/* EDIT */}
-            <Modal
-                open={openModal}
-                onClose={() => setOpenModal(false)}
-            >
-                <div className='absolute top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%] shadow-lg w-[1000px] max-md:w-[400px] bg-white text-black h-[500px] rounded-[20px] '>
-                    <IoIosCloseCircleOutline onClick={() => setOpenModal(false)} className='absolute top-[10px] right-[10px] text-[30px] cursor-pointer hover:text-red-[400]' />
-                    <form onSubmit={handleSubmitForm} className='p-[20px] max-md:p-[10px]'>
-                        {loadingUpdate ? (
-                            <Loader />
-                        ) : (
-                            <>
-                                <h2 className='text-center text-[20px] font-semibold'>Edit Category</h2>
-                                {loading ? (<Loader />) : (
-                                    <div className='flex flex-col gap-[20px] mt-[20px]'>
-                                        <div className='flex max-md:flex-col gap-[20px]'>
-                                            <p className='w-[160px] font-semibold'>Name: </p>
-                                            <input onChange={handleChange} type="text" value={name} id='name' className='border-gray-500 border-[2px] border-dashed px-[10px] ' />
-                                        </div>
-                                        <div className='flex max-md:flex-col gap-[20px]'>
-                                            <p className='w-[160px] font-semibold'>Title: </p>
-                                            <input onChange={handleChange} type="text" value={title} id='title' className='border-gray-500 border-[2px] border-dashed px-[10px] ' />
-                                        </div>
-                                        <div className='flex max-md:flex-col flex-col'>
-                                            <div className='flex max-md:flex-col items-center max-md:items-start gap-[20px]'>
-                                                <p className='w-[160px] font-semibold'>Description: </p>
-                                                <input onChange={handleInputDesc} value={descInput} type="text" placeholder='Enter here' id='description' className='border-gray-500 border-[2px] border-dashed px-[10px] ' />
-                                                <div onClick={handlAddDesc} className='rounded-[10px] bg-black text-white hover:opacity-70 py-[3px] px-[10px] cursor-pointer'>Add</div>
-                                            </div>
-                                            <div className='flex flex-wrap gap-[20px] w-[full] mt-[20px]'>
-                                                {description?.map((item, index) => (
-                                                    <div key={index} className='relative p-[10px] rounded-[5px] w-[160px] bg-red-50'>
-                                                        {item}
-                                                        <BiTrash onClick={() => removeDesc(index)} className='absolute top-[5px] right-[5px] hover:text-red-400 cursor-pointer' />
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                        <button type='submit' className='rounded-[30px] w-[200px] text-center p-[10px] bg-red-400 text-white hover:opacity-70'>Save</button>
-                                    </div>
-                                )}
-                            </>
-                        )}
-                    </form>
-                </div>
-
-            </Modal>
-
-            {/* DELETE */}
-            <Modal open={openDeleteModal} onClose={() => setOpenDeleteModal(false)}>
-                <div className='absolute top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%] shadow-lg w-[400px] bg-white text-black h-[300px] max-md:h-[200px] rounded-[20px] flex flex-col gap-[20px] justify-center items-center '>
-                    <IoIosCloseCircleOutline onClick={() => setOpenDeleteModal(false)} className='absolute top-[10px] right-[10px] text-[30px] cursor-pointer hover:text-red-[400]' />
-                    <h3 className='text-center text-[20px] max-md:text-[16px]'>Are you sure to delete this category ?</h3>
-                    <div className='flex justify-evenly w-full'>
-                        <div onClick={handleDeleteCategory} className='rounded-[10px] p-[10px] text-center bg-red-400 hover:opacity-70 w-[100px] cursor-pointer'>YES</div>
-                        <div onClick={() => setOpenDeleteModal(false)} className='rounded-[10px] p-[10px] text-center bg-blue-400 hover:opacity-70 w-[100px] cursor-pointer'>CANCEL</div>
-                    </div>
                 </div>
             </Modal>
 

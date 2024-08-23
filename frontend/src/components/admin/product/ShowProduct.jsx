@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom';
 import DataTable from 'react-data-table-component';
-import Loader from '../Loader';
+import Loader from '../../Loader';
 
 const ShowProduct = ({ setOpenShow, setOpenEdit, setProductId }) => {
 

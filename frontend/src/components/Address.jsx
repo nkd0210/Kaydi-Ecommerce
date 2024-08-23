@@ -207,6 +207,8 @@ const Address = () => {
           <div className='rounded-[10px] h-[100px] w-[500px] max-md:w-full p-[10px] flex max-md:flex-col gap-[20px] items-center bg-white cursor-pointer shadow-md animate__animated animate__fadeInDown'>
             <input type="text" onChange={(e) => setCreateAddress(e.target.value)} value={createAddress} placeholder='Enter your address' className='bg-transparent w-[300px] border p-[10px] rounded-[10px]' />
             <div onClick={handleCreateAddress} className='cursor-pointer hover:text-red-400'>Save</div>
+            <div onClick={() => { setIsCreateAddress(false); setCreateAddress([]) }} className='cursor-pointer hover:text-red-400'>Cancel</div>
+
           </div>
         )}
         {currentUser?.addressList.map((address, index) => (

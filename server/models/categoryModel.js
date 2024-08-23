@@ -5,7 +5,7 @@ const categorySchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
-    }, // name la viet bang tieng
+    }, // name la viet bang tieng anh
     title: {
       type: String,
       required: true,
@@ -16,6 +16,9 @@ const categorySchema = new mongoose.Schema(
         required: true,
       },
     ],
+    heroImage: {
+      type: String,
+    },
   },
   { timestamps: true }
 );
