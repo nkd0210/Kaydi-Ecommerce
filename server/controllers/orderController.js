@@ -65,7 +65,9 @@ export const getAllOrder = async (req, res, next) => {
     );
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-    const findOrder = await Order.find().populate("userId products.productId");
+    const findOrder = await Order.find()
+      .populate("userId products.productId")
+      .sort({ createdAt: -1 });
 
     if (findOrder.length === 0) {
       return res.status(404).json({ message: "No order found" });
@@ -100,6 +102,7 @@ export const editOrder = async (req, res, next) => {
     totalAmount,
     shippingAddress,
     paymentMethod,
+    status,
   } = req.body;
   if (!req.user.isAdmin) {
     return res
@@ -107,21 +110,40 @@ export const editOrder = async (req, res, next) => {
       .json({ message: "You are not admin to edit this order" });
   }
   try {
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    const updates = {
+      receiverName,
+      receiverPhone,
+      receiverNote,
+      products,
+      totalAmount,
+      shippingAddress,
+      paymentMethod,
+      status,
+    };
+
+    const currentTime = new Date();
+    if (status === "processing" && !order.processingTime) {
+      updates.processingTime = currentTime;
+    }
+    if (status === "shipped" && !order.shippedTime) {
+      updates.shippedTime = currentTime;
+    }
+    if (status === "delivered" && !order.deliveredTime) {
+      updates.deliveredTime = currentTime;
+    }
+
     const updatedOrder = await Order.findByIdAndUpdate(
       orderId,
       {
-        $set: {
-          receiverName,
-          receiverPhone,
-          receiverNote,
-          products,
-          totalAmount,
-          shippingAddress,
-          paymentMethod,
-        },
+        $set: updates,
       },
       { new: true }
     );
+
     if (!updatedOrder) {
       return res.status(404).json({ message: "Order not found" });
     }
@@ -285,6 +307,34 @@ export const updateOrderPaymentCheck = async (req, res, next) => {
     findOrder.paymentCheck = true;
     await findOrder.save();
     res.status(200).json(findOrder);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getTotalAmountPerDay = async (req, res, next) => {
+  if (!req.user.isAdmin) {
+    return res
+      .status(401)
+      .json({ message: "You are not admin to get total amount per day" });
+  }
+  try {
+    const totalAmountPerDay = await Order.aggregate([
+      {
+        $group: {
+          _id: {
+            $dateToString: { format: "%Y-%m-%d", date: "$createdAt" },
+          },
+          totalAmount: { $sum: "$totalAmount" },
+        },
+      },
+      // Sort the results by date in ascending order
+      {
+        $sort: { _id: 1 },
+      },
+    ]);
+
+    res.status(200).json(totalAmountPerDay);
   } catch (error) {
     next(error);
   }

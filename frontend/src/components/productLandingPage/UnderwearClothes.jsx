@@ -121,7 +121,7 @@ const UnderwearClothes = () => {
                             <img src={heroImage} alt="hero image" className='w-full h-full object-cover ' />
                             <div className='absolute bottom-[30%] left-[50px] max-md:left-[20px] flex flex-col gap-[20px]'>
                                 <h2 className='uppercase text-[50px] font-semibold max-md:text-[14px]'>quần lót</h2>
-                                <div className='w-[200px] max-md:w-[150px] rounded-[20px] bg-blue-500 text-white text-[16px] max-md:text-[12px] p-[10px] text-center hover:bg-opacity-70 cursor-pointer hover:text-black'>Khám phá ngay</div>
+                                <div onClick={() => navigate(`/collections/underwear`)} className='w-[200px] max-md:w-[150px] rounded-[20px] bg-blue-500 text-white text-[16px] max-md:text-[12px] p-[10px] text-center hover:bg-opacity-70 cursor-pointer hover:text-black'>Khám phá ngay</div>
                             </div>
                         </div>
                     )

@@ -23,6 +23,8 @@ import { SiVirustotal } from "react-icons/si";
 import { CiImageOn } from "react-icons/ci";
 import EditCategory from './category/EditCategory';
 
+import 'animate.css'
+
 const Category = () => {
 
     const [categories, setCategories] = useState([]);
@@ -176,12 +178,12 @@ const Category = () => {
                             </div>
                         </div>
 
-                        <div className='flex gap-[10px] items-center'>
+                        <div className='flex gap-[10px] mt-[20px] items-center'>
                             <FaBusinessTime className='text-[20px]' />
                             <h3 className='text-[16px] font-semibold'>Business Overview</h3>
                         </div>
 
-                        <div className='flex max-md:flex-wrap justify-center max-md:justify-start items-center gap-[20px] py-[30px]'>
+                        <div className='flex max-md:flex-wrap justify-center max-md:justify-start items-center gap-[20px] py-[30px] animate__animated animate__fadeIn'>
                             <div className='bg-white rounded-[10px] p-[20px] flex items-center justify-center gap-[20px] w-[300px] shadow-md'>
                                 <div className='flex gap-[5px]'>
                                     <SiVirustotal className='text-[20px]' />

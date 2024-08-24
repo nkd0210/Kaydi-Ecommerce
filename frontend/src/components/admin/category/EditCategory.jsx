@@ -22,6 +22,8 @@ import { LiaCalendarWeekSolid } from "react-icons/lia";
 import { SiVirustotal } from "react-icons/si";
 import { CiImageOn } from "react-icons/ci";
 
+import 'animate.css';
+
 const EditCategory = ({ categories, handleFetchCategories }) => {
 
     // EDIT CATEGORY
@@ -217,10 +219,10 @@ const EditCategory = ({ categories, handleFetchCategories }) => {
         }
     }
     return (
-        <div className='border rounded-[20px] mt-[20px] p-[10px] bg-white'>
+        <div className='border rounded-[20px] mt-[20px] p-[10px] bg-white '>
 
             {categories?.map((category, index) => (
-                <div key={index} className='border-b-[2px] py-[40px] flex flex-col gap-[20px]'>
+                <div key={index} className='border-b-[2px] py-[40px] flex flex-col gap-[20px] animate__animated animate__fadeInUp'>
 
                     {/* name+title */}
                     <div className='flex gap-[20px]'>

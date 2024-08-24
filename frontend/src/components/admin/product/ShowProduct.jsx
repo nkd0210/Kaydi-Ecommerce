@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom';
 import DataTable from 'react-data-table-component';
 import Loader from '../../Loader';
+import 'animate.css';
 
 const ShowProduct = ({ setOpenShow, setOpenEdit, setProductId }) => {
 
@@ -52,7 +53,7 @@ const ShowProduct = ({ setOpenShow, setOpenEdit, setProductId }) => {
 
 
     return (
-        <div className='max-md:w-[500px] w-[1400px]  overflow-scroll'>
+        <div className='max-md:w-[500px] w-[1400px]  overflow-scroll animate__animated animate__fadeInUp'>
             {loading ? (
                 <Loader />
             ) : (

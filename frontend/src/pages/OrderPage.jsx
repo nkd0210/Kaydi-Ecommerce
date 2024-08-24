@@ -325,7 +325,7 @@ const OrderPage = () => {
                 <h3 className='uppercase font-semibold'>Hình thức thanh toán</h3>
                 <div className='flex flex-col gap-[10px]'>
                   <div
-                    className={`border rounded-[20px] w-full p-[10px] flex gap-[20px] items-center ${paymentMethod === 'COD' ? 'border-blue-400' : ''}`}
+                    className={`border rounded-[20px] w-full cursor-pointer hover:bg-gray-100 p-[10px] flex gap-[20px] items-center ${paymentMethod === 'COD' ? 'border-blue-400' : ''}`}
                     onClick={() => setPaymentMethod('COD')}
                   >
                     <CiDeliveryTruck className='text-[30px]' />
@@ -335,7 +335,7 @@ const OrderPage = () => {
                     </div>
                   </div>
                   <div
-                    className={`border rounded-[20px] w-full p-[10px] flex gap-[20px] items-center ${paymentMethod === 'Stripe' ? 'border-blue-400' : ''}`}
+                    className={`border rounded-[20px] w-full cursor-pointer hover:bg-gray-100 p-[10px] flex gap-[20px] items-center ${paymentMethod === 'Stripe' ? 'border-blue-400' : ''}`}
                     onClick={() => setPaymentMethod('Stripe')}
                   >
                     <FaCcStripe className='text-[30px]' />
@@ -344,7 +344,7 @@ const OrderPage = () => {
                     </div>
                   </div>
                   <div
-                    className={`border rounded-[20px] w-full p-[10px] flex gap-[20px] items-center ${paymentMethod === 'MoMo' ? 'border-blue-400' : ''}`}
+                    className={`border rounded-[20px] w-full cursor-pointer hover:bg-gray-100 p-[10px] flex gap-[20px] items-center ${paymentMethod === 'MoMo' ? 'border-blue-400' : ''}`}
                     onClick={() => setPaymentMethod('MoMo')}
                   >
                     <img src="/logo/momo.webp" alt="momo" className='w-[30px] h-[30px] object-cover' />
@@ -353,7 +353,7 @@ const OrderPage = () => {
                     </div>
                   </div>
                   <div
-                    className={`border rounded-[20px] w-full p-[10px] flex gap-[20px] items-center ${paymentMethod === 'Zalo' ? 'border-blue-400' : ''}`}
+                    className={`border rounded-[20px] cursor-pointer hover:bg-gray-100 w-full p-[10px] flex gap-[20px] items-center ${paymentMethod === 'Zalo' ? 'border-blue-400' : ''}`}
                     onClick={() => setPaymentMethod('Zalo')}
                   >
                     <img src="/logo/zalo.png" alt="zalo" className='w-[30px] h-[30px] object-cover' />

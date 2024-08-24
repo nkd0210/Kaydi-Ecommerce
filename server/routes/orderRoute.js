@@ -9,6 +9,7 @@ import {
   getUserOrder,
   paymentWithStripe,
   updateOrderPaymentCheck,
+  getTotalAmountPerDay,
 } from "../controllers/orderController.js";
 
 const router = express.Router();
@@ -25,5 +26,6 @@ router.put(
   verifyToken,
   updateOrderPaymentCheck
 );
+router.get("/getTotalAmountPerDay", verifyToken, getTotalAmountPerDay);
 
 export default router;

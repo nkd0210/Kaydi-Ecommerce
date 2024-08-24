@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
+// CHART
+import { Chart as ChartJS, defaults } from 'chart.js/auto';
+import { Bar, Doughnut, Line } from 'react-chartjs-2';
+
+import 'animate.css';
+
+defaults.maintainAspectRatio = false;
+defaults.responsive = true;
 
 const Dashboard = () => {
 
@@ -64,21 +72,60 @@ const Dashboard = () => {
         }
     }
 
+    const [order, setOrder] = useState([]);
+
+    const handleFetchOrders = async () => {
+        try {
+            const res = await fetch(`/api/order/getAllOrders`, {
+                method: "GET"
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                console.log(data.message);
+                return;
+            } else {
+                setOrder(data?.findOrder);
+            }
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+    const [orderPerDay, setOrderPerDay] = useState([]);
+
+    const handleFetchTotalAmountPerDay = async () => {
+        try {
+            const res = await fetch(`/api/order/getTotalAmountPerDay`, {
+                method: "GET",
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                console.log(data.message);
+                return;
+            } else {
+                setOrderPerDay(data);
+            }
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+
     useEffect(() => {
         handleFetchCategories();
         handleFetchProducts();
         handleFetchUsers();
+        handleFetchOrders();
+        handleFetchTotalAmountPerDay();
     }, [])
 
 
     return (
         <div className='py-[20px] px-[40px] max-md:px-[10px] h-full overflow-y-scroll'>
-            <h1 className='uppercase font-semibold text-[20px]'>Admin Dashboard</h1>
+            <h1 className='uppercase font-semibold text-[22px]'>Admin Dashboard</h1>
 
             <div className='mt-[20px]'>
-                <h2 className='font-semibold text-[18px] uppercase'>Overview</h2>
-                <div className='border-b-[2px] py-[20px] flex flex-col gap-[20px]'>
-                    <h2>User</h2>
+                <h2 className='font-semibold text-[20px] uppercase'>Overview</h2>
+                <div className='border-b-[2px] py-[20px] flex flex-col gap-[20px] animate__animated animate__fadeInRight'>
+                    <h2 className='text-[18px]'>User</h2>
                     <div className='flex max-md:flex-wrap gap-[30px]'>
                         <div className='border w-[300px]  py-[5px] rounded-[10px] shadow-lg bg-red-400 flex gap-[10px] justify-center'>
                             <span>Total users:</span>
@@ -94,8 +141,8 @@ const Dashboard = () => {
                         </div>
                     </div>
                 </div>
-                <div className='border-b-[2px] py-[20px] flex flex-col gap-[20px]'>
-                    <h2>Category</h2>
+                <div className='border-b-[2px] py-[20px] flex flex-col gap-[20px] animate__animated animate__fadeInRight'>
+                    <h2 className='text-[18px]'>Category</h2>
                     <div className='flex max-md:flex-wrap gap-[30px]'>
                         <div className='border w-[300px]  py-[5px] rounded-[10px] shadow-lg bg-red-400 flex gap-[10px] justify-center'>
                             <span>Total categories:</span>
@@ -111,8 +158,8 @@ const Dashboard = () => {
                         </div>
                     </div>
                 </div>
-                <div className='border-b-[2px] py-[20px] flex flex-col gap-[20px]'>
-                    <h2>Product</h2>
+                <div className='border-b-[2px] py-[20px] flex flex-col gap-[20px] animate__animated animate__fadeInRight'>
+                    <h2 className='text-[18px]'>Product</h2>
                     <div className='flex max-md:flex-wrap gap-[30px]'>
                         <div className='border w-[300px]  py-[5px] rounded-[10px] shadow-lg bg-red-400 flex gap-[10px] justify-center'>
                             <span>Total products:</span>
@@ -131,8 +178,58 @@ const Dashboard = () => {
             </div>
 
             <div className='mt-[20px]'>
-                <h2 className='font-semibold text-[18px] uppercase'>Diagram</h2>
+                <h2 className='font-semibold text-[20px] uppercase'>Diagram</h2>
 
+                <div className='chart flex flex-col gap-[50px] py-[20px] animate__animated animate__fadeInUp'>
+
+                    {/* BAR CHART */}
+                    <div className='w-[full] h-[350px] rounded-[10px] border border-black mb-[20px] p-[20px]'>
+                        <Bar
+                            data={{
+                                labels: orderPerDay?.map((data) => data._id),
+                                datasets: [
+                                    {
+                                        label: "Total price per trip",
+                                        data: orderPerDay?.map((data) => data.totalAmount),
+                                        borderRadius: 10,
+                                    }
+                                ]
+                            }}
+                        />
+                    </div>
+
+                    {/* LINE CHART */}
+                    <div className='w-[full] h-[350px] rounded-[10px] border border-black mb-[20px] p-[20px]'>
+                        <Line
+                            data={{
+                                labels: orderPerDay?.map((data) => data._id),
+                                datasets: [
+                                    {
+                                        label: "Total price per trip",
+                                        data: orderPerDay?.map((data) => data.totalAmount),
+                                        borderRadius: 10,
+                                    }
+                                ]
+                            }}
+                        />
+                    </div>
+
+                    {/* DOUGHNUT CHART */}
+                    <div className='w-[full] h-[350px] rounded-[10px] border border-black mb-[20px] p-[20px]'>
+                        <Doughnut
+                            data={{
+                                labels: orderPerDay?.map((data) => data._id),
+                                datasets: [
+                                    {
+                                        label: "Total price per trip",
+                                        data: orderPerDay?.map((data) => data.totalAmount),
+                                        borderRadius: 10,
+                                    }
+                                ]
+                            }}
+                        />
+                    </div>
+                </div>
             </div>
         </div>
     )

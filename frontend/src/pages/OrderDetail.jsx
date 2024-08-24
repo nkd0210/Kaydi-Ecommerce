@@ -16,12 +16,20 @@ import 'animate.css';
 // MODAL
 import Modal from '@mui/material/Modal';
 import { IoIosCloseCircleOutline } from "react-icons/io";
+
+
 const OrderDetail = () => {
 
     const { orderId } = useParams();
 
     const [orderDetail, setOrderDetail] = useState({});
     const [loadingOrderDetail, setLoadingOrderDetail] = useState(false);
+
+    // const [pendingTime, setPendingTime] = useState('');
+    // const [processingTime, setProcessingTime] = useState('');
+    // const [shippedTime, setShippedTime] = useState('');
+    // const [deliveredTime, setDeliveredTime] = useState('');
+
 
     const fetchOrder = async () => {
         setLoadingOrderDetail(true);
@@ -80,54 +88,91 @@ const OrderDetail = () => {
         }
     }
 
+    // FORMATD DATE
+    function formatDate(timestamp) {
+        const newDate = new Date(timestamp).toLocaleString('eb-GB')
+        return newDate;
+    }
 
     return (
         <>
             <Navigation />
             <Navbar />
-            <div className='p-[20px]'>
+            <div className='p-[20px] max-md:p-[10px]'>
                 {loadingOrderDetail ? (
                     <Loader />
                 ) : (
-                    <div className='p-[20px] max-md:p-[10px] border w-full flex flex-wrap gap-[20px] h-[450px] max-md:h-full'>
+                    <div className='p-[20px] max-md:p-[10px] border w-full flex flex-wrap max-md:flex-col gap-[20px] h-[500px] overflow-y-scroll max-md:h-full'>
                         <ToastContainer />
-                        {/* status */}
-                        <div className='border-black w-[150px] max-md:w-full flex flex-col max-md:flex-row gap-[20px] max-md:gap-[5px] items-center justify-center'>
-                            <div className='animate__animated animate__fadeIn flex flex-col gap-[20px] max-md:flex-row items-center justify-center' style={{ animationDuration: '2s' }}>
-                                <p className={`${orderDetail.status === 'pending' ? 'text-red-500 font-semibold text-[18px]' : 'text-[14px]'}`}>Pending</p>
-                                <FiArrowDownCircle className='text-[30px] max-md:hidden ' />
-                                <MdOutlineArrowCircleRight className='text-[30px] md:hidden ' />
-                            </div>
-                            <div className='animate__animated animate__fadeIn flex flex-col gap-[20px] max-md:flex-row items-center justify-center' style={{ animationDuration: '3s' }}>
-                                <p className={`${orderDetail.status === 'processing' ? 'text-red-500 font-semibold text-[18px]' : 'text-[14px]'}`}>Processing</p>
-                                <FiArrowDownCircle className='text-[30px] max-md:hidden ' />
-                                <MdOutlineArrowCircleRight className='text-[30px] md:hidden' />
-                            </div>
-                            <div className='animate__animated animate__fadeIn flex flex-col gap-[20px] max-md:flex-row items-center justify-center' style={{ animationDuration: '4s' }}>
-                                <p className={`${orderDetail.status === 'shipped' ? 'text-red-500 font-semibold text-[18px]' : 'text-[14px]'}`}>Shipped</p>
-                                <FiArrowDownCircle className='text-[30px] max-md:hidden ' />
-                                <MdOutlineArrowCircleRight className='text-[30px] md:hidden' />
-                            </div>
-                            <p className={`animate__animated animate__fadeIn ${orderDetail.status === 'delivered' ? 'text-red-500 font-semibold text-[18px]' : 'text-[14px]'}`} style={{ animationDuration: '5s' }}>Delivered</p>
-                        </div>
-                        {/* products */}
-                        <div className='bg-white w-[500px] max-md:w-[400px] max-h-[400px] flex flex-col gap-[20px] overflow-y-scroll animate__animated animate__fadeInDown'>
-                            {orderDetail.products?.map((product, index) => (
-                                <div key={index} className='flex justify-between gap-[10px] border shadow-md p-[10px]'>
-                                    <div className='flex gap-[10px]'>
-                                        <img src={product.image} alt="" className='w-[60px] h-[60px] object-cover rounded-[5px]' />
-                                        <div className='flex flex-col gap-[5px]'>
-                                            <p>{product.name}</p>
-                                            <p><span className='uppercase'>{product.size}</span> | {product.color} | x{product.quantity}</p>
-                                        </div>
-                                    </div>
-                                    <p className='text-red-500'>{product.price}&#8363;</p>
+
+                        <div className='flex flex-col gap-[40px]'>
+
+                            {/* status */}
+                            <div className='border-black flex flex-col items-start gap-[20px] max-md:gap-[5px]'>
+                                <h3 className='font-semibold text-[18px] pb-[20px]'>Theo dõi quá trình</h3>
+                                <div className='animate__animated animate__fadeIn flex gap-[20px] max-md:flex-row items-center justify-center' style={{ animationDuration: '2s' }}>
+                                    <p className='w-[200px]'>{formatDate(orderDetail.createdAt)}</p>
+                                    <FiArrowDownCircle className='text-[30px] ' />
+                                    <p className={`${orderDetail.status === 'pending' ? 'text-red-500 font-semibold text-[14px]' : 'text-[14px] text-gray-400'}`}>Pending</p>
                                 </div>
-                            ))}
-                            <p>Thành tiền: <span className='text-red-500'>{orderDetail.totalAmount}&#8363;</span> </p>
+                                <div className='animate__animated animate__fadeIn flex  gap-[20px] max-md:flex-row items-center justify-center' style={{ animationDuration: '3s' }}>
+                                    {
+                                        !orderDetail.processingTime ? (
+                                            <p className='w-[200px]'>...</p>
+                                        ) : (
+                                            <p className='w-[200px]'>{formatDate(orderDetail.processingTime)}</p>
+                                        )
+                                    }
+                                    <FiArrowDownCircle className='text-[30px] ' />
+                                    <p className={`${orderDetail.status === 'processing' ? 'text-red-500 font-semibold text-[14px]' : 'text-[14px] text-gray-400'}`}>Processing</p>
+                                </div>
+                                <div className='animate__animated animate__fadeIn flex  gap-[20px] max-md:flex-row items-center justify-center' style={{ animationDuration: '4s' }}>
+                                    {
+                                        !orderDetail.shippedTime ? (
+                                            <p className='w-[200px]'>...</p>
+                                        ) : (
+                                            <p className='w-[200px]'>{formatDate(orderDetail.shippedTime)}</p>
+                                        )
+                                    }
+                                    <FiArrowDownCircle className='text-[30px] ' />
+                                    <p className={`${orderDetail.status === 'shipped' ? 'text-red-500 font-semibold text-[14px]' : 'text-[14px] text-gray-400'}`}>Shipped</p>
+                                </div>
+                                <div className='animate__animated animate__fadeIn flex  gap-[20px] max-md:flex-row items-center justify-center' style={{ animationDuration: '4s' }}>
+                                    {
+                                        !orderDetail.deliveredTime ? (
+                                            <p className='w-[200px]'>...</p>
+                                        ) : (
+                                            <p className='w-[200px]'>{formatDate(orderDetail.deliveredTime)}</p>
+                                        )
+                                    }
+                                    <FiArrowDownCircle className='text-[30px] ' />
+                                    <p className={`animate__animated animate__fadeIn ${orderDetail.status === 'delivered' ? 'text-red-500 font-semibold text-[14px]' : 'text-[14px] text-gray-400'}`}>Delivered</p>
+                                </div>
+                            </div>
+
+                            {/* products */}
+                            <div className='bg-white w-[500px] max-md:w-full max-h-[400px] flex flex-col gap-[20px] overflow-y-scroll animate__animated animate__fadeInDown'>
+                                <h3 className='font-semibold text-[18px] pb-[20px]'>Thông tin sản phẩm</h3>
+
+                                {orderDetail.products?.map((product, index) => (
+                                    <div key={index} className='flex justify-between max-md:flex-col gap-[10px] border shadow-md p-[10px]'>
+                                        <div className='flex gap-[10px]'>
+                                            <img src={product.image} alt="" className='w-[60px] h-[60px] object-cover rounded-[5px]' />
+                                            <div className='flex flex-col gap-[5px]'>
+                                                <p>{product.name}</p>
+                                                <p><span className='uppercase'>{product.size}</span> | {product.color} | x{product.quantity}</p>
+                                            </div>
+                                        </div>
+                                        <p className='text-red-500'>{product.price}&#8363;</p>
+                                    </div>
+                                ))}
+                                <p>Thành tiền: <span className='text-red-500'>{orderDetail.totalAmount}&#8363;</span> </p>
+                            </div>
+
                         </div>
+
                         {/* info */}
-                        <div className='max-h-[400px] overflow-y-scroll border rounded-[10px] p-[10px] shadow-md flex-1 animate__animated animate__fadeInRight'>
+                        <div className='max-h-[450px] overflow-y-scroll border rounded-[10px] p-[10px] shadow-md flex-1 animate__animated animate__fadeInRight'>
                             <h3 className='font-semibold text-[18px] pb-[20px]'>Thông tin nhận hàng</h3>
                             <div className='flex gap-[10px]'>
                                 <span className='w-[200px] max-md:w-[160px]'>

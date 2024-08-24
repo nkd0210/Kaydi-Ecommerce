@@ -404,12 +404,13 @@ const Voucher = () => {
     }
 
     return (
-        <div className='py-[20px] px-[40px] max-md:px-[10px] max-w-full overflow-x-scroll h-full overflow-y-scroll bg-gray-100'>
+        <div className='py-[20px] px-[40px] max-md:px-[10px] max-w-full h-full overflow-x-scroll overflow-y-scroll bg-gray-100'>
             <>
                 {loadingVoucher ? (
                     <Loader />
                 ) : (
                     <div className='flex flex-col gap-[20px] max-w-full overflow-x-scroll'>
+
                         <div className='flex justify-between max-md:flex-col max-md:flex-start max-md:my-[20px]'>
                             <div className='flex gap-[20px] items-center'>
                                 <MdDashboard className='text-[30px]' />
@@ -432,7 +433,7 @@ const Voucher = () => {
                             <h3 className='text-[16px] font-semibold'>Business Overview</h3>
                         </div>
 
-                        <div className='flex max-md:flex-wrap justify-center max-md:justify-start items-center gap-[20px] py-[30px]'>
+                        <div className='flex max-md:flex-wrap justify-center max-md:justify-start items-center gap-[20px] py-[30px] animate__animated animate__fadeIn'>
                             <div className='bg-white rounded-[10px] p-[20px] flex items-center justify-center gap-[20px] w-[300px] shadow-md'>
                                 <div className='flex gap-[5px]'>
                                     <SiVirustotal className='text-[20px]' />
@@ -461,11 +462,11 @@ const Voucher = () => {
                             <h3 className='text-[16px] font-semibold'>All Voucher</h3>
                         </div>
 
-                        <div className='border rounded-[20px] mt-[20px] p-[10px] bg-white max-h-[500px] w-full overflow-y-scroll'>
+                        <div className='border rounded-[20px] mt-[20px] p-[10px] bg-white max-h-[500px] max-w-full overflow-x-scroll overflow-y-scroll '>
                             {Object.keys(allVouchers).length === 0 ? (
                                 <div>Empty voucher! </div>
                             ) : (
-                                <div className='flex flex-wrap gap-[20px]'>
+                                <div className='flex flex-wrap gap-[20px] animate__animated animate__fadeInRight'>
                                     {allVouchers.map((voucher, index) => (
                                         <VoucherCard key={index} voucher={voucher} />
                                     ))}
@@ -478,7 +479,7 @@ const Voucher = () => {
                             <h3 className='text-[16px] font-semibold'>Edit Voucher</h3>
                         </div>
 
-                        <div className='w-full overflow-x-scroll p-[20px] bg-white h-[500px] overflow-y-scroll'>
+                        <div className='max-md:w-[500px] w-[1300px] overflow-scroll p-[20px] bg-white'>
                             {loadingVoucher ? (
                                 <Loader />
                             ) : (
@@ -489,9 +490,11 @@ const Voucher = () => {
                                     selectableRows
                                     highlightOnHover
                                     onRowClicked={(row) => handleRowClick(row._id)}
+                                    className='animate__animated animate__fadeInUp'
                                 />
                             )}
                         </div>
+
                     </div>
 
                 )}

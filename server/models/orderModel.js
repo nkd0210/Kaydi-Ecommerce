@@ -60,6 +60,15 @@ const orderSchema = new mongoose.Schema(
       enum: ["pending", "processing", "shipped", "delivered"],
       default: "pending", // pending -> processing -> shipped -> delivered
     },
+    processingTime: {
+      type: Date,
+    },
+    shippedTime: {
+      type: Date,
+    },
+    deliveredTime: {
+      type: Date,
+    },
     shippingAddress: {
       type: String,
       required: true,

@@ -8,8 +8,9 @@ import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { BiTrash } from 'react-icons/bi';
+import 'animate.css';
 
-const CreateProduct = ({ setOpenCreate, setOpenShow }) => {
+const CreateProduct = ({ setOpenCreate, setOpenShow, handleFetchProductsDashboard }) => {
     // category
     const [categoryInput, setCategoryInput] = useState('');
     const [categories, setCategories] = useState([]);
@@ -183,12 +184,13 @@ const CreateProduct = ({ setOpenCreate, setOpenShow }) => {
             handleShowSucccessMessage("Create product sucessfully");
             setOpenCreate(false);
             setOpenShow(true);
+            handleFetchProductsDashboard();
         }
     }
 
 
     return (
-        <form onSubmit={handleCreateProduct} className='border w-[1200px] max-md:w-full p-[30px] max-md:p-[5px] flex flex-col justify-center gap-[30px] shadow-lg mx-[10px] max-md:mx-[5px]'>
+        <form onSubmit={handleCreateProduct} className='bg-white border w-[1200px] max-md:w-full p-[30px] max-md:p-[5px] flex flex-col justify-center gap-[30px] shadow-lg mx-[10px] max-md:mx-[5px] animate__animated animate__fadeInUp'>
             <ToastContainer />
             <div className='flex items-center'>
                 <span className='w-[150px]'>Name: </span>

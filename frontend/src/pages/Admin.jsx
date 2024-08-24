@@ -143,7 +143,7 @@ const AdminDashboard = () => {
                     <div onClick={() => setOpenModal(true)} className='w-[80px] h-[80px] cursor-pointer hover:opacity-70 my-[20px]'>
                         <img src={currentUser?.profilePic} alt="" className='w-full h-full object-cover rounded-[50%]' />
                     </div>
-                    <div className='flex flex-col gap-[50px]'>
+                    <div className='flex flex-col gap-[50px] mt-[40px]'>
                         <div onClick={() => setActive('dashboard')} className={`cursor-pointer hover:text-red-400 ${active === 'dashboard' ? 'text-red-400' : 'text-white'}`}>Dashboard</div>
                         <div onClick={() => setActive('products')} className={`cursor-pointer hover:text-red-400 ${active === 'products' ? 'text-red-400' : 'text-white'}`}>Products</div>
                         <div onClick={() => setActive('category')} className={`cursor-pointer hover:text-red-400 ${active === 'category' ? 'text-red-400' : 'text-white'}`}>Category</div>
