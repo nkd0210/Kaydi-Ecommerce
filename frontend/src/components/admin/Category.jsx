@@ -84,6 +84,14 @@ const Category = () => {
         setFormCreate({ ...formCreate, [e.target.id]: e.target.value });
     }
 
+    const handleShowErrorMessage = (message) => {
+        toast.error(message)
+    }
+
+    const handleShowSucccessMessage = (message) => {
+        toast.success(message)
+    }
+
     // HANDLE UPLOAD IMAGE
 
     const fileRef = useRef(null);
@@ -113,6 +121,7 @@ const Category = () => {
                     .then((downloadURL) => {
                         setFormDataImage(downloadURL)
                     })
+                console.log("Image upload completed")
             }
         )
     }
@@ -161,6 +170,7 @@ const Category = () => {
                     <Loader />
                 ) : (
                     <>
+                        <ToastContainer />
                         <div className='flex justify-between max-md:flex-col max-md:flex-start max-md:my-[20px]'>
                             <div className='flex gap-[20px] items-center'>
                                 <MdDashboard className='text-[30px]' />
@@ -226,7 +236,7 @@ const Category = () => {
                 open={openCreateCategory}
                 onClose={() => setOpenCreateCategory(false)}
             >
-                <div className='absolute top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%] shadow-lg w-[600px] max-md:w-[400px] bg-white text-black h-[550px] overflow-y-scroll rounded-[20px] flex flex-col gap-[20px] p-[20px] max-md:p-[10px] '>
+                <div className='absolute top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%] shadow-lg w-[600px] max-md:w-[400px] bg-white text-black h-[600px] overflow-y-scroll rounded-[20px] flex flex-col gap-[20px] p-[20px] max-md:p-[10px] '>
                     {loadingCreate ? (
                         <Loader />
                     ) : (
@@ -272,7 +282,7 @@ const Category = () => {
                                         <div onClick={handleClickSave} className='rounded-[20px] bg-blue-400 w-[100px] p-[5px] text-center hover:bg-opacity-70 hover:text-white cursor-pointer'>Save</div>
                                     )}
                                 </div>
-                                <button type='submit' className='rounded-[30px] w-[200px] text-center p-[10px] mt-[50px] bg-red-400 text-white hover:opacity-70'>Create</button>
+                                <button type='submit' className='rounded-[30px] w-[200px] text-center p-[10px] mt-[20px] bg-red-400 text-white hover:opacity-70'>Create</button>
                             </form>
                         </>
                     )}

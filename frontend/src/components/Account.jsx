@@ -172,7 +172,7 @@ const Account = () => {
     }
 
     return (
-        <div className="p-[20px]">
+        <div className="p-[20px] max-h-[700px] overflow-y-scroll">
             <ToastContainer />
 
             <div className="animate__animated animate__fadeInRight">
@@ -295,6 +295,7 @@ const Account = () => {
                     </div>
                 </div>
             )}
+
         </div>
     )
 }

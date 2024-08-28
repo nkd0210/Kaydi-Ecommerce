@@ -10,6 +10,7 @@ import OrderPage from './pages/OrderPage';
 import OrderDetail from './pages/OrderDetail';
 import PaymentSuccess from './pages/PaymentSuccess';
 import Collection from './pages/Collection';
+import Review from './pages/Review';
 
 function App() {
   return (
@@ -26,6 +27,8 @@ function App() {
         <Route path='/orderDetail/:orderId' element={<OrderDetail />} />
         <Route path='/paymentSuccess/:orderId' element={<PaymentSuccess />} />
         <Route path='/collections/:category' element={<Collection />} />
+        <Route path='/collections/:category/:subcategory' element={<Collection />} />
+        <Route path='/review/:orderId' element={<Review />} />
       </Routes>
     </BrowserRouter>
   )

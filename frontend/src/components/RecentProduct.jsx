@@ -7,6 +7,9 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 
+import { MdDriveFileRenameOutline } from "react-icons/md";
+import { IoPricetagOutline } from "react-icons/io5";
+
 // ANIMATE
 import 'animate.css';
 

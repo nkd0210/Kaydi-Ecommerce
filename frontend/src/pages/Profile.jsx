@@ -11,7 +11,7 @@ import Policy from '../components/Policy';
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { FaLongArrowAltRight } from "react-icons/fa";
-
+import Footer from "../components/Footer";
 import "animate.css"
 
 const Profile = () => {
@@ -66,6 +66,7 @@ const Profile = () => {
                 </div>
 
             </div>
+            <Footer />
         </Wrapper>
     );
 };

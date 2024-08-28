@@ -110,7 +110,7 @@ const Products = () => {
             </div>
 
 
-            <div className='flex items-center gap-[10px] py-[20px] animate__animated animate__fadeInUp '>
+            <div className='flex items-center gap-[10px] py-[20px] animate__animated animate__fadeInRight '>
                 <h1 className='ml-[10px] text-[16px]'>Create Product</h1>
                 {openCreate ? (
                     <div onClick={() => setOpenCreate(false)}><CiCircleMinus className='text-[20px] text-blue-500' /></div>
@@ -124,7 +124,7 @@ const Products = () => {
 
             <hr className='my-[20px] border-gray-400' />
 
-            <div className='flex items-center gap-[10px] py-[20px] animate__animated animate__fadeInUp'>
+            <div className='flex items-center gap-[10px] py-[20px] animate__animated animate__fadeInRight'>
                 <h1 className='ml-[10px] text-[16px]'>Show All Products</h1>
                 {openShow ? (
                     <div onClick={() => setOpenShow(false)}><CiCircleMinus className='text-[20px] text-blue-500' /></div>
@@ -140,7 +140,7 @@ const Products = () => {
 
             <hr className='my-[20px] border-gray-400' />
 
-            <div className='flex items-center gap-[10px] py-[20px] animate__animated animate__fadeInUp'>
+            <div className='flex items-center gap-[10px] py-[20px] animate__animated animate__fadeInRight'>
                 <h1 className='ml-[10px] text-[16px]'>Edit Product</h1>
                 {openEdit ? (
                     <div onClick={() => setOpenEdit(false)}><CiCircleMinus className='text-[20px] text-blue-500' /></div>

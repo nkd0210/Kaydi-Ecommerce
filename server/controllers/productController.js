@@ -138,9 +138,7 @@ export const getProductByCategory = async (req, res, next) => {
     const numberOfProductFound = findProductByCategory.length;
 
     if (findProductByCategory.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No product match in this category" });
+      return res.json({ message: "No product match in this category" });
     }
     res.status(200).json({
       numberOfProductFound,

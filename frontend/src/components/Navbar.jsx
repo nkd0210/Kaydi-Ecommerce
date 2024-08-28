@@ -78,8 +78,9 @@ const Navbar = () => {
         }
     }, []);
 
-    const handleClickCategory = async (category) => {
-        navigate(`/collections/${category}`);
+    const handleClickCategory = async (category, subcategory = '') => {
+        const path = subcategory ? `/collections/${category}/${subcategory}` : `/collections/${category}`;
+        navigate(path);
     }
 
     const [isScroll, setIsScroll] = useState(false);
@@ -123,7 +124,7 @@ const Navbar = () => {
                                             <div className="flex gap-[20px]">
                                                 <div className="flex flex-wrap border-black gap-[30px] pt-[20px]">
                                                     {category.description.map((item, index) => (
-                                                        <p key={index} className="cursor-pointer text-[18px] hover:font-semibold" onClick={() => handleClickCategory(item)}>
+                                                        <p key={index} className="cursor-pointer text-[18px] hover:font-semibold" onClick={() => handleClickCategory(category.name, item)}>
                                                             {item}
                                                         </p>
                                                     ))}

@@ -183,6 +183,7 @@ const EditCategory = ({ categories, handleFetchCategories }) => {
                 handleShowSucccessMessage("Update category successfully");
                 setOpenModal(false);
                 setCategoryId('');
+                setUploadSuccess(false);
                 handleFetchCategories();
             }
 
@@ -338,12 +339,12 @@ const EditCategory = ({ categories, handleFetchCategories }) => {
 
             {/* DELETE */}
             <Modal open={openDeleteModal} onClose={() => setOpenDeleteModal(false)}>
-                <div className='absolute top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%] shadow-lg w-[400px] bg-white text-black h-[300px] max-md:h-[200px] rounded-[20px] flex flex-col gap-[20px] justify-center items-center '>
+                <div className='absolute top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%] shadow-lg w-[400px] bg-white text-black h-[200px] max-md:h-[200px] rounded-[20px] flex flex-col gap-[20px] justify-center items-center '>
                     <IoIosCloseCircleOutline onClick={() => setOpenDeleteModal(false)} className='absolute top-[10px] right-[10px] text-[30px] cursor-pointer hover:text-red-[400]' />
-                    <h3 className='text-center text-[20px] max-md:text-[16px]'>Are you sure to delete this category ?</h3>
+                    <h3 className='text-center text-[16px]'>Are you sure to delete this category ?</h3>
                     <div className='flex justify-evenly w-full'>
-                        <div onClick={handleDeleteCategory} className='rounded-[10px] p-[10px] text-center bg-red-400 hover:opacity-70 w-[100px] cursor-pointer'>YES</div>
-                        <div onClick={() => setOpenDeleteModal(false)} className='rounded-[10px] p-[10px] text-center bg-blue-400 hover:opacity-70 w-[100px] cursor-pointer'>CANCEL</div>
+                        <div onClick={handleDeleteCategory} className='rounded-[20px] p-[10px] text-center bg-red-400 hover:opacity-70 w-[100px] cursor-pointer'>YES</div>
+                        <div onClick={() => setOpenDeleteModal(false)} className='rounded-[20px] p-[10px] text-center bg-blue-400 hover:opacity-70 w-[100px] cursor-pointer'>CANCEL</div>
                     </div>
                 </div>
             </Modal>

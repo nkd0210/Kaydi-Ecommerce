@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Navigation from "../components/Navigation";
 import Navbar from "../components/Navbar";
 import Loader from '../components/Loader';
-
+import Footer from '../components/Footer';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
@@ -276,7 +276,7 @@ const ProductDetail = () => {
                     </div>
 
                     {/* RECOMMEND */}
-                    <div className='mt-[100px] animate__animated animate__fadeInDown'>
+                    <div className='mt-[100px] mb-[50px] animate__animated animate__fadeInDown'>
                         <h3 className='text-center text-[30px] uppercase font-semibold mb-[40px]'>Gợi ý sản phẩm</h3>
                         {loadingRecommentProduct ? (
                             <Loader />
@@ -334,8 +334,12 @@ const ProductDetail = () => {
                             <BsArrowsExpand onClick={() => setOpenBox(true)} className='cursor-pointer hover:text-red-400 text-[20px]' />
                         </div>
                     )}
+
+
+
                 </div>
             )}
+            <Footer />
         </Wrapper>
     )
 }

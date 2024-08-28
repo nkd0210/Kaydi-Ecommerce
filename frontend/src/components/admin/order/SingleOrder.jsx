@@ -15,6 +15,7 @@ import { GrStatusGood } from "react-icons/gr";
 import { TbPlayerTrackNext } from "react-icons/tb";
 import { MdOutlineKeyboardDoubleArrowLeft } from "react-icons/md";
 import { PiArrowFatLinesRightLight } from "react-icons/pi";
+import { FaRegCalendarAlt } from "react-icons/fa";
 
 import 'animate.css'
 
@@ -121,6 +122,12 @@ const SingleOrder = ({ order, handleFetchOrder }) => {
                                 <MdPayment className='text-[18px] text-green-500' />
                                 <p>Payment check:</p>
                                 <p className='text-gray-500'>{order?.paymentCheck ? 'Yes' : 'No'}</p>
+                            </div>
+
+                            <div className='flex items-center gap-[10px]'>
+                                <FaRegCalendarAlt className='text-[18px] text-purple-500' />
+                                <p>Date: </p>
+                                <p className='text-gray-500'>{new Date(order?.createdAt).toLocaleString('en-GB')}</p>
                             </div>
 
                             <div className='flex items-center gap-[10px]'>

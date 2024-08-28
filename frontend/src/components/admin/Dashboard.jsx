@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-
+import { useSelector } from 'react-redux'
 // CHART
 import { Chart as ChartJS, defaults } from 'chart.js/auto';
 import { Bar, Doughnut, Line } from 'react-chartjs-2';
@@ -11,6 +11,8 @@ defaults.maintainAspectRatio = false;
 defaults.responsive = true;
 
 const Dashboard = () => {
+
+    const { currentUser } = useSelector((state) => state.user);
 
     const [categoriesInfo, setCategoriesInfo] = useState({});
     const [productsInfo, setProductsInfo] = useState({});
@@ -72,6 +74,7 @@ const Dashboard = () => {
         }
     }
 
+    const [orderInfo, setOrderInfo] = useState([]);
     const [order, setOrder] = useState([]);
 
     const handleFetchOrders = async () => {
@@ -84,6 +87,7 @@ const Dashboard = () => {
                 console.log(data.message);
                 return;
             } else {
+                setOrderInfo(data);
                 setOrder(data?.findOrder);
             }
         } catch (error) {
@@ -109,12 +113,34 @@ const Dashboard = () => {
         }
     }
 
+    const [voucherInfo, setVoucherInfo] = useState({});
+    const [vouchers, setVouchers] = useState([]);
+
+    const handleFetchVouchers = async () => {
+        try {
+            const res = await fetch(`/api/voucher/getAllVouchers/${currentUser._id}`, {
+                method: "GET"
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                console.log(data.message);
+                return;
+            } else {
+                setVoucherInfo(data);
+                setVouchers(data?.vouchers);
+            }
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+
     useEffect(() => {
         handleFetchCategories();
         handleFetchProducts();
         handleFetchUsers();
         handleFetchOrders();
         handleFetchTotalAmountPerDay();
+        handleFetchVouchers();
     }, [])
 
 
@@ -132,11 +158,11 @@ const Dashboard = () => {
                             {usersInfo?.userCount}
                         </div>
                         <div className='border w-[300px]  py-[5px] rounded-[10px] shadow-lg bg-blue-400 flex gap-[10px] justify-center'>
-                            <span>Last week user created:</span>
+                            <span>Last week users created:</span>
                             {usersInfo?.lastWeekUsersCount}
                         </div>
                         <div className='border w-[300px]  py-[5px] rounded-[10px] shadow-lg bg-green-400 flex gap-[10px] justify-center'>
-                            <span>Last month user created:</span>
+                            <span>Last month users created:</span>
                             {usersInfo?.lastMonthUsersCount}
                         </div>
                     </div>
@@ -149,11 +175,11 @@ const Dashboard = () => {
                             {categoriesInfo?.totalCategory}
                         </div>
                         <div className='border w-[300px]  py-[5px] rounded-[10px] shadow-lg bg-blue-400 flex gap-[10px] justify-center'>
-                            <span>Last week category created:</span>
+                            <span>Last week categories created:</span>
                             {categoriesInfo?.lastWeekCategoryCount}
                         </div>
                         <div className='border w-[300px]  py-[5px] rounded-[10px] shadow-lg bg-green-400 flex gap-[10px] justify-center'>
-                            <span>Last month category created:</span>
+                            <span>Last month categories created:</span>
                             {categoriesInfo?.lastMonthCategoryCount}
                         </div>
                     </div>
@@ -166,12 +192,46 @@ const Dashboard = () => {
                             {productsInfo?.totalNumber}
                         </div>
                         <div className='border w-[300px]  py-[5px] rounded-[10px] shadow-lg bg-blue-400 flex gap-[10px] justify-center'>
-                            <span>Last week product created:</span>
+                            <span>Last week products created:</span>
                             {productsInfo?.lastWeekProductCount}
                         </div>
                         <div className='border w-[300px]  py-[5px] rounded-[10px] shadow-lg bg-green-400 flex gap-[10px] justify-center'>
-                            <span>Last month product created:</span>
+                            <span>Last month products created:</span>
                             {productsInfo?.lastMonthProductCount}
+                        </div>
+                    </div>
+                </div>
+                <div className='border-b-[2px] py-[20px] flex flex-col gap-[20px] animate__animated animate__fadeInRight'>
+                    <h2 className='text-[18px]'>Order</h2>
+                    <div className='flex max-md:flex-wrap gap-[30px]'>
+                        <div className='border w-[300px]  py-[5px] rounded-[10px] shadow-lg bg-red-400 flex gap-[10px] justify-center'>
+                            <span>Total orders:</span>
+                            {orderInfo?.numberOfOrder}
+                        </div>
+                        <div className='border w-[300px]  py-[5px] rounded-[10px] shadow-lg bg-blue-400 flex gap-[10px] justify-center'>
+                            <span>Last week orders created:</span>
+                            {orderInfo?.lastWeekOrder}
+                        </div>
+                        <div className='border w-[300px]  py-[5px] rounded-[10px] shadow-lg bg-green-400 flex gap-[10px] justify-center'>
+                            <span>Last month orders created:</span>
+                            {orderInfo?.lastMonthOrder}
+                        </div>
+                    </div>
+                </div>
+                <div className='border-b-[2px] py-[20px] flex flex-col gap-[20px] animate__animated animate__fadeInRight'>
+                    <h2 className='text-[18px]'>Voucher</h2>
+                    <div className='flex max-md:flex-wrap gap-[30px]'>
+                        <div className='border w-[300px]  py-[5px] rounded-[10px] shadow-lg bg-red-400 flex gap-[10px] justify-center'>
+                            <span>Total vouchers:</span>
+                            {voucherInfo?.totalVouchers}
+                        </div>
+                        <div className='border w-[300px]  py-[5px] rounded-[10px] shadow-lg bg-blue-400 flex gap-[10px] justify-center'>
+                            <span>Last week vouchers created:</span>
+                            {voucherInfo?.lastWeekVouchersCount}
+                        </div>
+                        <div className='border w-[300px]  py-[5px] rounded-[10px] shadow-lg bg-green-400 flex gap-[10px] justify-center'>
+                            <span>Last month vouchers created:</span>
+                            {voucherInfo?.lastMonthVouchersCount}
                         </div>
                     </div>
                 </div>
@@ -189,7 +249,7 @@ const Dashboard = () => {
                                 labels: orderPerDay?.map((data) => data._id),
                                 datasets: [
                                     {
-                                        label: "Total price per trip",
+                                        label: "Total price per day",
                                         data: orderPerDay?.map((data) => data.totalAmount),
                                         borderRadius: 10,
                                     }
@@ -205,7 +265,7 @@ const Dashboard = () => {
                                 labels: orderPerDay?.map((data) => data._id),
                                 datasets: [
                                     {
-                                        label: "Total price per trip",
+                                        label: "Total price per day",
                                         data: orderPerDay?.map((data) => data.totalAmount),
                                         borderRadius: 10,
                                     }
@@ -218,11 +278,11 @@ const Dashboard = () => {
                     <div className='w-[full] h-[350px] rounded-[10px] border border-black mb-[20px] p-[20px]'>
                         <Doughnut
                             data={{
-                                labels: orderPerDay?.map((data) => data._id),
+                                labels: vouchers?.map((data) => data.code),
                                 datasets: [
                                     {
-                                        label: "Total price per trip",
-                                        data: orderPerDay?.map((data) => data.totalAmount),
+                                        label: "Voucher used",
+                                        data: vouchers?.map((data) => data.usedCount),
                                         borderRadius: 10,
                                     }
                                 ]

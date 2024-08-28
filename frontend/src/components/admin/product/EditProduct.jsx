@@ -26,6 +26,7 @@ const EditProduct = ({ productId, setOpenEdit, setOpenShow, handleFetchProductsD
 
 
     const handleFetchProduct = async () => {
+        setProduct({});
         try {
             const res = await fetch(`/api/product/getEachProduct/${productId}`, {
                 method: "GET"
@@ -347,7 +348,7 @@ const EditProduct = ({ productId, setOpenEdit, setOpenShow, handleFetchProductsD
                     {loading ? (
                         <Loader />
                     ) : (
-                        <form onSubmit={handleSubmitForm} className='border shadow-md rounded-[10px] p-[10px] flex flex-col gap-[20px] h-[1000px] overflow-y-scroll'>
+                        <form onSubmit={handleSubmitForm} className='hide-scrollbar border shadow-md rounded-[10px] p-[10px] flex flex-col gap-[20px] h-[1000px] overflow-y-scroll'>
                             <h2 className='text-center font-semibold text-[20px]'>General Information</h2>
                             <div>
                                 <h3 className='font-semibold pb-[10px]'>Product Name</h3>
@@ -481,10 +482,10 @@ const EditProduct = ({ productId, setOpenEdit, setOpenShow, handleFetchProductsD
                                 ) : (
                                     <>
                                         <IoIosCloseCircleOutline onClick={() => setDeleteModal(false)} className='absolute top-[10px] right-[10px] text-[30px] cursor-pointer hover:text-red-[400]' />
-                                        <h3 className='text-center text-[18px] max-md:text-[16px]'>Are you sure to delete this product ?</h3>
+                                        <h3 className='text-center text-[16px]'>Are you sure to delete this product ?</h3>
                                         <div className='flex justify-evenly w-full'>
-                                            <div onClick={handleDeleteProduct} className='rounded-[10px] p-[10px] text-center bg-red-400 hover:opacity-70 w-[100px] cursor-pointer'>YES</div>
-                                            <div onClick={() => setDeleteModal(false)} className='rounded-[10px] p-[10px] text-center bg-blue-400 hover:opacity-70 w-[100px] cursor-pointer'>CANCEL</div>
+                                            <div onClick={handleDeleteProduct} className='rounded-[20px] p-[10px] text-center bg-red-400 hover:opacity-70 w-[100px] cursor-pointer'>YES</div>
+                                            <div onClick={() => setDeleteModal(false)} className='rounded-[20px] p-[10px] text-center bg-blue-400 hover:opacity-70 w-[100px] cursor-pointer'>CANCEL</div>
                                         </div>
                                     </>
                                 )

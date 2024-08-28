@@ -77,13 +77,13 @@ export const signIn = async (req, res, next) => {
       .status(200)
       .cookie("access_token", accessToken, {
         httpOnly: true,
-        // secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "None",
       })
       .cookie("refresh_token", refreshToken, {
         httpOnly: true,
-        // secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "None",
       })
       .json(rest);
   } catch (error) {

@@ -5,6 +5,7 @@ import { IoMdNotificationsOutline } from 'react-icons/io';
 import Navigation from '../components/Navigation';
 import Navbar from '../components/Navbar';
 import Loader from '../components/Loader';
+import Footer from '../components/Footer';
 import { FiArrowDownCircle } from "react-icons/fi";
 import { MdOutlineArrowCircleRight } from "react-icons/md";
 // TOAST
@@ -222,7 +223,7 @@ const OrderDetail = () => {
                                 <div onClick={() => setCancelModal(true)} className='border border-red-500 p-[10px] w-[150px] cursor-pointer text-center hover:bg-gray-50'>
                                     Hủy đơn hàng
                                 </div>
-                                <div className='bg-red-500 text-white w-[150px] p-[10px] cursor-pointer text-center hover:opacity-70'>
+                                <div onClick={() => navigate(`/review/${orderId}`)} className='bg-red-500 text-white w-[150px] p-[10px] cursor-pointer text-center hover:opacity-70'>
                                     Đánh giá
                                 </div>
                             </div>
@@ -248,6 +249,7 @@ const OrderDetail = () => {
                     </div>
                 )}
             </div >
+            <Footer />
         </>
     )
 }
