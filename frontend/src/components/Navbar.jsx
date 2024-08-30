@@ -100,6 +100,13 @@ const Navbar = () => {
 
     // CSS: className={`fixed transition-all duration-300 ${isScroll ? 'top-[0px]' : 'top-[42px]'} w-full z-[50]`}
 
+    const [searchValue, setSearchValue] = useState('');
+
+    const handleChange = (e) => {
+        setSearchValue(e.target.value);
+    }
+
+
     return (
         <Wrapper >
             <div className="relative w-full flex justify-between items-center px-[20px] bg-[#212121] text-white">
@@ -149,9 +156,11 @@ const Navbar = () => {
                 <div className="flex gap-[20px] justify-end items-center ">
                     <div className="border rounded-[20px] w-[200px] p-[10px] bg-white flex gap-[10px]">
                         <div>
-                            <CiSearch className="text-gray-600 text-[20px]" />
+                            <CiSearch className="text-gray-600 text-[20px] cursor-pointer" onClick={() => navigate(`/search/${searchValue}`)} />
                         </div>
                         <input
+                            value={searchValue}
+                            onChange={handleChange}
                             type="text"
                             placeholder="Tìm kiếm sản phẩm"
                             className="w-full text-gray-600"

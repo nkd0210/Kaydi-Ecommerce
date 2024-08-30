@@ -11,6 +11,7 @@ import OrderDetail from './pages/OrderDetail';
 import PaymentSuccess from './pages/PaymentSuccess';
 import Collection from './pages/Collection';
 import Review from './pages/Review';
+import Search from './pages/Search';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
         <Route path='/collections/:category' element={<Collection />} />
         <Route path='/collections/:category/:subcategory' element={<Collection />} />
         <Route path='/review/:orderId' element={<Review />} />
+        <Route path='/search/:searchKey' element={<Search />} />
       </Routes>
     </BrowserRouter>
   )

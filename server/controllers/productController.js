@@ -161,3 +161,74 @@ export const getEachProduct = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getProductBySearch = async (req, res, next) => {
+  const { searchKey } = req.params;
+  try {
+    const findProducts = await Product.find({
+      name: {
+        $regex: searchKey,
+        $options: "i",
+      },
+    });
+    if (findProducts.length === 0) {
+      return res.json({ message: "No product found with this name" });
+    }
+    res.status(200).json(findProducts);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getProductByFilter = async (req, res, next) => {
+  const { filterType } = req.params;
+  const { products } = req.body;
+
+  if (!Array.isArray(products)) {
+    return res.status(400).json({ message: "Invalid products data!" });
+  }
+
+  let sortOption = {};
+
+  switch (filterType) {
+    case "priceLowToHigh":
+      sortOption = (a, b) => a.price - b.price; // ascending
+      break;
+
+    case "priceHighToLow":
+      sortOption = (a, b) => b.price - a.price; // descending
+      break;
+
+    case "nameAZ":
+      sortOption = (a, b) =>
+        new Intl.Collator("vi", { sensitivity: "base" }).compare(
+          a.name,
+          b.name
+        ); // ascending
+      break;
+
+    case "nameZA":
+      sortOption = (a, b) =>
+        new Intl.Collator("vi", { sensitivity: "base" }).compare(
+          b.name,
+          a.name
+        ); // descending
+      break;
+
+    default:
+      return res.status(400).json({ message: "Invalid filter type!" });
+  }
+
+  try {
+    // Sort the products array based on the sortOption
+    const sortedProducts = products.sort(sortOption);
+
+    if (sortedProducts.length === 0) {
+      return res.json({ message: "No product found!" });
+    }
+
+    res.status(200).json(sortedProducts);
+  } catch (error) {
+    next(error);
+  }
+};

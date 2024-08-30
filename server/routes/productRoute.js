@@ -6,6 +6,8 @@ import {
   getAllProduct,
   getEachProduct,
   getProductByCategory,
+  getProductByFilter,
+  getProductBySearch,
   getRecentProduct,
   updateProduct,
 } from "../controllers/productController.js";
@@ -19,5 +21,7 @@ router.put("/update/:productId", verifyToken, updateProduct);
 router.delete("/delete/:productId", verifyToken, deleteProduct);
 router.get("/getByCategory/:category", getProductByCategory);
 router.get("/getEachProduct/:productId", getEachProduct);
+router.get("/getProductBySearch/:searchKey", getProductBySearch);
+router.post("/getProductByFilter/:filterType", getProductByFilter);
 
 export default router;

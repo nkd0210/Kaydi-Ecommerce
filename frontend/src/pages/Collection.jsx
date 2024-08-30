@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import Loader from '../components/Loader'
 import 'animate.css'
+import ProductCard from '../components/ProductCard'
 
 const Collection = () => {
 
@@ -168,18 +169,7 @@ const Collection = () => {
                                                 {
                                                     productsBySubCategory && productsBySubCategory.length > 0 && (
                                                         productsBySubCategory.map((product, index) => (
-                                                            <div
-                                                                onClick={() => { navigate(`/productDetail/${product._id}`) }}
-                                                                key={index}
-                                                                className='flex flex-col px-[10px] gap-[10px] animate__animated animate__zoomIn'>
-                                                                <div className='w-[300px] h-[400px] overflow-hidden'>
-                                                                    <img src={product?.listingPhotoPaths[0]} alt="image" className='w-full h-full object-cover rounded-[10px] transform transition-transform ease-in hover:scale-110 cursor-pointer' />
-                                                                </div>
-                                                                <div className='flex flex-col my-[20px] gap-[10px]'>
-                                                                    <span>{product.name}</span>
-                                                                    <span className='font-semibold text-[12px]'>{product.price}&#8363;</span>
-                                                                </div>
-                                                            </div>
+                                                            <ProductCard product={product} key={index} />
                                                         ))
                                                     )
                                                 }
