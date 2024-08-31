@@ -15,6 +15,8 @@ const Search = () => {
     const { currentUser } = useSelector((state) => state.user);
     const { searchKey } = useParams();
 
+    const [newSearchKey, setNewSearchKey] = useState(searchKey);
+
     const navigate = useNavigate();
 
     // FILTER
@@ -25,10 +27,17 @@ const Search = () => {
     const [allProducts, setAllProducts] = useState([]);
     const [loadingProducts, setLoadingProduct] = useState(false);
 
-    const handleFetchAllProducts = async () => {
+    const [page, setPage] = useState(1);
+    const [totalPage, setTotalPage] = useState(1);
+    const [productCount, setProductCount] = useState(0);
+
+    const handleFetchProductsPagination = async (page) => {
         setLoadingProduct(true);
+        setTotalPage(1);
+        setProductCount(0);
+        setAllProducts([]);
         try {
-            const res = await fetch(`/api/product/getAllProduct`, {
+            const res = await fetch(`/api/product/getProductPagination?page=${page}&limit=10`, {
                 method: "GET"
             });
             const data = await res.json();
@@ -36,7 +45,9 @@ const Search = () => {
                 console.log(data.message);
                 return;
             } else {
-                setAllProducts(data.allProducts);
+                setAllProducts(data.listProducts);
+                setTotalPage(data.totalPages);
+                setProductCount(data.totalNumber);
             }
         } catch (error) {
             console.log(error.message);
@@ -44,6 +55,60 @@ const Search = () => {
             setLoadingProduct(false);
         }
     }
+
+    const handleNextPage = () => {
+        if (page < totalPage) {
+            setPage(prevPage => {
+                const newPage = prevPage + 1;
+                if (selectCategory === 'all') {
+                    handleFetchProductsPagination(newPage);
+                } else if (selectCategory && selectCategory !== 'all') {
+                    handleFetchProductByCategory(selectCategory, newPage);
+                } else if (!selectCategory && newSearchKey) {
+                    handleFetchProductBySearchKey(newPage);
+                }
+                return newPage;
+            });
+        }
+    };
+
+    const handlePreviousPage = () => {
+        if (page > 1) {
+            setPage(prevPage => {
+                const newPage = prevPage - 1;
+                if (selectCategory === 'all') {
+                    handleFetchProductsPagination(newPage);
+                } else if (selectCategory && selectCategory !== 'all') {
+                    handleFetchProductByCategory(selectCategory, newPage); // Pass category and page
+                } else if (!selectCategory && newSearchKey) {
+                    handleFetchProductBySearchKey(newPage); // Pass page for search
+                }
+                return newPage;
+            });
+        }
+    };
+
+
+
+    // const handleFetchAllProducts = async () => {
+    //     setLoadingProduct(true);
+    //     try {
+    //         const res = await fetch(`/api/product/getAllProduct`, {
+    //             method: "GET"
+    //         });
+    //         const data = await res.json();
+    //         if (!res.ok) {
+    //             console.log(data.message);
+    //             return;
+    //         } else {
+    //             setAllProducts(data.allProducts);
+    //         }
+    //     } catch (error) {
+    //         console.log(error.message);
+    //     } finally {
+    //         setLoadingProduct(false);
+    //     }
+    // }
 
     const [allCategories, setAllCategories] = useState([]);
     const [loadingCategory, setLoadingCategory] = useState(false);
@@ -68,10 +133,17 @@ const Search = () => {
         }
     }
 
-    const handleFetchProductBySearchKey = async () => {
+    useEffect(() => {
+        handleFetchAllCategories();
+    }, [])
+
+    const handleFetchProductBySearchKey = async (page) => {
         setLoadingProduct(true);
+        setTotalPage(1);
+        setProductCount(0);
+        setAllProducts([]);
         try {
-            const res = await fetch(`/api/product/getProductBySearch/${searchKey}`, {
+            const res = await fetch(`/api/product/getProductBySearch/${searchKey}?page=${page}&limit=10`, {
                 method: "GET"
             });
             const data = await res.json();
@@ -79,7 +151,9 @@ const Search = () => {
                 console.log(data.message);
                 return;
             } else {
-                setAllProducts(data);
+                setAllProducts(data.findProducts);
+                setTotalPage(data.totalPages);
+                setProductCount(data.totalNumber);
             }
         } catch (error) {
             console.log(error.message);
@@ -89,19 +163,22 @@ const Search = () => {
     }
 
     useEffect(() => {
-        handleFetchAllCategories();
-    }, [])
-
-    useEffect(() => {
-        handleFetchProductBySearchKey();
+        if (searchKey) {
+            setPage(1);
+            setSelectCategory('');
+            handleFetchProductBySearchKey(1);
+        }
     }, [searchKey])
 
     const [selectCategory, setSelectCategory] = useState('');
 
-    const handleFetchProductByCategory = async (categoryName) => {
+    const handleFetchProductByCategory = async (categoryName, page) => {
         setLoadingProduct(true);
+        setTotalPage(1);
+        setProductCount(0);
+        setAllProducts([]);
         try {
-            const res = await fetch(`/api/product/getByCategory/${categoryName}`, {
+            const res = await fetch(`/api/product/getByCategory/${categoryName}?page=${page}&limit=10`, {
                 method: "GET"
             });
             const data = await res.json();
@@ -110,6 +187,8 @@ const Search = () => {
                 return;
             } else {
                 setAllProducts(data.findProductByCategory);
+                setTotalPage(data.totalPages);
+                setProductCount(data.totalNumber);
             }
         } catch (error) {
             console.log(error.message);
@@ -119,16 +198,21 @@ const Search = () => {
     }
 
     const handleClickCategory = (categoryName) => {
+        setNewSearchKey('');
         setSelectCategory(categoryName);
-        handleFetchProductByCategory(categoryName);
+        setPage(1);
+        handleFetchProductByCategory(categoryName, page);
     }
 
     const handleClickAll = () => {
+        setNewSearchKey('');
         setSelectCategory('all');
-        handleFetchAllProducts();
+        setPage(1);
+        handleFetchProductsPagination(page);
     }
 
     const handleFilterProduct = async () => {
+        setLoadingProduct(true);
         try {
             const res = await fetch(`/api/product/getProductByFilter/${sortType}`, {
                 method: "POST",
@@ -149,11 +233,15 @@ const Search = () => {
 
         } catch (error) {
             console.log(error.message);
+        } finally {
+            setLoadingProduct(false);
         }
     }
 
     useEffect(() => {
-        handleFilterProduct();
+        if (sortType) {
+            handleFilterProduct();
+        }
     }, [sortType])
 
     return (
@@ -161,7 +249,7 @@ const Search = () => {
             <Navigation />
             <Navbar />
             <div className='h-screen overflow-y-scroll w-full p-[20px] flex flex-col gap-[40px]'>
-                <Filter searchKey={searchKey} showType={showType} setShowType={setShowType} sortType={sortType} setSortType={setSortType} productCount={allProducts?.length} />
+                <Filter newSearchKey={newSearchKey} setNewSearchKey={setNewSearchKey} showType={showType} setShowType={setShowType} sortType={sortType} setSortType={setSortType} productCount={productCount} handleFetchProductBySearchKey={handleFetchProductBySearchKey} />
                 <div className='flex max-md:flex-col gap-[30px]'>
                     {/* SIDE BAR */}
                     <div className='w-[250px]'>
@@ -174,7 +262,7 @@ const Search = () => {
                                     <p onClick={() => handleClickAll('all')} className={` cursor-pointer ${selectCategory === 'all' ? 'text-red-400 font-semibold underline' : ''}`}>Tất cả</p>
                                     {
                                         allCategories?.map((category, index) => (
-                                            <p onClick={() => handleClickCategory(category.name)} className={`cursor-pointer ${selectCategory === category.name ? 'text-red-400 font-semibold underline' : ""}`}>{category.title}</p>
+                                            <p key={index} onClick={() => handleClickCategory(category.name)} className={`cursor-pointer ${selectCategory === category.name ? 'text-red-400 font-semibold underline' : ""}`}>{category.title}</p>
                                         ))
                                     }
                                 </div>
@@ -190,7 +278,7 @@ const Search = () => {
                             ) : !Array.isArray(allProducts) || allProducts.length === 0 ? (
                                 <p>Không tìm thấy sản phẩm nào!</p>
                             ) : (
-                                <>
+                                <div className='flex-1'>
                                     {
                                         showType === 'grid' ? (
                                             <div className='flex flex-wrap flex-1 gap-[20px] mb-[40px]'>
@@ -217,7 +305,12 @@ const Search = () => {
                                             </div>
                                         )
                                     }
-                                </>
+                                    <div className='flex justify-center items-center gap-[10px] mb-[40px]'>
+                                        <button onClick={handlePreviousPage} disabled={page === 1}>{`<`}</button>
+                                        <p>{page}/{totalPage}</p>
+                                        <button onClick={handleNextPage} disabled={page === totalPage}>{`>`}</button>
+                                    </div>
+                                </div>
                             )
                         }
                     </>

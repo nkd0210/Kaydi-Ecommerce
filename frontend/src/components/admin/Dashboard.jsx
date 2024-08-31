@@ -241,53 +241,61 @@ const Dashboard = () => {
                 <h2 className='font-semibold text-[20px] uppercase'>Diagram</h2>
 
                 <div className='chart flex flex-col gap-[50px] py-[20px] animate__animated animate__fadeInUp'>
-
                     {/* BAR CHART */}
-                    <div className='w-[full] h-[350px] rounded-[10px] border border-black mb-[20px] p-[20px]'>
-                        <Bar
-                            data={{
-                                labels: orderPerDay?.map((data) => data._id),
-                                datasets: [
-                                    {
-                                        label: "Total price per day",
-                                        data: orderPerDay?.map((data) => data.totalAmount),
-                                        borderRadius: 10,
-                                    }
-                                ]
-                            }}
-                        />
+                    <div>
+                        <h3 className='uppercase mb-[20px] text-[18px] font-semibold'>order bar chart</h3>
+                        <div className='w-[full] h-[350px] rounded-[10px] border border-black mb-[20px] p-[20px]'>
+                            <Bar
+                                data={{
+                                    labels: orderPerDay?.map((data) => data._id),
+                                    datasets: [
+                                        {
+                                            label: "Total price per day",
+                                            data: orderPerDay?.map((data) => data.totalAmount),
+                                            borderRadius: 10,
+                                        }
+                                    ]
+                                }}
+                            />
+                        </div>
                     </div>
 
                     {/* LINE CHART */}
-                    <div className='w-[full] h-[350px] rounded-[10px] border border-black mb-[20px] p-[20px]'>
-                        <Line
-                            data={{
-                                labels: orderPerDay?.map((data) => data._id),
-                                datasets: [
-                                    {
-                                        label: "Total price per day",
-                                        data: orderPerDay?.map((data) => data.totalAmount),
-                                        borderRadius: 10,
-                                    }
-                                ]
-                            }}
-                        />
+                    <div>
+                        <h3 className='uppercase mb-[20px] text-[18px] font-semibold'>order line chart</h3>
+                        <div className='w-[full] h-[350px] rounded-[10px] border border-black mb-[20px] p-[20px]'>
+                            <Line
+                                data={{
+                                    labels: orderPerDay?.map((data) => data._id),
+                                    datasets: [
+                                        {
+                                            label: "Total price per day",
+                                            data: orderPerDay?.map((data) => data.totalAmount),
+                                            borderRadius: 10,
+                                        }
+                                    ]
+                                }}
+                            />
+                        </div>
                     </div>
 
                     {/* DOUGHNUT CHART */}
-                    <div className='w-[full] h-[350px] rounded-[10px] border border-black mb-[20px] p-[20px]'>
-                        <Doughnut
-                            data={{
-                                labels: vouchers?.map((data) => data.code),
-                                datasets: [
-                                    {
-                                        label: "Voucher used",
-                                        data: vouchers?.map((data) => data.usedCount),
-                                        borderRadius: 10,
-                                    }
-                                ]
-                            }}
-                        />
+                    <div>
+                        <h3 className='uppercase mb-[20px] text-[18px] font-semibold'>voucher chart</h3>
+                        <div className='w-[full] h-[350px] rounded-[10px] border border-black mb-[20px] p-[20px]'>
+                            <Doughnut
+                                data={{
+                                    labels: vouchers?.map((data) => data.code),
+                                    datasets: [
+                                        {
+                                            label: "Voucher used",
+                                            data: vouchers?.map((data) => data.usedCount),
+                                            borderRadius: 10,
+                                        }
+                                    ]
+                                }}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>

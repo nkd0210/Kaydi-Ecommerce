@@ -13,9 +13,9 @@ const Collection = () => {
     const { category, subcategory } = useParams();
     const navigate = useNavigate();
 
-    const [productsInfo, setProductsInfo] = useState({});
     const [productsByCategory, setProductsByCategory] = useState([]);
     const [loadingProduct, setLoadingProduct] = useState(false);
+    const [totalNumber, setTotalNumber] = useState(0);
 
     const handleFetchProductsByCategory = async () => {
         setLoadingProduct(true);
@@ -28,8 +28,8 @@ const Collection = () => {
                 console.log(data.message);
                 return;
             } else {
-                setProductsInfo(data);
                 setProductsByCategory(data.findProductByCategory);
+                setTotalNumber(data.totalNumber)
             }
         } catch (error) {
             console.log(error.message);
@@ -134,7 +134,7 @@ const Collection = () => {
                                 {
                                     !subcategory ? (
                                         <>
-                                            <p className='text-gray-500 text-[14px]'> Tìm thấy {productsInfo?.numberOfProductFound} sản phẩm!</p>
+                                            <p className='text-gray-500 text-[14px]'> Tìm thấy {totalNumber} sản phẩm!</p>
                                             <div className='w-full flex flex-wrap gap-[30px] animate__animated animate__fadeInUp mt-[40px] animate__animated animate__fadeInUp'>
                                                 {
                                                     productsByCategory && productsByCategory.length > 0 && (
@@ -159,10 +159,10 @@ const Collection = () => {
                                     ) : (
                                         <>
                                             {
-                                                !subProductInfo?.numberOfProductFound ? (
+                                                !subProductInfo?.totalNumber ? (
                                                     <p className='text-gray-500 text-[14px]'> Không tìm thấy sản phẩm!</p>
                                                 ) : (
-                                                    <p className='text-gray-500 text-[14px]'> Tìm thấy {subProductInfo?.numberOfProductFound} sản phẩm!</p>
+                                                    <p className='text-gray-500 text-[14px]'> Tìm thấy {subProductInfo?.totalNumber} sản phẩm!</p>
                                                 )
                                             }
                                             <div className='w-full flex flex-wrap gap-[30px] animate__animated animate__fadeInUp mt-[40px] animate__animated animate__fadeInUp'>

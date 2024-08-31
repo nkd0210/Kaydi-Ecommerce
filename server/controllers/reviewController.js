@@ -41,15 +41,38 @@ export const createReview = async (req, res, next) => {
 export const getProductReview = async (req, res, next) => {
   const { productId } = req.params;
   try {
-    const findProductReview = await Review.find({ product: productId })
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 6;
+
+    const skip = (page - 1) * limit;
+
+    const allProductsReview = await Review.find({ product: productId })
       .sort({ createdAt: -1 })
       .populate("creator product order");
+
+    const totalNumber = allProductsReview.length;
+
+    const findProductReview = await Review.find({ product: productId })
+      .sort({ createdAt: -1 })
+      .populate("creator product order")
+      .skip(skip)
+      .limit(limit);
 
     if (findProductReview.length === 0) {
       return res.json({ message: "This product doesnt have any review" });
     }
+
+    const totalRating = allProductsReview.reduce(
+      (sum, review) => sum + review.rating,
+      0
+    );
+    const averageRating = totalRating / totalNumber;
+
     res.status(200).json({
-      totalReview: findProductReview.length,
+      totalNumber,
+      averageRating: averageRating.toFixed(1),
+      currentPage: page,
+      totalPages: Math.ceil(totalNumber / limit),
       reviews: findProductReview,
     });
   } catch (error) {

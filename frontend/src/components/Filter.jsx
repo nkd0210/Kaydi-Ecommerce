@@ -6,11 +6,10 @@ import 'animate.css'
 import { BsFillGridFill, BsList } from 'react-icons/bs'
 import { CiSearch } from "react-icons/ci";
 
-const Filter = ({ searchKey, showType, setShowType, sortType, setSortType, productCount }) => {
+const Filter = ({ newSearchKey, setNewSearchKey, showType, setShowType, sortType, setSortType, productCount, handleFetchProductBySearchKey }) => {
 
     const navigate = useNavigate();
 
-    const [newSearchKey, setNewSearchKey] = useState(searchKey);
 
     const handleKeyChange = (e) => {
         setNewSearchKey(e.target.value);
@@ -18,6 +17,7 @@ const Filter = ({ searchKey, showType, setShowType, sortType, setSortType, produ
 
     const handleClickSearch = () => {
         navigate(`/search/${newSearchKey}`);
+        handleFetchProductBySearchKey();
     }
 
     return (

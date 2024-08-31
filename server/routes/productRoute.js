@@ -8,6 +8,7 @@ import {
   getProductByCategory,
   getProductByFilter,
   getProductBySearch,
+  getProductPagination,
   getRecentProduct,
   updateProduct,
 } from "../controllers/productController.js";
@@ -17,6 +18,7 @@ const router = express.Router();
 router.post("/create", verifyToken, createProduct);
 router.get("/getRecentProduct/:limitNumber", getRecentProduct);
 router.get("/getAllProduct", getAllProduct);
+router.get("/getProductPagination", getProductPagination);
 router.put("/update/:productId", verifyToken, updateProduct);
 router.delete("/delete/:productId", verifyToken, deleteProduct);
 router.get("/getByCategory/:category", getProductByCategory);

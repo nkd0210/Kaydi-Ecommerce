@@ -86,6 +86,32 @@ export const getAllProduct = async (req, res, next) => {
   }
 };
 
+export const getProductPagination = async (req, res, next) => {
+  try {
+    const totalNumber = await Product.countDocuments();
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    const skip = (page - 1) * limit;
+
+    const listProducts = await Product.find().skip(skip).limit(limit);
+
+    if (listProducts.length === 0) {
+      return res.status(404).json({ message: "No product found" });
+    }
+
+    res.status(200).json({
+      totalNumber: totalNumber,
+      currentPage: page,
+      totalPages: Math.ceil(totalNumber / limit),
+      listProducts: listProducts,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const updateProduct = async (req, res, next) => {
   if (!req.user.isAdmin) {
     return res
@@ -134,14 +160,26 @@ export const deleteProduct = async (req, res, next) => {
 export const getProductByCategory = async (req, res, next) => {
   const category = req.params.category;
   try {
-    const findProductByCategory = await Product.find({ categories: category });
-    const numberOfProductFound = findProductByCategory.length;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    const skip = (page - 1) * limit;
+
+    const allProducts = await Product.find({ categories: category });
+
+    const findProductByCategory = await Product.find({ categories: category })
+      .skip(skip)
+      .limit(limit);
+
+    const totalNumber = allProducts.length;
 
     if (findProductByCategory.length === 0) {
       return res.json({ message: "No product match in this category" });
     }
     res.status(200).json({
-      numberOfProductFound,
+      totalNumber,
+      currentPage: page,
+      totalPages: Math.ceil(totalNumber / limit),
       findProductByCategory,
     });
   } catch (error) {
@@ -164,17 +202,41 @@ export const getEachProduct = async (req, res, next) => {
 
 export const getProductBySearch = async (req, res, next) => {
   const { searchKey } = req.params;
+
   try {
-    const findProducts = await Product.find({
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    const skip = (page - 1) * limit;
+
+    const allProducts = await Product.find({
       name: {
         $regex: searchKey,
         $options: "i",
       },
     });
+
+    const findProducts = await Product.find({
+      name: {
+        $regex: searchKey,
+        $options: "i",
+      },
+    })
+      .skip(skip)
+      .limit(limit);
+
     if (findProducts.length === 0) {
       return res.json({ message: "No product found with this name" });
     }
-    res.status(200).json(findProducts);
+
+    const totalNumber = allProducts.length;
+
+    res.status(200).json({
+      totalNumber: totalNumber,
+      currentPage: page,
+      totalPages: Math.ceil(totalNumber / limit),
+      findProducts: findProducts,
+    });
   } catch (error) {
     next(error);
   }
