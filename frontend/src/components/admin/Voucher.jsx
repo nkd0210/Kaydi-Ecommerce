@@ -462,7 +462,7 @@ const Voucher = () => {
                             <h3 className='text-[16px] font-semibold'>All Voucher</h3>
                         </div>
 
-                        <div className='border rounded-[20px] mt-[20px] p-[10px] bg-white max-h-[500px] max-w-full overflow-x-scroll overflow-y-scroll '>
+                        <div className='border mt-[20px] p-[10px] bg-white max-h-[500px] max-w-full overflow-x-scroll overflow-y-scroll '>
                             {Object.keys(allVouchers).length === 0 ? (
                                 <div>Empty voucher! </div>
                             ) : (
@@ -479,7 +479,7 @@ const Voucher = () => {
                             <h3 className='text-[16px] font-semibold'>Edit Voucher</h3>
                         </div>
 
-                        <div className='max-md:w-[500px] w-[1300px] overflow-scroll p-[20px] bg-white'>
+                        <div className='3xl:w-full w-[1300px] max-md:w-[500px]  overflow-scroll p-[20px] bg-white'>
                             {loadingVoucher ? (
                                 <Loader />
                             ) : (

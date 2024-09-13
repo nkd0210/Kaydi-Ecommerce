@@ -8,7 +8,11 @@ export const getAllUsers = async (req, res, next) => {
       .json({ message: "You dont have permission to do this action" });
   }
   try {
-    const allUsers = await User.find();
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const allUsers = await User.find().skip(skip).limit(limit);
 
     const users = allUsers.map((user) => {
       const { password, ...rest } = user._doc;
@@ -16,6 +20,7 @@ export const getAllUsers = async (req, res, next) => {
     });
 
     const userCount = await User.countDocuments();
+
     const now = new Date();
     const oneMonthAgo = new Date(
       now.getFullYear(),
@@ -39,12 +44,15 @@ export const getAllUsers = async (req, res, next) => {
     if (allUsers.length === 0) {
       return res.status(404).json({ message: "No users were found" });
     }
+
+    const totalPages = Math.ceil(userCount / limit);
+
     res.status(200).json({
       userCount,
       lastWeekUsersCount: lastWeekUsers.length,
-      lastWeekUsers: lastWeekUsers,
       lastMonthUsersCount: lastMonthUsers.length,
-      lastMonthUsers: lastMonthUsers,
+      currentPage: page,
+      totalPages,
       users,
     });
   } catch (error) {

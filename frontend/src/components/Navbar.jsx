@@ -31,7 +31,7 @@ const Navbar = () => {
 
     const handleFetchCategories = async () => {
         try {
-            const res = await fetch('/api/category/getAllCategories', {
+            const res = await fetch(`/api/category/getAllCategories`, {
                 method: "GET",
             });
             const data = await res.json();

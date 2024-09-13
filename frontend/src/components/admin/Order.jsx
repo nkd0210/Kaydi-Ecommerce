@@ -13,19 +13,19 @@ import { FaGripLinesVertical } from "react-icons/fa";
 import EditCategory from './category/EditCategory';
 import SingleOrder from './order/SingleOrder';
 import Loader from '../Loader';
+import CustomerOrder from './order/CustomerOrder';
 
 const Order = () => {
 
+    const [orderData, setOrderData] = useState({})
     const [allOrders, setAllOrders] = useState([]);
-    const [totalOrders, setTotalOrders] = useState([]);
-    const [lastWeekOrders, setLastWeekOrders] = useState([]);
-    const [lastMonthOrders, setLastMonthOrders] = useState([]);
     const [loadingOrders, setLoadingOrders] = useState(false);
 
-    const handleFetchOrder = async () => {
+
+    const handleFetchOrder = async (page) => {
         setLoadingOrders(true);
         try {
-            const res = await fetch(`/api/order/getAllOrders`, {
+            const res = await fetch(`/api/order/getAllOrders?page=${page}&limit=5`, {
                 method: "GET"
             });
             const data = await res.json();
@@ -33,10 +33,8 @@ const Order = () => {
                 console.log(data.message);
                 return;
             } else {
+                setOrderData(data)
                 setAllOrders(data.findOrder);
-                setLastMonthOrders(data.lastMonthOrder);
-                setLastWeekOrders(data.lastWeekOrder);
-                setTotalOrders(data.numberOfOrder);
             }
         } catch (error) {
             console.log(error.message);
@@ -45,11 +43,80 @@ const Order = () => {
         }
     }
 
-    useEffect(() => {
-        handleFetchOrder();
-    }, [])
+
 
     const [orderType, setOrderType] = useState('all')
+
+    const [page, setPage] = useState(1);
+
+    const handleNextPage = () => {
+        if (page < orderData?.totalPages) {
+            setPage(prevPage => {
+                const newPage = prevPage + 1;
+                handleFetchOrder(newPage);
+                return newPage;
+            })
+        }
+    }
+
+    const handlePreviousPage = () => {
+        if (page > 1) {
+            setPage(prevPage => {
+                const newPage = prevPage - 1;
+                handleFetchOrder(newPage);
+                return newPage;
+            })
+        }
+    }
+
+    const [customerOrders, setCustomerOrders] = useState([]);
+    const [loadingCustomerOrder, setLoadingCustomerOrder] = useState(false);
+
+    const handleFetchCustomerOrders = async (page) => {
+        setLoadingCustomerOrder(true);
+        try {
+            const res = await fetch(`/api/order/getAllOrdersOfCustomer?page=${page}&limit=10`, {
+                method: "GET",
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                console.log("fetching all order of customer failed")
+            } else {
+                setCustomerOrders(data);
+            }
+        } catch (error) {
+            console.log(error.message);
+        } finally {
+            setLoadingCustomerOrder(false);
+        }
+    }
+
+    const [pageCustomer, setPageCustomer] = useState(1);
+
+    const handleNextPageCustomer = () => {
+        if (pageCustomer < customerOrders?.totalPages) {
+            setPageCustomer(prevPage => {
+                const newPage = prevPage + 1;
+                handleFetchCustomerOrders(newPage);
+                return newPage;
+            })
+        }
+    }
+
+    const handlePreviousPageCustomer = () => {
+        if (pageCustomer > 1) {
+            setPageCustomer(prevPage => {
+                const newPage = prevPage - 1;
+                handleFetchCustomerOrders(newPage);
+                return newPage;
+            })
+        }
+    }
+
+    useEffect(() => {
+        handleFetchOrder(1);
+        handleFetchCustomerOrders(1);
+    }, [])
 
 
     return (
@@ -84,21 +151,21 @@ const Order = () => {
                                     <SiVirustotal className='text-[20px]' />
                                     <span>Total order: </span>
                                 </div>
-                                <p>{totalOrders}</p>
+                                <p>{orderData?.numberOfOrder}</p>
                             </div>
                             <div className='bg-white rounded-[10px] p-[20px] flex items-center justify-center gap-[20px] w-[300px] shadow-md'>
                                 <div className='flex gap-[5px]'>
                                     <LiaCalendarWeekSolid className='text-[20px]' />
                                     <span>Last week order: </span>
                                 </div>
-                                <p>{lastWeekOrders}</p>
+                                <p>{orderData?.lastWeekOrder}</p>
                             </div>
                             <div className='bg-white rounded-[10px] p-[20px] flex items-center justify-center gap-[20px] w-[300px] shadow-md'>
                                 <div className='flex gap-[5px]'>
                                     <MdCalendarMonth className='text-[20px]' />
                                     <span>Last month order: </span>
                                 </div>
-                                <p>{lastMonthOrders}</p>
+                                <p>{orderData?.lastMonthOrder}</p>
                             </div>
                         </div>
 
@@ -110,7 +177,7 @@ const Order = () => {
 
                         </div>
 
-                        <div className='border rounded-[20px] mt-[20px] p-[10px] bg-white max-h-full max-w-full overflow-x-scroll overflow-y-scroll'>
+                        <div className='border rounded-[20px] mt-[20px] p-[10px] bg-white max-w-full overflow-x-scroll '>
                             {Object.keys(allOrders).length === 0 ? (
                                 <div>Empty order! </div>
                             ) : (
@@ -122,12 +189,24 @@ const Order = () => {
                                                     <SingleOrder key={index} order={order} handleFetchOrder={handleFetchOrder} />
                                                 ))
                                             }
+                                            <div className='flex justify-center mx-auto items-center gap-[10px] my-[40px]'>
+                                                <button onClick={handlePreviousPage} disabled={page === 1}>{`<`}</button>
+                                                <p>{orderData?.currentPage} / {orderData?.totalPages}</p>
+                                                <button onClick={handleNextPage} disabled={orderData?.currentPage === orderData?.totalPages}>{`>`}</button>
+                                            </div>
                                         </>
                                     ) : (
                                         <>
                                             {
-
+                                                customerOrders?.ordersByEachUser?.map((order, index) => (
+                                                    <CustomerOrder key={index} order={order} />
+                                                ))
                                             }
+                                            <div className='flex justify-center mx-auto items-center gap-[10px] my-[40px]'>
+                                                <button onClick={handlePreviousPageCustomer} disabled={pageCustomer === 1}>{`<`}</button>
+                                                <p>{customerOrders?.currentPage} / {customerOrders?.totalPages}</p>
+                                                <button onClick={handleNextPageCustomer} disabled={customerOrders?.currentPage === customerOrders?.totalPages}>{`>`}</button>
+                                            </div>
                                         </>
                                     )}
                                 </div>
@@ -136,7 +215,7 @@ const Order = () => {
                     </>
                 )
             }
-        </div>
+        </div >
     )
 }
 

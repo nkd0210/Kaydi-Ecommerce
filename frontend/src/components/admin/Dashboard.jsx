@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 // CHART
 import { Chart as ChartJS, defaults } from 'chart.js/auto';
-import { Bar, Doughnut, Line } from 'react-chartjs-2';
+import { Bar, Doughnut, Line, Pie } from 'react-chartjs-2';
 
 import 'animate.css';
 
@@ -253,6 +253,9 @@ const Dashboard = () => {
                                             label: "Total price per day",
                                             data: orderPerDay?.map((data) => data.totalAmount),
                                             borderRadius: 10,
+                                            backgroundColor: "rgba(75, 192, 192, 0.2)",
+                                            borderColor: "rgba(75, 192, 192, 1)",
+                                            borderWidth: 1,
                                         }
                                     ]
                                 }}
@@ -272,6 +275,8 @@ const Dashboard = () => {
                                             label: "Total price per day",
                                             data: orderPerDay?.map((data) => data.totalAmount),
                                             borderRadius: 10,
+                                            borderColor: "rgba(255, 157, 116, 0.8)",
+                                            borderWidth: 2,
                                         }
                                     ]
                                 }}
@@ -279,11 +284,11 @@ const Dashboard = () => {
                         </div>
                     </div>
 
-                    {/* DOUGHNUT CHART */}
+                    {/* PIE CHART */}
                     <div>
                         <h3 className='uppercase mb-[20px] text-[18px] font-semibold'>voucher chart</h3>
                         <div className='w-[full] h-[350px] rounded-[10px] border border-black mb-[20px] p-[20px]'>
-                            <Doughnut
+                            <Pie
                                 data={{
                                     labels: vouchers?.map((data) => data.code),
                                     datasets: [
@@ -291,6 +296,18 @@ const Dashboard = () => {
                                             label: "Voucher used",
                                             data: vouchers?.map((data) => data.usedCount),
                                             borderRadius: 10,
+                                            borderColor: "rgba(87, 246, 230, 0.8)",
+                                            backgroundColor: vouchers?.map((data, index) => {
+                                                const colors = [
+                                                    "rgba(255, 99, 132, 0.6)", // Red
+                                                    "rgba(54, 162, 235, 0.6)", // Blue
+                                                    "rgba(255, 206, 86, 0.6)",  // Yellow
+                                                    "rgba(75, 192, 192, 0.6)",  // Green
+                                                    "rgba(153, 102, 255, 0.6)", // Purple
+                                                    "rgba(255, 159, 64, 0.6)"   // Orange
+                                                ];
+                                                return colors[index % colors.length]; // Cycle through the colors
+                                            }),
                                         }
                                     ]
                                 }}

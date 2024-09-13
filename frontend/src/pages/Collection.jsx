@@ -13,30 +13,9 @@ const Collection = () => {
     const { category, subcategory } = useParams();
     const navigate = useNavigate();
 
+    const [productsData, setProductsData] = useState([]);
     const [productsByCategory, setProductsByCategory] = useState([]);
     const [loadingProduct, setLoadingProduct] = useState(false);
-    const [totalNumber, setTotalNumber] = useState(0);
-
-    const handleFetchProductsByCategory = async () => {
-        setLoadingProduct(true);
-        try {
-            const res = await fetch(`/api/product/getByCategory/${category}`, {
-                method: "GET"
-            });
-            const data = await res.json();
-            if (!res.ok) {
-                console.log(data.message);
-                return;
-            } else {
-                setProductsByCategory(data.findProductByCategory);
-                setTotalNumber(data.totalNumber)
-            }
-        } catch (error) {
-            console.log(error.message);
-        } finally {
-            setLoadingProduct(false);
-        }
-    }
 
     const [categoryInfo, setCategoryInfo] = useState({});
     const [loadingCategory, setLoadingCategory] = useState(false);
@@ -61,14 +40,39 @@ const Collection = () => {
         }
     }
 
+    const [page, setPage] = useState(1);
+
+    const handleFetchProductsByCategory = async (page) => {
+        setLoadingProduct(true);
+
+        try {
+            const res = await fetch(`/api/product/getByCategory/${category}?page=${page}&limit=10`, {
+                method: "GET"
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                console.log(data.message);
+                return;
+            } else {
+                setProductsData(data);
+                setProductsByCategory(data.findProductByCategory);
+                setPage(data.currentPage);
+            }
+        } catch (error) {
+            console.log(error.message);
+        } finally {
+            setLoadingProduct(false);
+        }
+    }
+
     const [productsBySubCategory, setProductsBySubCategory] = useState([]);
     const [subProductInfo, setSubProductInfo] = useState({});
 
-    const handleFetchSubCategory = async () => {
+    const handleFetchSubCategory = async (page) => {
         setProductsBySubCategory([]);
         setLoadingProduct(true);
         try {
-            const res = await fetch(`/api/product/getByCategory/${subcategory}`, {
+            const res = await fetch(`/api/product/getByCategory/${subcategory}?page=${page}&limit=10`, {
                 method: "GET"
             });
             const data = await res.json();
@@ -77,7 +81,7 @@ const Collection = () => {
                 return;
             } else {
                 setSubProductInfo(data);
-                setProductsBySubCategory(data.findProductByCategory)
+                setProductsBySubCategory(data.findProductByCategory);
             }
         } catch (error) {
             console.log(error.message);
@@ -87,7 +91,7 @@ const Collection = () => {
     }
 
     useEffect(() => {
-        handleFetchProductsByCategory();
+        handleFetchProductsByCategory(1);
         handleFetchCategory();
         handleFetchSubCategory();
     }, [category, subcategory])
@@ -96,6 +100,25 @@ const Collection = () => {
         navigate(`/collections/${category}/${item}`);
     }
 
+    const handleNextPage = () => {
+        if (page < productsData?.totalPages) {
+            setPage(prevPage => {
+                const newPage = prevPage + 1;
+                handleFetchProductsByCategory(newPage);
+                return newPage;
+            })
+        }
+    }
+
+    const handlePreviousPage = () => {
+        if (page > 1) {
+            setPage(prevPage => {
+                const newPage = prevPage - 1;
+                handleFetchProductsByCategory(newPage);
+                return newPage;
+            })
+        }
+    }
 
     return (
         <>
@@ -134,7 +157,7 @@ const Collection = () => {
                                 {
                                     !subcategory ? (
                                         <>
-                                            <p className='text-gray-500 text-[14px]'> Tìm thấy {totalNumber} sản phẩm!</p>
+                                            <p className='text-gray-500 text-[14px]'> Tìm thấy {productsData?.totalNumber} sản phẩm!</p>
                                             <div className='w-full flex flex-wrap gap-[30px] animate__animated animate__fadeInUp mt-[40px] animate__animated animate__fadeInUp'>
                                                 {
                                                     productsByCategory && productsByCategory.length > 0 && (
@@ -154,6 +177,11 @@ const Collection = () => {
                                                         ))
                                                     )
                                                 }
+                                            </div>
+                                            <div className='flex justify-center mx-auto items-center gap-[10px] my-[40px]'>
+                                                <button onClick={handlePreviousPage} disabled={page === 1}>{`<`}</button>
+                                                <p>{productsData?.currentPage}/{productsData?.totalPages}</p>
+                                                <button onClick={handleNextPage} disabled={productsData?.currentPage === productsData?.totalPages}>{`>`}</button>
                                             </div>
                                         </>
                                     ) : (

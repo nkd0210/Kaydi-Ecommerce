@@ -67,7 +67,7 @@ const CasualClothes = () => {
 
     const [loadingImage, setLoadingImage] = useState(false);
     var settings = {
-        dots: true,
+        dots: false,
         infinite: false,
         speed: 500,
         slidesToShow: Math.min(products.length, 6),

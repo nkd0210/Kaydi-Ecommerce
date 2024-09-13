@@ -6,14 +6,16 @@ import { useNavigate } from 'react-router-dom';
 import "animate.css"
 
 const History = () => {
+
+  const [userOrderData, setUserOrderData] = useState({});
   const [userOrders, setUserOrders] = useState([]);
   const { currentUser } = useSelector((state) => state.user);
   const [loadingUserOrders, setLoadingUserOrders] = useState(false);
 
-  const fetchUserOrder = async () => {
+  const fetchUserOrder = async (page) => {
     setLoadingUserOrders(true);
     try {
-      const res = await fetch(`/api/order/getUserOrder/${currentUser._id}`, {
+      const res = await fetch(`/api/order/getUserOrder/${currentUser._id}?page=${page}&limit=3`, {
         method: "GET",
       });
       const data = await res.json();
@@ -21,8 +23,8 @@ const History = () => {
         console.log(data.message);
         return;
       } else {
-        setUserOrders(data);
-        setLoadingUserOrders(false);
+        setUserOrderData(data);
+        setUserOrders(data.findUserOrder);
       }
     } catch (error) {
       console.log(error.message);
@@ -32,14 +34,35 @@ const History = () => {
   }
 
   useEffect(() => {
-    fetchUserOrder();
+    fetchUserOrder(1);
   }, [])
 
   const navigate = useNavigate();
 
+  const [page, setPage] = useState(1);
+
+  const handlePreviousPage = () => {
+    if (page > 1) {
+      setPage(prevPage => {
+        const newPage = prevPage - 1;
+        fetchUserOrder(newPage);
+        return newPage;
+      })
+    }
+  }
+
+  const handleNextPage = () => {
+    if (page < userOrderData?.totalPages) {
+      setPage(prevPage => {
+        const newPage = prevPage + 1;
+        fetchUserOrder(newPage);
+        return newPage;
+      })
+    }
+  }
 
   return (
-    <div className='w-full max-h-[800px] overflow-y-scroll bg-gray-50 p-[20px] rounded-[10px] hide-scrollbar'>
+    <div className='w-full max-h-[800px] overflow-y-scroll bg-gray-50 p-[20px] rounded-[10px]'>
       <h2 className="text-[24px] font-semibold mb-[20px] animate__animated animate__fadeIn">Lịch sử đơn hàng</h2>
       {
         loadingUserOrders ? (
@@ -75,6 +98,11 @@ const History = () => {
                 )}
               </div>
             ))}
+            <div className='flex justify-center mx-auto items-center gap-[10px] my-[40px]'>
+              <button onClick={handlePreviousPage} disabled={page === 1}>{`<`}</button>
+              <p>{userOrderData?.currentPage}/{userOrderData?.totalPages}</p>
+              <button onClick={handleNextPage} disabled={userOrderData?.currentPage === userOrderData?.totalPages}>{`>`}</button>
+            </div>
           </div>
         )
       }

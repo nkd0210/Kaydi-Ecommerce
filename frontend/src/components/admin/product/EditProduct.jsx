@@ -348,7 +348,7 @@ const EditProduct = ({ productId, setOpenEdit, setOpenShow, handleFetchProductsD
                     {loading ? (
                         <Loader />
                     ) : (
-                        <form onSubmit={handleSubmitForm} className='hide-scrollbar border shadow-md rounded-[10px] p-[10px] flex flex-col gap-[20px] h-[1000px] overflow-y-scroll'>
+                        <form onSubmit={handleSubmitForm} className=' border shadow-md p-[20px] max-md:p-[10px] flex flex-col gap-[20px] '>
                             <h2 className='text-center font-semibold text-[20px]'>General Information</h2>
                             <div>
                                 <h3 className='font-semibold pb-[10px]'>Product Name</h3>

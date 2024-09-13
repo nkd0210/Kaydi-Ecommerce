@@ -64,6 +64,8 @@ const SingleOrder = ({ order, handleFetchOrder }) => {
         }
     }
 
+
+
     return (
         <div className='border border-b-[1px] flex flex-col gap-[20px] p-[20px] rounded-[10px] w-full overflow-x-scroll shadow-md animate__animated animate__fadeInUp '>
             {
@@ -170,6 +172,7 @@ const SingleOrder = ({ order, handleFetchOrder }) => {
                             </div>
 
                         </div>
+
                     </>
                 )
             }

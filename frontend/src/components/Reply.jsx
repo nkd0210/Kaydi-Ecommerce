@@ -10,13 +10,14 @@ const Reply = () => {
 
   const { currentUser } = useSelector((state) => state.user);
   const [loadingReview, setLoadingReview] = useState(false);
+  const [userReviewData, setUserReviewData] = useState({});
   const [reviews, setReviews] = useState([]);
   const navigate = useNavigate();
 
-  const handleFetchUserReview = async () => {
+  const handleFetchUserReview = async (page) => {
     setLoadingReview(true);
     try {
-      const res = await fetch(`/api/review/getUserReview/${currentUser._id}`, {
+      const res = await fetch(`/api/review/getUserReview/${currentUser._id}?page=${page}&limit=5`, {
         method: "GET"
       });
       const data = await res.json();
@@ -24,7 +25,8 @@ const Reply = () => {
         console.log(data.message);
         return;
       } else {
-        setReviews(data);
+        setUserReviewData(data);
+        setReviews(data.findUserReview);
       }
     } catch (error) {
       console.log(error.message);
@@ -34,8 +36,30 @@ const Reply = () => {
   }
 
   useEffect(() => {
-    handleFetchUserReview();
+    handleFetchUserReview(1);
   }, [])
+
+  const [page, setPage] = useState(1);
+
+  const handlePreviousPage = () => {
+    if (page > 1) {
+      setPage(prevPage => {
+        const newPage = prevPage - 1;
+        handleFetchUserReview(newPage);
+        return newPage;
+      })
+    }
+  }
+
+  const handleNextPage = () => {
+    if (page < userReviewData?.totalPages) {
+      setPage(prevPage => {
+        const newPage = prevPage + 1;
+        handleFetchUserReview(newPage);
+        return newPage;
+      })
+    }
+  }
 
   return (
     <div className='w-full h-[600px] overflow-y-scroll bg-gray-50 p-[20px] rounded-[10px] hide-scrollbar'>
@@ -98,10 +122,15 @@ const Reply = () => {
                 </div>
               ))
             }
+            <div className='flex justify-center mx-auto items-center gap-[10px] my-[40px]'>
+              <button onClick={handlePreviousPage} disabled={page === 1}>{`<`}</button>
+              <p>{userReviewData?.currentPage}/{userReviewData?.totalPages}</p>
+              <button onClick={handleNextPage} disabled={userReviewData?.currentPage === userReviewData?.totalPages}>{`>`}</button>
+            </div>
           </div>
         )
       }
-    </div>
+    </div >
   )
 }
 

@@ -35,7 +35,7 @@ const Category = () => {
 
     const handleFetchCategories = async () => {
         try {
-            const res = await fetch('/api/category/getCategoriesFromNewest', {
+            const res = await fetch(`/api/category/getCategoriesFromNewest`, {
                 method: "GET",
             });
             const data = await res.json();
@@ -234,7 +234,7 @@ const Category = () => {
             {/* CREATE */}
             <Modal
                 open={openCreateCategory}
-                onClose={() => setOpenCreateCategory(false)}
+                onClose={() => { setOpenCreateCategory(false); setCreateDesc([]) }}
             >
                 <div className='absolute top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%] shadow-lg w-[600px] max-md:w-[400px] bg-white text-black h-[600px] overflow-y-scroll rounded-[20px] flex flex-col gap-[20px] p-[20px] max-md:p-[10px] '>
                     {loadingCreate ? (

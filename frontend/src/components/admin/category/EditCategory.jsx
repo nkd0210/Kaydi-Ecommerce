@@ -12,14 +12,6 @@ import { app } from '../../../firebase';
 import Modal from '@mui/material/Modal';
 import { IoIosCloseCircleOutline } from "react-icons/io";
 
-import { CiCirclePlus } from "react-icons/ci";
-import { MdDashboard } from "react-icons/md";
-import { IoIosPrint } from "react-icons/io";
-import { MdCategory } from "react-icons/md";
-import { FaBusinessTime } from "react-icons/fa";
-import { MdCalendarMonth } from "react-icons/md";
-import { LiaCalendarWeekSolid } from "react-icons/lia";
-import { SiVirustotal } from "react-icons/si";
 import { CiImageOn } from "react-icons/ci";
 
 import 'animate.css';
@@ -220,7 +212,7 @@ const EditCategory = ({ categories, handleFetchCategories }) => {
         }
     }
     return (
-        <div className='border rounded-[20px] mt-[20px] p-[10px] bg-white '>
+        <div className='border mt-[20px] p-[20px] max-md:p-[10px] bg-white '>
 
             {categories?.map((category, index) => (
                 <div key={index} className='border-b-[2px] py-[40px] flex flex-col gap-[20px] animate__animated animate__fadeInUp'>
@@ -259,9 +251,9 @@ const EditCategory = ({ categories, handleFetchCategories }) => {
                         }
                     </div>
 
-                    <div className='flex gap-[50px]'>
-                        <button onClick={() => { setOpenModal(true); setCategoryId(category._id); handleFetchSingleCategory(category._id) }} type='submit' className='rounded-[30px] bg-blue-400 text-white w-[160px] p-[10px] hover:bg-opacity-70'>Edit</button>
-                        <button onClick={() => { setOpenDeleteModal(true); setCategoryId(category._id) }} className='rounded-[30px] bg-red-400 text-white w-[160px] p-[10px] hover:bg-opacity-70'>Delete</button>
+                    <div className='flex gap-[20px]'>
+                        <button onClick={() => { setOpenModal(true); setCategoryId(category._id); handleFetchSingleCategory(category._id) }} type='submit' className='rounded-[20px] bg-blue-400 text-white w-[160px] p-[10px] hover:bg-opacity-70'>Edit</button>
+                        <button onClick={() => { setOpenDeleteModal(true); setCategoryId(category._id) }} className='rounded-[20px] bg-red-400 text-white w-[160px] p-[10px] hover:bg-opacity-70'>Delete</button>
                     </div>
                 </div>
             ))}

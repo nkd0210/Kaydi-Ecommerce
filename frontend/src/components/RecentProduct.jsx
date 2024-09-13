@@ -48,7 +48,7 @@ const RecentProduct = () => {
     }, []);
 
     var settings = {
-        dots: true,
+        dots: false,
         infinite: true,
         speed: 500,
         slidesToShow: Math.min(recentProducts.length, 6),

@@ -20,8 +20,9 @@ import { app } from '../firebase';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import { RiLogoutCircleLine } from "react-icons/ri";
 import 'animate.css'
+import User from '../components/admin/User';
 
 const AdminDashboard = () => {
 
@@ -32,7 +33,7 @@ const AdminDashboard = () => {
     const navigate = useNavigate();
 
     const handleLogout = async () => {
-        const res = await fetch('/api/auth/signout', {
+        const res = await fetch(`/api/auth/signout`, {
             method: "POST"
         });
         const data = await res.json();
@@ -149,9 +150,13 @@ const AdminDashboard = () => {
                         <div onClick={() => setActive('category')} className={`cursor-pointer hover:text-red-400 ${active === 'category' ? 'text-red-400' : 'text-white'}`}>Category</div>
                         <div onClick={() => setActive('order')} className={`cursor-pointer hover:text-red-400 ${active === 'order' ? 'text-red-400' : 'text-white'}`}>Order</div>
                         <div onClick={() => setActive('voucher')} className={`cursor-pointer hover:text-red-400 ${active === 'voucher' ? 'text-red-400' : 'text-white'}`}>Voucher</div>
+                        <div onClick={() => setActive('user')} className={`cursor-pointer hover:text-red-400 ${active === 'user' ? 'text-red-400' : 'text-white'}`}>User</div>
                     </div>
                 </div>
-                <div onClick={handleLogout} className={`cursor-pointer hover:text-red-400`}> Log out</div>
+                <div onClick={handleLogout} className='flex items-center justify-center gap-[10px] cursor-pointer hover:text-red-400'>
+                    <RiLogoutCircleLine />
+                    <p> Log out</p>
+                </div>
             </div>
 
             <div className='md:hidden absolute top-[10px] left-[10px] z-20' onClick={() => setOpenSidebar(true)}>
@@ -172,6 +177,7 @@ const AdminDashboard = () => {
                     <div onClick={() => { setActive('category'), setOpenSidebar(false) }} className={`cursor-pointer hover:text-red-400 ${active === 'category' ? 'text-red-400' : 'text-white'}`}>Category</div>
                     <div onClick={() => { setActive('order'), setOpenSidebar(false) }} className={`cursor-pointer hover:text-red-400 ${active === 'order' ? 'text-red-400' : 'text-white'}`}>Order</div>
                     <div onClick={() => { setActive('voucher'), setOpenSidebar(false) }} className={`cursor-pointer hover:text-red-400 ${active === 'voucher' ? 'text-red-400' : 'text-white'}`}>Voucher</div>
+                    <div onClick={() => { setActive('user'), setOpenSidebar(false) }} className={`cursor-pointer hover:text-red-400 ${active === 'user' ? 'text-red-400' : 'text-white'}`}>User</div>
                     <div onClick={handleLogout} className={`cursor-pointer hover:text-red-400`}>Log out</div>
                 </div>
             </Drawer>
@@ -183,7 +189,7 @@ const AdminDashboard = () => {
                 <div className='absolute top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%] shadow-lg w-[500px] bg-white text-black h-[500px] rounded-[20px] '>
                     <IoIosCloseCircleOutline onClick={() => setOpenModal(false)} className='absolute top-[10px] right-[10px] text-[20px] cursor-pointer hover:text-red-[400]' />
                     <form onSubmit={handleUpdateProfile} className='p-[10px] flex flex-col gap-[20px]'>
-                        <h3>Edit Profile</h3>
+                        <h3 className='text-center font-semibold text-[20px]'>Edit Profile</h3>
                         <div className='flex gap-[10px] mt-[20px]'>
                             <input onChange={(e) => setPhoto(e.target.files[0])} type="file" className='hidden' accept='image/*' ref={fileRef} />
                             {imagePending ? (
@@ -219,7 +225,7 @@ const AdminDashboard = () => {
                 {active === 'category' && <Category />}
                 {active === 'order' && <Order />}
                 {active === 'voucher' && <Voucher />}
-
+                {active === 'user' && <User />}
             </div>
         </div>
     )

@@ -278,7 +278,7 @@ const Search = () => {
                             ) : !Array.isArray(allProducts) || allProducts.length === 0 ? (
                                 <p>Không tìm thấy sản phẩm nào!</p>
                             ) : (
-                                <div className='flex-1'>
+                                <div className='flex-1 '>
                                     {
                                         showType === 'grid' ? (
                                             <div className='flex flex-wrap flex-1 gap-[20px] mb-[40px]'>
@@ -292,8 +292,9 @@ const Search = () => {
                                                     <div
                                                         key={index}
                                                         onClick={() => { navigate(`/productDetail/${product._id}`) }}
-                                                        className='flex gap-[10px] animate__animated animate__zoomIn cursor-pointer'>
-                                                        <div className='w-[300px] h-[400px] overflow-hidden'>
+                                                        className='flex gap-[10px] animate__animated animate__zoomIn cursor-pointer border rounded-[10px] p-[10px] bg-gray-50'
+                                                    >
+                                                        <div className='w-[150px] h-[200px] overflow-hidden'>
                                                             <img src={product?.listingPhotoPaths[0]} alt="image" className='w-full h-full object-cover rounded-[10px] transform transition-transform ease-in hover:scale-110' />
                                                         </div>
                                                         <div className='flex flex-col w-[300px] gap-[10px]'>
@@ -305,7 +306,7 @@ const Search = () => {
                                             </div>
                                         )
                                     }
-                                    <div className='flex justify-center items-center gap-[10px] mb-[40px]'>
+                                    <div className='flex justify-center items-center gap-[10px] my-[40px]'>
                                         <button onClick={handlePreviousPage} disabled={page === 1}>{`<`}</button>
                                         <p>{page}/{totalPage}</p>
                                         <button onClick={handleNextPage} disabled={page === totalPage}>{`>`}</button>

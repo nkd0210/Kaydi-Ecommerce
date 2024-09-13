@@ -48,11 +48,19 @@ export const createOrder = async (req, res, next) => {
 };
 
 export const getAllOrder = async (req, res, next) => {
-  if (!req.user.id) {
-    return res.status(401).json({ message: "You are not logged in" });
+  if (!req.user.isAdmin) {
+    return res
+      .status(401)
+      .json({ message: "You are not admin to do this action" });
   }
   try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+
+    const skip = (page - 1) * limit;
+
     const now = new Date();
+
     const oneMonthAgo = new Date(
       now.getFullYear(),
       now.getMonth() - 1,
@@ -65,10 +73,16 @@ export const getAllOrder = async (req, res, next) => {
     );
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
+    const allOrders = await Order.find();
+    const totalOrders = await Order.countDocuments();
+
+    const totalPages = Math.ceil(totalOrders / limit);
+
     const findOrder = await Order.find()
       .populate("userId products.productId")
-      .sort({ createdAt: -1 });
-
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
     if (findOrder.length === 0) {
       return res.status(404).json({ message: "No order found" });
     }
@@ -81,7 +95,9 @@ export const getAllOrder = async (req, res, next) => {
     ]);
 
     res.status(200).json({
-      numberOfOrder: findOrder.length,
+      numberOfOrder: totalOrders,
+      currentPage: page,
+      totalPages,
       todayOrder,
       lastWeekOrder,
       lastMonthOrder,
@@ -182,17 +198,37 @@ export const cancelOrder = async (req, res, next) => {
 
 export const getUserOrder = async (req, res, next) => {
   const { userId } = req.params;
-  if (req.user.id !== userId) {
+  if (!req.user.isAdmin && req.user.id !== userId) {
     return res
       .status(401)
       .json({ message: "You are not authorized to get this user order " });
   }
+
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+
+  const skip = (page - 1) * limit;
+
   try {
-    const findUserOrder = await Order.find({ userId }).sort({ createdAt: -1 });
+    const allUserOrder = await Order.find({ userId });
+
+    const findUserOrder = await Order.find({ userId })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
     if (findUserOrder.length === 0) {
       return res.status(404).json({ message: "No order found for this user" });
     }
-    res.status(200).json(findUserOrder);
+
+    const totalOrders = allUserOrder.length;
+    const totalPages = Math.ceil(totalOrders / limit);
+
+    res.status(200).json({
+      totalOrders,
+      currentPage: page,
+      totalPages,
+      findUserOrder,
+    });
   } catch (error) {
     next(error);
   }
@@ -335,6 +371,83 @@ export const getTotalAmountPerDay = async (req, res, next) => {
     ]);
 
     res.status(200).json(totalAmountPerDay);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getAllOrdersOfCustomer = async (req, res, next) => {
+  if (!req.user.isAdmin) {
+    return res
+      .status(401)
+      .json({ message: "You are not admin to get all orders of user" });
+  }
+
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  try {
+    const ordersByEachUser = await Order.aggregate([
+      {
+        $group: {
+          _id: "$userId",
+          totalOrders: { $sum: 1 },
+          totalAmountSpent: { $sum: "$totalAmount" }, // Ensure this field exists as well
+        },
+      },
+      {
+        $lookup: {
+          from: "users", // collection name of User model
+          localField: "_id", // the field to grouping by
+          foreignField: "_id", // the field in the User collection
+          as: "userInfo", // create an array to get user details
+        },
+      },
+      {
+        $unwind: "$userInfo",
+      },
+      {
+        $sort: { totalOrders: -1 },
+      },
+      {
+        $skip: skip,
+      },
+      {
+        $limit: limit,
+      },
+      {
+        $project: {
+          _id: 0,
+          userId: "$_id",
+          totalOrders: 1,
+          totalAmountSpent: 1,
+          "userInfo.username": 1,
+          "userInfo.email": 1,
+          "userInfo.phoneNumber": 1,
+          "userInfo.gender": 1,
+        },
+      },
+    ]);
+
+    const totalOrdersCount = await Order.aggregate([
+      {
+        $group: {
+          _id: "$userId",
+        },
+      },
+      { $count: "total" }, // Count the number of distinct userIds
+    ]);
+
+    const totalCount = totalOrdersCount[0]?.total || 0;
+    const totalPages = Math.ceil(totalCount / limit);
+
+    return res.status(200).json({
+      totalOrders: totalCount,
+      currentPage: page,
+      totalPages,
+      ordersByEachUser,
+    });
   } catch (error) {
     next(error);
   }

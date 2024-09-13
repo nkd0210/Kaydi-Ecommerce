@@ -11,7 +11,7 @@ const LeftSideBar = () => {
     const params = useParams();
     console.log(params)
     const handleLogout = async () => {
-        const res = await fetch('/api/auth/signout', {
+        const res = await fetch(`/api/auth/signout`, {
             method: "POST"
         });
         const data = await res.json();

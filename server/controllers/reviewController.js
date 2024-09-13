@@ -138,19 +138,38 @@ export const editReview = async (req, res, next) => {
 
 export const getUserReview = async (req, res, next) => {
   const { userId } = req.params;
-  if (req.user.id !== userId) {
+  if (!req.user.isAdmin && req.user.id !== userId) {
     return res
       .status(401)
       .json({ message: "You are not allowed to view this" });
   }
+
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+
+  const skip = (page - 1) * limit;
+
   try {
+    const allReviewOfUser = await Review.find({ creator: userId });
+
     const findUserReview = await Review.find({ creator: userId })
       .populate("product order")
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
     if (findUserReview.length === 0) {
       return res.json({ message: "This user dont have any review yet" });
     }
-    res.status(200).json(findUserReview);
+
+    const totalReview = allReviewOfUser.length;
+    const totalPages = Math.ceil(totalReview / limit);
+
+    res.status(200).json({
+      totalReview,
+      currentPage: page,
+      totalPages,
+      findUserReview,
+    });
   } catch (error) {
     next(error);
   }

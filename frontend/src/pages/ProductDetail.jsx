@@ -366,7 +366,7 @@ const ProductDetail = () => {
 
                     {/* Add item to cart */}
                     {openBox ? (
-                        <div className='fixed  bottom-[10px] right-[10px] w-[400px] rounded-[20px] shadow-xl z-20 bg-gray-100 border px-[10px] py-[30px] flex flex-col gap-[20px] animate__animated animate__rotateInUpRight'>
+                        <div className='fixed  bottom-[10px] max-md:bottom-[50px] right-[10px] w-[400px] rounded-[20px] shadow-xl z-20 bg-gray-100 border px-[10px] py-[30px] flex flex-col gap-[20px] animate__animated animate__rotateInUpRight'>
                             <BsArrowsCollapse onClick={() => setOpenBox(false)} className='absolute top-[10px] right-[10px] cursor-pointer hover:text-red-400 text-[20px]' />
                             <div className='flex flex-wrap gap-[10px]'>
                                 <p> Sản phẩm:</p>
@@ -389,7 +389,7 @@ const ProductDetail = () => {
                             </div>
                         </div>
                     ) : (
-                        <div className='fixed border bottom-[10px] right-[10px] w-[50px] h-[50px] rounded-[20px] shadow-xl z-20 bg-gray-100 p-[10px] flex justify-center items-center '>
+                        <div className='fixed border bottom-[10px] max-md:bottom-[50px] right-[10px] w-[50px] h-[50px] rounded-[20px] shadow-xl z-20 bg-gray-100 p-[10px] flex justify-center items-center '>
                             <BsArrowsExpand onClick={() => setOpenBox(true)} className='cursor-pointer hover:text-red-400 text-[20px]' />
                         </div>
                     )}
@@ -420,25 +420,27 @@ const ProductDetail = () => {
                                 loadingComment ? (
                                     <Loader />
                                 ) : (
-                                    <div className='flex flex-wrap max-md:flex-col gap-[20px] w-full animate__animated animate__fadeIn'>
-                                        {comments?.map((comment, index) => (
-                                            <div key={index} className='flex flex-col border rounded-[10px] p-[10px] items-start max-md:ml-[20px] gap-[10px] w-[500px] max-md:w-full'>
-                                                <div className='flex items-center gap-[5px]'>
-                                                    {[...Array(5)].map((_, index) => (
-                                                        <StarIcon
-                                                            key={index}
-                                                            className={index < comment?.rating ? 'text-yellow-300' : 'text-gray-300'}
-                                                        />
-                                                    ))}
+                                    <div className='flex flex-col gap-[20px]'>
+                                        <div className='flex flex-wrap max-md:flex-col gap-[20px] w-full animate__animated animate__fadeIn'>
+                                            {comments?.map((comment, index) => (
+                                                <div key={index} className='flex flex-col border rounded-[10px] p-[10px] items-start max-md:ml-[20px] gap-[10px] w-[500px] max-md:w-full'>
+                                                    <div className='flex items-center gap-[5px]'>
+                                                        {[...Array(5)].map((_, index) => (
+                                                            <StarIcon
+                                                                key={index}
+                                                                className={index < comment?.rating ? 'text-yellow-300' : 'text-gray-300'}
+                                                            />
+                                                        ))}
+                                                    </div>
+                                                    <p className='font-semibold text-[16px]'>{comment?.creator?.username}</p>
+                                                    <p className='text-[12px] text-gray-400'>
+                                                        {comment?.order?.products[0]?.color}/{comment?.order?.products[0]?.size}/x{comment?.order?.products[0]?.quantity}
+                                                    </p>
+                                                    <p>{comment?.comment}</p>
+                                                    <p className='text-[12px] text-gray-400'>{new Date(comment?.createdAt).toLocaleDateString('vi-VN')}</p>
                                                 </div>
-                                                <p className='font-semibold text-[16px]'>{comment?.creator?.username}</p>
-                                                <p className='text-[12px] text-gray-400'>
-                                                    {comment?.order?.products[0]?.color}/{comment?.order?.products[0]?.size}/x{comment?.order?.products[0]?.quantity}
-                                                </p>
-                                                <p>{comment?.comment}</p>
-                                                <p className='text-[12px] text-gray-400'>{new Date(comment?.createdAt).toLocaleDateString('vi-VN')}</p>
-                                            </div>
-                                        ))}
+                                            ))}
+                                        </div>
                                         <div className='flex justify-center mx-auto items-center gap-[10px] mb-[40px]'>
                                             <button onClick={handlePreviousPage} disabled={page === 1}>{`<`}</button>
                                             <p>{page}/{totalPage}</p>

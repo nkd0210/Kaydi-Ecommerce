@@ -21,7 +21,7 @@ import 'animate.css';
 const Products = () => {
 
     const [openCreate, setOpenCreate] = useState(false);
-    const [openShow, setOpenShow] = useState(false);
+    const [openShow, setOpenShow] = useState(true);
     const [openEdit, setOpenEdit] = useState(false);
 
     const [productId, setProductId] = useState('');
@@ -57,7 +57,7 @@ const Products = () => {
     return (
         <Wrapper className='py-[20px] px-[40px] max-md:px-[10px] h-full overflow-y-scroll bg-gray-100'>
 
-            <div className='flex justify-between max-md:flex-col max-md:flex-start max-md:my-[20px]'>
+            <div className='w-full flex justify-between max-md:flex-col max-md:flex-start max-md:my-[20px]'>
                 {/* HEADER */}
                 <div className='flex gap-[20px] items-center'>
                     <MdDashboard className='text-[30px]' />
@@ -75,12 +75,12 @@ const Products = () => {
                 </div>
             </div>
             {/* OVERVIEW */}
-            <div className='flex gap-[10px] mt-[20px] items-center'>
+            <div className='w-full flex gap-[10px] mt-[20px] items-center'>
                 <FaBusinessTime className='text-[20px]' />
                 <h3 className='text-[16px] font-semibold'>Business Overview</h3>
             </div>
 
-            <div className='flex max-md:flex-wrap justify-center max-md:justify-start items-center gap-[20px] py-[30px] animate__animated animate__fadeIn'>
+            <div className='w-full flex max-md:flex-wrap justify-center max-md:justify-start items-center gap-[20px] py-[30px] animate__animated animate__fadeIn'>
                 <div className='bg-white rounded-[10px] p-[20px] flex items-center justify-center gap-[20px] w-[300px] shadow-md'>
                     <div className='flex gap-[5px]'>
                         <SiVirustotal className='text-[20px]' />
@@ -132,11 +132,13 @@ const Products = () => {
                     <div onClick={() => setOpenShow(true)}><IoIosArrowDropdown className='text-[20px] text-blue-500' /></div>
                 )}
             </div>
-            {
-                openShow && (
-                    <ShowProduct setOpenShow={setOpenShow} setOpenEdit={setOpenEdit} setProductId={setProductId} />
-                )
-            }
+            <div className='3xl:w-full w-[1300px] max-md:w-full'>
+                {
+                    openShow && (
+                        <ShowProduct setOpenShow={setOpenShow} setOpenEdit={setOpenEdit} setProductId={setProductId} />
+                    )
+                }
+            </div>
 
             <hr className='my-[20px] border-gray-400' />
 
