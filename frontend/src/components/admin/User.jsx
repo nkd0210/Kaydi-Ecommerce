@@ -58,6 +58,28 @@ const User = () => {
     const [userId, setUserId] = useState('');
 
 
+    const handleExportExcel = async () => {
+        try {
+            const res = await fetch(`/api/user/exportUser`, {
+                method: "GET"
+            });
+            if (res.ok) {
+                const blob = await res.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = 'users.xlsx';
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+            } else {
+                console.log("export users failed");
+            }
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+
     return (
         <div className='py-[20px] px-[40px] max-md:px-[10px] max-w-full h-full overflow-x-scroll overflow-y-scroll bg-gray-100'>
             {
@@ -72,7 +94,7 @@ const User = () => {
                                 <h1 className='font-semibold text-[20px] max-md:text-[18px]'>User Dashboard</h1>
                             </div>
 
-                            <div className='flex gap-[10px] rounded-[10px] p-[10px] items-center border bg-white w-[250px] mt-[20px] justify-center shadow-lg cursor-pointer hover:bg-red-400'>
+                            <div onClick={handleExportExcel} className='flex gap-[10px] rounded-[10px] p-[10px] items-center border bg-white w-[250px] mt-[20px] justify-center shadow-lg cursor-pointer hover:bg-red-400'>
                                 <IoIosPrint className='text-[20px]' />
                                 <p className='text-[16px]'>Print Excel</p>
                             </div>

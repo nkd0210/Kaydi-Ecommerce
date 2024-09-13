@@ -5,31 +5,7 @@ import DataTable from 'react-data-table-component';
 import Loader from '../../Loader';
 import 'animate.css';
 
-const ShowProduct = ({ setOpenShow, setOpenEdit, setProductId }) => {
-
-    const [allProducts, setAllProducts] = useState([]);
-    const [loading, setLoading] = useState(true);
-
-    const handleFetchAllProducts = async () => {
-        try {
-            const res = await fetch(`/api/product/getAllProduct`, {
-                method: "GET"
-            });
-            const data = await res.json();
-            if (!res.ok) {
-                console.log(data.message);
-            } else {
-                setAllProducts(data.allProducts);
-                setLoading(false);
-            }
-        } catch (error) {
-            console(error.message);
-        }
-    }
-
-    useEffect(() => {
-        handleFetchAllProducts();
-    }, []);
+const ShowProduct = ({ allProducts, setOpenShow, setOpenEdit, setProductId, loading }) => {
 
     const columns = [
         { name: 'ID', selector: row => row._id },

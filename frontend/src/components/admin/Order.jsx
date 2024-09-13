@@ -118,6 +118,28 @@ const Order = () => {
         handleFetchCustomerOrders(1);
     }, [])
 
+    const handleExportExcel = async () => {
+        try {
+            const res = await fetch(`/api/order/exportOrders`, {
+                method: "GET"
+            });
+            if (res.ok) {
+                const blob = await res.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = 'orders.xlsx';
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+            } else {
+                console.log("export orders failed");
+            }
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+
 
     return (
         <div className='py-[20px] px-[40px] max-md:px-[10px] h-full overflow-y-scroll bg-gray-100'>
@@ -133,7 +155,7 @@ const Order = () => {
                                 <h1 className='font-semibold text-[20px] max-md:text-[18px]'>Order Dashboard</h1>
                             </div>
                             <div className='flex gap-[20px] items-center max-md:flex-col max-md:items-start'>
-                                <div className='flex gap-[10px] rounded-[10px] p-[10px] items-center border bg-white w-[250px] mt-[20px] justify-center shadow-lg cursor-pointer hover:bg-red-400'>
+                                <div onClick={handleExportExcel} className='flex gap-[10px] rounded-[10px] p-[10px] items-center border bg-white w-[250px] mt-[20px] justify-center shadow-lg cursor-pointer hover:bg-red-400'>
                                     <IoIosPrint className='text-[20px]' />
                                     <p className='text-[16px]'>Print Excel</p>
                                 </div>

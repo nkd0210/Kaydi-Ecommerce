@@ -1,4 +1,5 @@
 import Product from "../models/productModel.js";
+import ExcelJS from "exceljs";
 
 export const createProduct = async (req, res, next) => {
   if (!req.user.isAdmin) {
@@ -292,5 +293,63 @@ export const getProductByFilter = async (req, res, next) => {
     res.status(200).json(sortedProducts);
   } catch (error) {
     next(error);
+  }
+};
+
+export const exportProducts = async (req, res, next) => {
+  if (!req.user.isAdmin) {
+    return res
+      .status(401)
+      .json({ message: "You are not allowed to export users" });
+  }
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet("Products");
+
+  worksheet.columns = [
+    { header: "ID", key: "_id", width: 10 },
+    { header: "Name", key: "name", width: 30 },
+    { header: "Description", key: "description", width: 60 },
+    { header: "Price", key: "price", width: 15 },
+    { header: "Stock", key: "stock", width: 10 },
+    { header: "Categories", key: "categories", width: 30 },
+    { header: "Sizes", key: "sizes", width: 15 },
+    { header: "Colors", key: "colors", width: 20 },
+    { header: "Listing Photo Paths", key: "listingPhotoPaths", width: 60 },
+    { header: "Created At", key: "createdAt", width: 20 },
+    { header: "Updated At", key: "updatedAt", width: 20 },
+  ];
+  try {
+    const products = await Product.find();
+
+    products.forEach((product) => {
+      worksheet.addRow({
+        _id: product._id.toString(),
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        stock: product.stock,
+        categories: product.categories.join(", "),
+        sizes: product.sizes.join(", "),
+        colors: product.colors.join(", "),
+        listingPhotoPaths: product.listingPhotoPaths.join(", "),
+        createdAt: new Date(product.createdAt).toLocaleDateString(),
+        updatedAt: new Date(product.updatedAt).toLocaleDateString(),
+      });
+    });
+
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader(
+      "Content-Disposition",
+      'attachment; filename="products.xlsx"'
+    );
+
+    await workbook.xlsx.write(res);
+    res.end(); // End the response
+  } catch (error) {
+    console.error("Error exporting products to Excel:", error);
+    res.status(500).send("Failed to export products to Excel");
   }
 };

@@ -1,5 +1,6 @@
 import User from "../models/userModel.js";
 import bcryptjs from "bcryptjs";
+import ExcelJS from "exceljs";
 
 export const getAllUsers = async (req, res, next) => {
   if (!req.user.isAdmin) {
@@ -121,5 +122,63 @@ export const deleteUser = async (req, res, next) => {
     return res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {
     next(error);
+  }
+};
+
+export const exportToExcel = async (req, res, next) => {
+  if (!req.user.isAdmin) {
+    return res
+      .status(401)
+      .json({ message: "You are not allowed to export users" });
+  }
+
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet("Users");
+
+  // define columns
+  worksheet.columns = [
+    { header: "User ID", key: "_id", width: 24 },
+    { header: "Username", key: "username", width: 20 },
+    { header: "Email", key: "email", width: 30 },
+    { header: "Phone Number", key: "phoneNumber", width: 15 },
+    { header: "Gender", key: "gender", width: 10 },
+    { header: "Date of Birth", key: "dateOfBirth", width: 15 },
+    { header: "Addresses", key: "addressList", width: 40 },
+    { header: "Is Admin", key: "isAdmin", width: 10 },
+    { header: "Created At", key: "createdAt", width: 20 },
+    { header: "Updated At", key: "updatedAt", width: 20 },
+  ];
+
+  try {
+    const users = await User.find();
+
+    users.forEach((user) => {
+      const addressList = user.addressList?.join(", ") || "";
+
+      worksheet.addRow({
+        _id: user._id.toString(),
+        username: user.username,
+        email: user.email,
+        phoneNumber: user.phoneNumber || "",
+        gender: user.gender || "",
+        dateOfBirth: user.dateOfBirth || "",
+        addressList,
+        isAdmin: user.isAdmin ? "Yes" : "No",
+        createdAt: new Date(user.createdAt).toLocaleDateString(),
+        updatedAt: new Date(user.updatedAt).toLocaleDateString(),
+      });
+    });
+
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader("Content-Disposition", "attachment; filename=users.xlsx");
+
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (error) {
+    console.error("Error exporting users to Excel:", error);
+    res.status(500).send("Failed to export users to Excel");
   }
 };

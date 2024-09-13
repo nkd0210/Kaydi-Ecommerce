@@ -1,4 +1,5 @@
 import Voucher from "../models/voucherModel.js";
+import ExcelJS from "exceljs";
 
 export const createVoucher = async (req, res, next) => {
   const userId = req.params.userId;
@@ -238,5 +239,73 @@ export const getVoucherByProductIds = async (req, res, next) => {
     res.status(200).json(applicableVouchers);
   } catch (error) {
     next(error);
+  }
+};
+
+export const exportVouchers = async (req, res, next) => {
+  if (!req.user.isAdmin) {
+    return res
+      .status(401)
+      .json({ message: "You are not allowed to export vouchers" });
+  }
+
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet("Vouchers");
+
+  // Define columns
+  worksheet.columns = [
+    { header: "ID", key: "_id", width: 25 },
+    { header: "Code", key: "code", width: 20 },
+    { header: "Discount", key: "discount", width: 15 },
+    { header: "Expiry Date", key: "expiryDate", width: 20 },
+    { header: "Usage Limit", key: "usageLimit", width: 15 },
+    { header: "Used Count", key: "usedCount", width: 15 },
+    { header: "Apply Products", key: "applyProducts", width: 40 },
+    { header: "Apply Categories", key: "applyCategories", width: 40 },
+    { header: "Status", key: "status", width: 15 },
+    { header: "Created At", key: "createdAt", width: 25 },
+    { header: "Updated At", key: "updatedAt", width: 25 },
+  ];
+
+  try {
+    const vouchers = await Voucher.find();
+
+    vouchers.forEach((voucher) => {
+      const productIds =
+        voucher.applyProducts?.map((prod) => prod.toString()).join(", ") ||
+        "N/A";
+      const categoryIds =
+        voucher.applyCategories?.map((cat) => cat.toString()).join(", ") ||
+        "N/A";
+
+      worksheet.addRow({
+        _id: voucher._id.toString(),
+        code: voucher.code,
+        discount: voucher.discount,
+        expiryDate: new Date(voucher.expiryDate).toLocaleDateString(),
+        usageLimit: voucher.usageLimit,
+        usedCount: voucher.usedCount,
+        applyProducts: productIds,
+        applyCategories: categoryIds,
+        status: voucher.status,
+        createdAt: new Date(voucher.createdAt).toLocaleDateString(),
+        updatedAt: new Date(voucher.updatedAt).toLocaleDateString(),
+      });
+    });
+
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=" + "vouchers.xlsx"
+    );
+
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (error) {
+    console.error("Error exporting vouchers to Excel:", error);
+    res.status(500).send("Failed to export vouchers to Excel");
   }
 };

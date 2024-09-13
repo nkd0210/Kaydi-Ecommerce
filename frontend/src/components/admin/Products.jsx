@@ -30,8 +30,11 @@ const Products = () => {
     const [weekCount, setWeekCount] = useState('');
     const [monthCount, setMonthCount] = useState('');
 
+    const [allProducts, setAllProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const handleFetchProductsDashboard = async () => {
+        setLoading(true);
         try {
             const res = await fetch(`/api/product/getAllProduct`, {
                 method: "GET"
@@ -41,18 +44,44 @@ const Products = () => {
                 console.log(data.message);
                 return;
             } else {
+                setAllProducts(data.allProducts);
                 setAllProductsCount(data.totalNumber);
                 setWeekCount(data.lastWeekProductCount);
                 setMonthCount(data.lastMonthProductCount);
             }
         } catch (error) {
             console.log(error.message);
+        } finally {
+            setLoading(false);
         }
     }
 
     useEffect(() => {
         handleFetchProductsDashboard();
     }, [])
+
+    const handleExportExcel = async () => {
+        try {
+            const res = await fetch(`/api/product/exportProducts`, {
+                method: "GET"
+            });
+            if (res.ok) {
+                const blob = await res.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = 'products.xlsx';
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+            } else {
+                console.log("export products failed");
+            }
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+
 
     return (
         <Wrapper className='py-[20px] px-[40px] max-md:px-[10px] h-full overflow-y-scroll bg-gray-100'>
@@ -68,7 +97,7 @@ const Products = () => {
                         <CiCirclePlus className='text-[20px]' />
                         <p className='text-[16px]'>Create product</p>
                     </div>
-                    <div className='flex gap-[10px] rounded-[10px] p-[10px] items-center border bg-white w-[250px] mt-[20px] justify-center shadow-lg cursor-pointer hover:bg-red-400'>
+                    <div onClick={handleExportExcel} className='flex gap-[10px] rounded-[10px] p-[10px] items-center border bg-white w-[250px] mt-[20px] justify-center shadow-lg cursor-pointer hover:bg-red-400'>
                         <IoIosPrint className='text-[20px]' />
                         <p className='text-[16px]'>Print Excel</p>
                     </div>
@@ -124,7 +153,7 @@ const Products = () => {
 
             <hr className='my-[20px] border-gray-400' />
 
-            <div className='flex items-center gap-[10px] py-[20px] animate__animated animate__fadeInRight'>
+            <div className='flex items-center gap-[10px] py-[20px] animate__animated animate__fadeInUp'>
                 <h1 className='ml-[10px] text-[16px]'>Show All Products</h1>
                 {openShow ? (
                     <div onClick={() => setOpenShow(false)}><CiCircleMinus className='text-[20px] text-blue-500' /></div>
@@ -135,7 +164,7 @@ const Products = () => {
             <div className='3xl:w-full w-[1300px] max-md:w-full'>
                 {
                     openShow && (
-                        <ShowProduct setOpenShow={setOpenShow} setOpenEdit={setOpenEdit} setProductId={setProductId} />
+                        <ShowProduct loading={loading} allProducts={allProducts} setOpenShow={setOpenShow} setOpenEdit={setOpenEdit} setProductId={setProductId} />
                     )
                 }
             </div>

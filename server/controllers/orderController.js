@@ -4,6 +4,7 @@ import Product from "../models/productModel.js";
 import Stripe from "stripe";
 import dotenv from "dotenv";
 dotenv.config();
+import ExcelJS from "exceljs";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -450,5 +451,81 @@ export const getAllOrdersOfCustomer = async (req, res, next) => {
     });
   } catch (error) {
     next(error);
+  }
+};
+
+export const exportOrders = async (req, res, next) => {
+  if (!req.user.isAdmin) {
+    return res
+      .status(401)
+      .json({ message: "You are not allowed to export orders" });
+  }
+
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet("Orders");
+
+  // Define columns for the orders
+  worksheet.columns = [
+    { header: "Order ID", key: "_id", width: 20 },
+    { header: "User ID", key: "userId", width: 20 },
+    { header: "Receiver Name", key: "receiverName", width: 25 },
+    { header: "Receiver Phone", key: "receiverPhone", width: 15 },
+    { header: "Receiver Note", key: "receiverNote", width: 15 },
+    { header: "Shipping Address", key: "shippingAddress", width: 30 },
+    { header: "Total Amount", key: "totalAmount", width: 15 },
+    { header: "Status", key: "status", width: 15 },
+    { header: "Payment Method", key: "paymentMethod", width: 15 },
+    { header: "Payment Check", key: "paymentCheck", width: 15 },
+    { header: "Created At", key: "createdAt", width: 20 },
+    { header: "Processing Time", key: "processingTime", width: 20 },
+    { header: "Shipped Time", key: "shippedTime", width: 20 },
+    { header: "Delivered Time", key: "deliveredTime", width: 20 },
+    { header: "Products", key: "products", width: 60 },
+  ];
+
+  try {
+    const orders = await Order.find()
+      .populate("userId")
+      .populate("products.productId");
+
+    orders.forEach((order) => {
+      // Concatenate product details into a readable format
+      const productsInfo = order.products
+        .map(
+          (p) =>
+            `Name: ${p.name}, Qty: ${p.quantity}, Price: ${p.price}, Color: ${p.color}, Size: ${p.size}`
+        )
+        .join("\n");
+
+      worksheet.addRow({
+        _id: order._id.toString(),
+        userId: order.userId?._id.toString() || "N/A", // Adjust if the userId field is populated
+        receiverName: order.receiverName,
+        receiverPhone: order.receiverPhone,
+        receiverNote: order.receiverNote || "",
+        shippingAddress: order.shippingAddress,
+        totalAmount: order.totalAmount,
+        status: order.status,
+        paymentMethod: order.paymentMethod,
+        paymentCheck: order.paymentCheck ? "Checked" : "Not Checked",
+        createdAt: order.createdAt.toISOString(),
+        processingTime: order.processingTime?.toISOString() || "N/A",
+        shippedTime: order.shippedTime?.toISOString() || "N/A",
+        deliveredTime: order.deliveredTime?.toISOString() || "N/A",
+        products: productsInfo,
+      });
+    });
+
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader("Content-Disposition", "attachment; filename=orders.xlsx");
+
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (error) {
+    console.error("Error exporting orders to Excel:", error);
+    res.status(500).send("Failed to export orders to Excel");
   }
 };

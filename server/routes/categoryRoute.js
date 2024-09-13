@@ -3,6 +3,7 @@ import { verifyToken } from "../utils/verifyUser.js";
 import {
   createCategory,
   deleteCategory,
+  exportCategories,
   getAllCategories,
   getCategoriesFromNewest,
   getCategoryByName,
@@ -19,5 +20,6 @@ router.delete("/delete/:categoryId", verifyToken, deleteCategory);
 router.put("/update/:categoryId", verifyToken, updateCategory);
 router.get("/getEachCategory/:categoryId", verifyToken, getEachCategory);
 router.get("/getCategoryByName/:name", getCategoryByName);
+router.get("/exportCategories", verifyToken, exportCategories);
 
 export default router;

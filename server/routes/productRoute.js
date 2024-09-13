@@ -3,6 +3,7 @@ import { verifyToken } from "../utils/verifyUser.js";
 import {
   createProduct,
   deleteProduct,
+  exportProducts,
   getAllProduct,
   getEachProduct,
   getProductByCategory,
@@ -25,5 +26,6 @@ router.get("/getByCategory/:category", getProductByCategory);
 router.get("/getEachProduct/:productId", getEachProduct);
 router.get("/getProductBySearch/:searchKey", getProductBySearch);
 router.post("/getProductByFilter/:filterType", getProductByFilter);
+router.get("/exportProducts", verifyToken, exportProducts);
 
 export default router;

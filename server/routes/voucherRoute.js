@@ -9,6 +9,7 @@ import {
   deleteVoucher,
   applyVoucher,
   getVoucherByProductIds,
+  exportVouchers,
 } from "../controllers/voucherController.js";
 
 const router = express.Router();
@@ -24,5 +25,6 @@ router.get(
   verifyToken,
   getVoucherByProductIds
 );
+router.get("/exportVouchers", verifyToken, exportVouchers);
 
 export default router;
