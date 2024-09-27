@@ -6,6 +6,7 @@ import Loader from '../Loader';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
+import Skeleton from '@mui/material/Skeleton';
 
 // ANIMATE
 import 'animate.css';
@@ -53,10 +54,13 @@ const CasualClothes = () => {
                 return;
             } else {
                 setProducts(data.findProductByCategory);
-                setLoadingProduct(false);
             }
         } catch (error) {
             console.log(error.message);
+        } finally {
+            setTimeout(() => {
+                setLoadingProduct(false);
+            }, 1000)
         }
     }
 
@@ -126,7 +130,13 @@ const CasualClothes = () => {
             <div className='p-[20px]'>
                 <div className='rounded-[20px] w-[300px] max-md:w-[200px] text-[20px] max-md:text-[14px] border border-black px-[10px] py-[5px] text-center font-semibold'>Sản phẩm thường ngày</div>
                 {loadingProduct ? (
-                    <Loader />
+                    <div className='flex ml-[40px] gap-[10px] items-center'>
+                        <Skeleton width={300} height={400} animation="wave" sx={{ bgcolor: 'grey.100' }} />
+                        <Skeleton width={300} height={400} animation="wave" sx={{ bgcolor: 'grey.100' }} />
+                        <Skeleton width={300} height={400} animation="wave" sx={{ bgcolor: 'grey.100' }} />
+                        <Skeleton width={300} height={400} animation="wave" sx={{ bgcolor: 'grey.100' }} />
+                        <Skeleton width={300} height={400} animation="wave" sx={{ bgcolor: 'grey.100' }} />
+                    </div>
                 ) : (
                     <div className='mt-[20px] ml-[40px]'>
                         <Slider {...settings}>
@@ -137,7 +147,7 @@ const CasualClothes = () => {
                                     }
                                 }}
                                     key={index}
-                                    className='flex flex-col px-[10px] gap-[10px] animate__animated animate__zoomIn'>
+                                    className='flex flex-col px-[10px] gap-[10px] animate__animated animate__fadeIn'>
                                     <div className='w-[300px] h-[400px] overflow-hidden'>
                                         <img src={product?.listingPhotoPaths[0]} alt="image" className='w-full h-full object-cover rounded-[10px] transform transition-transform ease-in hover:scale-110 cursor-pointer' />
                                     </div>

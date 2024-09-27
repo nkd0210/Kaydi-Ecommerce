@@ -8,7 +8,7 @@ const ProductCard = ({ product }) => {
     return (
         <div
             onClick={() => { navigate(`/productDetail/${product._id}`) }}
-            className='flex flex-col px-[10px] gap-[10px] animate__animated animate__zoomIn cursor-pointer'>
+            className='flex flex-col px-[10px] gap-[10px] animate__animated animate__fadeIn cursor-pointer'>
             <div className='w-[300px] h-[400px] overflow-hidden'>
                 <img src={product?.listingPhotoPaths[0]} alt="image" className='w-full h-full object-cover rounded-[10px] transform transition-transform ease-in hover:scale-110' />
             </div>

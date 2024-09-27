@@ -12,6 +12,7 @@ import PaymentSuccess from './pages/PaymentSuccess';
 import Collection from './pages/Collection';
 import Review from './pages/Review';
 import Search from './pages/Search';
+import Chat from './pages/Chat';
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
         <Route path='/collections/:category/:subcategory' element={<Collection />} />
         <Route path='/review/:orderId' element={<Review />} />
         <Route path='/search/:searchKey' element={<Search />} />
+        <Route path='/chat' element={<Chat />} />
       </Routes>
     </BrowserRouter>
   )

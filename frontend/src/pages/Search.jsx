@@ -5,10 +5,11 @@ import Footer from '../components/Footer'
 import { useSelector } from 'react-redux'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import Loader from '../components/Loader'
-import 'animate.css'
 import Filter from '../components/Filter'
 import ProductCard from '../components/ProductCard'
 
+import 'animate.css'
+import Skeleton from '@mui/material/Skeleton';
 
 const Search = () => {
 
@@ -52,7 +53,9 @@ const Search = () => {
         } catch (error) {
             console.log(error.message);
         } finally {
-            setLoadingProduct(false);
+            setTimeout(() => {
+                setLoadingProduct(false);
+            }, 1000);
         }
     }
 
@@ -87,8 +90,6 @@ const Search = () => {
             });
         }
     };
-
-
 
     // const handleFetchAllProducts = async () => {
     //     setLoadingProduct(true);
@@ -129,7 +130,9 @@ const Search = () => {
         } catch (error) {
             console.log(error.message);
         } finally {
-            setLoadingCategory(false);
+            setTimeout(() => {
+                setLoadingCategory(false);
+            }, 1000);
         }
     }
 
@@ -158,7 +161,9 @@ const Search = () => {
         } catch (error) {
             console.log(error.message);
         } finally {
-            setLoadingProduct(false);
+            setTimeout(() => {
+                setLoadingProduct(false);
+            }, 1000);
         }
     }
 
@@ -193,7 +198,9 @@ const Search = () => {
         } catch (error) {
             console.log(error.message);
         } finally {
-            setLoadingProduct(false);
+            setTimeout(() => {
+                setLoadingProduct(false);
+            }, 1000);
         }
     }
 
@@ -256,7 +263,13 @@ const Search = () => {
                         <h3 className='text-[20px] font-semibold mb-[20px]'>Danh mục</h3>
                         {
                             loadingCategory ? (
-                                <Loader />
+                                <div className='flex flex-col gap-[20px]'>
+                                    <Skeleton variant="text" sx={{ fontSize: '1rem', bgcolor: 'grey.200' }} />
+                                    <Skeleton variant="text" sx={{ fontSize: '1rem', bgcolor: 'grey.200' }} />
+                                    <Skeleton variant="text" sx={{ fontSize: '1rem', bgcolor: 'grey.200' }} />
+                                    <Skeleton variant="text" sx={{ fontSize: '1rem', bgcolor: 'grey.200' }} />
+                                    <Skeleton variant="text" sx={{ fontSize: '1rem', bgcolor: 'grey.200' }} />
+                                </div>
                             ) : (
                                 <div className='flex flex-col max-md:flex-row max-md:flex-wrap max-md:items-center gap-[20px] animate__animated animate__fadeInUp '>
                                     <p onClick={() => handleClickAll('all')} className={` cursor-pointer ${selectCategory === 'all' ? 'text-red-400 font-semibold underline' : ''}`}>Tất cả</p>
@@ -274,7 +287,13 @@ const Search = () => {
                     <>
                         {
                             loadingProducts ? (
-                                <Loader />
+                                <div className='flex gap-[10px] items-center'>
+                                    <Skeleton width={300} height={400} animation="wave" sx={{ bgcolor: 'grey.100' }} />
+                                    <Skeleton width={300} height={400} animation="wave" sx={{ bgcolor: 'grey.100' }} />
+                                    <Skeleton width={300} height={400} animation="wave" sx={{ bgcolor: 'grey.100' }} />
+                                    <Skeleton width={300} height={400} animation="wave" sx={{ bgcolor: 'grey.100' }} />
+                                    <Skeleton width={300} height={400} animation="wave" sx={{ bgcolor: 'grey.100' }} />
+                                </div>
                             ) : !Array.isArray(allProducts) || allProducts.length === 0 ? (
                                 <p>Không tìm thấy sản phẩm nào!</p>
                             ) : (
@@ -292,7 +311,7 @@ const Search = () => {
                                                     <div
                                                         key={index}
                                                         onClick={() => { navigate(`/productDetail/${product._id}`) }}
-                                                        className='flex gap-[10px] animate__animated animate__zoomIn cursor-pointer border rounded-[10px] p-[10px] bg-gray-50'
+                                                        className='flex gap-[10px] animate__animated animate__fadeIn cursor-pointer border rounded-[10px] p-[10px] bg-gray-50'
                                                     >
                                                         <div className='w-[150px] h-[200px] overflow-hidden'>
                                                             <img src={product?.listingPhotoPaths[0]} alt="image" className='w-full h-full object-cover rounded-[10px] transform transition-transform ease-in hover:scale-110' />

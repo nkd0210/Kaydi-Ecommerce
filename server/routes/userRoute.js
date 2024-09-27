@@ -5,6 +5,7 @@ import {
   exportToExcel,
   getAllUsers,
   getUser,
+  searchUser,
   updateUser,
 } from "../controllers/userController.js";
 
@@ -15,5 +16,6 @@ router.get("/getuser/:userId", verifyToken, getUser);
 router.put("/update/:userId", verifyToken, updateUser);
 router.delete("/delete/:userId", verifyToken, deleteUser);
 router.get("/exportUser", verifyToken, exportToExcel);
+router.get("/searchUser", verifyToken, searchUser);
 
 export default router;

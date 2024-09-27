@@ -182,3 +182,29 @@ export const exportToExcel = async (req, res, next) => {
     res.status(500).send("Failed to export users to Excel");
   }
 };
+
+export const searchUser = async (req, res, next) => {
+  const keyword = req.query.search
+    ? {
+        $or: [
+          { username: { $regex: req.query.search, $options: "i" } },
+          { email: { $regex: req.query.search, $options: "i" } },
+        ],
+      }
+    : {};
+
+  try {
+    const findUser = await User.find({
+      ...keyword,
+      _id: { $ne: req.user.id }, // Exclude the current user from the results
+    }).select("-password");
+
+    if (findUser.length === 0) {
+      return res.json({ message: "User not found" });
+    }
+
+    return res.status(200).json(findUser);
+  } catch (error) {
+    return next(error); // Pass the error to your error handler
+  }
+};

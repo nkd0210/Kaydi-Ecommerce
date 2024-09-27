@@ -15,6 +15,7 @@ import { FaHistory } from "react-icons/fa";
 import { FaAddressBook } from "react-icons/fa";
 import { ImReply } from "react-icons/im";
 import { MdOutlinePolicy } from "react-icons/md";
+import { FaRocketchat } from "react-icons/fa6";
 
 import Drawer from "@mui/material/Drawer";
 
@@ -231,6 +232,13 @@ const Navbar = () => {
                             >
                                 <MdOutlinePolicy className="text-[20px]" />
                                 <h3 className="text-[12px]">FAQ & Chính sách</h3>
+                            </div>
+                            <div
+                                onClick={() => navigate("/chat")}
+                                className="cursor-pointer hover:bg-opacity-70 flex flex-col justify-center items-center w-[100px] h-[80px] text-center border bg-gray-200 rounded-[10px] mt-[10px] p-[10px]"
+                            >
+                                <FaRocketchat className="text-[20px]" />
+                                <h3 className="text-[12px]">Nhắn tin</h3>
                             </div>
                         </div>
                     </div>

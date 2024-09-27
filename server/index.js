@@ -12,6 +12,8 @@ import cartRoute from "./routes/cartRoute.js";
 import categoryRoute from "./routes/categoryRoute.js";
 import voucherRoute from "./routes/voucherRoute.js";
 import reviewRoute from "./routes/reviewRoute.js";
+import chatRoute from "./routes/chatRoute.js";
+
 dotenv.config();
 
 mongoose
@@ -42,3 +44,4 @@ app.use("/api/cart", cartRoute);
 app.use("/api/category", categoryRoute);
 app.use("/api/voucher", voucherRoute);
 app.use("/api/review", reviewRoute);
+app.use("/api/chat", chatRoute);

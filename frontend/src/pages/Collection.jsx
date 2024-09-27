@@ -5,8 +5,10 @@ import Footer from '../components/Footer'
 import { useSelector } from 'react-redux'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import Loader from '../components/Loader'
-import 'animate.css'
 import ProductCard from '../components/ProductCard'
+
+import 'animate.css'
+import Skeleton from '@mui/material/Skeleton';
 
 const Collection = () => {
 
@@ -61,7 +63,9 @@ const Collection = () => {
         } catch (error) {
             console.log(error.message);
         } finally {
-            setLoadingProduct(false);
+            setTimeout(() => {
+                setLoadingProduct(false);
+            }, 1000);
         }
     }
 
@@ -86,7 +90,9 @@ const Collection = () => {
         } catch (error) {
             console.log(error.message);
         } finally {
-            setLoadingProduct(false);
+            setTimeout(() => {
+                setLoadingProduct(false);
+            }, 1000)
         }
     }
 
@@ -151,14 +157,20 @@ const Collection = () => {
 
                     {
                         loadingProduct ? (
-                            <Loader />
+                            <div className='flex ml-[40px] gap-[20px] items-center'>
+                                <Skeleton width={200} height={400} animation="wave" sx={{ bgcolor: 'grey.100' }} />
+                                <Skeleton width={200} height={400} animation="wave" sx={{ bgcolor: 'grey.100' }} />
+                                <Skeleton width={200} height={400} animation="wave" sx={{ bgcolor: 'grey.100' }} />
+                                <Skeleton width={200} height={400} animation="wave" sx={{ bgcolor: 'grey.100' }} />
+                                <Skeleton width={200} height={400} animation="wave" sx={{ bgcolor: 'grey.100' }} />
+                            </div>
                         ) : (
                             <>
                                 {
                                     !subcategory ? (
                                         <>
                                             <p className='text-gray-500 text-[14px]'> Tìm thấy {productsData?.totalNumber} sản phẩm!</p>
-                                            <div className='w-full flex flex-wrap gap-[30px] animate__animated animate__fadeInUp mt-[40px] animate__animated animate__fadeInUp'>
+                                            <div className='w-full flex flex-wrap gap-[30px] animate__animated animate__fadeIn mt-[40px] '>
                                                 {
                                                     productsByCategory && productsByCategory.length > 0 && (
                                                         productsByCategory.map((product, index) => (
@@ -193,7 +205,7 @@ const Collection = () => {
                                                     <p className='text-gray-500 text-[14px]'> Tìm thấy {subProductInfo?.totalNumber} sản phẩm!</p>
                                                 )
                                             }
-                                            <div className='w-full flex flex-wrap gap-[30px] animate__animated animate__fadeInUp mt-[40px] animate__animated animate__fadeInUp'>
+                                            <div className='w-full flex flex-wrap gap-[30px] animate__animated animate__fadeIn mt-[40px] '>
                                                 {
                                                     productsBySubCategory && productsBySubCategory.length > 0 && (
                                                         productsBySubCategory.map((product, index) => (
