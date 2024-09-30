@@ -61,6 +61,20 @@ export const getAllUsers = async (req, res, next) => {
   }
 };
 
+export const getAllUserToChat = async (req, res, next) => {
+  try {
+    const allUsers = await User.find().select(
+      "-password -addressList -phoneNumber -gender -dateOfBirth"
+    );
+    if (allUsers.length === 0) {
+      return res.status(404).json({ message: "No users were found" });
+    }
+    return res.status(200).json(allUsers);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getUser = async (req, res, next) => {
   const userId = req.params.userId;
   const findUser = await User.findById(userId);

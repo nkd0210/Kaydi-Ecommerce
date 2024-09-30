@@ -92,8 +92,7 @@ const RecentProduct = () => {
         <div className='p-[20px]'>
             <div className='rounded-[20px] w-[200px] max-md:w-[150px] text-[20px] max-md:text-[14px] border border-black px-[10px] py-[5px] text-center font-semibold'>Sản phẩm mới</div>
             {loading ? (
-                <div className='flex ml-[40px] gap-[10px] items-center'>
-                    <Skeleton width={300} height={400} animation="wave" sx={{ bgcolor: 'grey.100' }} />
+                <div className='grid grid-cols-1 md:grid-cols-4 ml-[40px] gap-[40px] max-md:gap-[5px] items-center'>
                     <Skeleton width={300} height={400} animation="wave" sx={{ bgcolor: 'grey.100' }} />
                     <Skeleton width={300} height={400} animation="wave" sx={{ bgcolor: 'grey.100' }} />
                     <Skeleton width={300} height={400} animation="wave" sx={{ bgcolor: 'grey.100' }} />

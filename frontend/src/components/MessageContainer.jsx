@@ -6,7 +6,7 @@ import Skeleton from '@mui/material/Skeleton';
 
 import { IoInformationCircleOutline } from "react-icons/io5";
 
-const MessageContainer = ({ loadingChatBox, selectId, singleChat, singleGroupChat }) => {
+const MessageContainer = ({ loadingChatBox, singleChat, singleGroupChat }) => {
 
     return (
         <div className='w-full'>

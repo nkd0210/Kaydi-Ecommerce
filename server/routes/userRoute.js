@@ -4,6 +4,7 @@ import {
   deleteUser,
   exportToExcel,
   getAllUsers,
+  getAllUserToChat,
   getUser,
   searchUser,
   updateUser,
@@ -17,5 +18,6 @@ router.put("/update/:userId", verifyToken, updateUser);
 router.delete("/delete/:userId", verifyToken, deleteUser);
 router.get("/exportUser", verifyToken, exportToExcel);
 router.get("/searchUser", verifyToken, searchUser);
+router.get("/getAllUsersToChat", verifyToken, getAllUserToChat);
 
 export default router;

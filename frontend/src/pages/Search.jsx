@@ -259,7 +259,7 @@ const Search = () => {
                 <Filter newSearchKey={newSearchKey} setNewSearchKey={setNewSearchKey} showType={showType} setShowType={setShowType} sortType={sortType} setSortType={setSortType} productCount={productCount} handleFetchProductBySearchKey={handleFetchProductBySearchKey} />
                 <div className='flex max-md:flex-col gap-[30px]'>
                     {/* SIDE BAR */}
-                    <div className='w-[250px]'>
+                    <div className='min-w-[250px]'>
                         <h3 className='text-[20px] font-semibold mb-[20px]'>Danh mục</h3>
                         {
                             loadingCategory ? (

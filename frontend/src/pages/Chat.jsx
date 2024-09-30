@@ -10,11 +10,11 @@ import { PiNotePencilBold } from "react-icons/pi";
 import Loader from '../components/Loader';
 import MessageContainer from "../components/MessageContainer";
 import SearchChat from "../components/SearchChat";
+import CreateGroupChat from "../components/CreateGroupChat";
 
 import Modal from '@mui/material/Modal';
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import Skeleton from '@mui/material/Skeleton';
-
 import "animate.css"
 
 
@@ -26,6 +26,7 @@ const Chat = () => {
     const [allChats, setAllChats] = useState([]);
     const [loadingChats, setLoadingChats] = useState(false);
     const [singleChat, setSingleChat] = useState({});
+
     // lay ra tat ca doan chat cua user
     const handleFetchAllChats = async () => {
         setLoadingChats(true);
@@ -42,7 +43,9 @@ const Chat = () => {
         } catch (error) {
             console.log(error.message);
         } finally {
-            setLoadingChats(false);
+            setTimeout(() => {
+                setLoadingChats(false);
+            }, 1000);
         }
     }
 
@@ -60,6 +63,7 @@ const Chat = () => {
 
     const [openModal, setOpenModal] = useState(false);
     const [loadingChatBox, setLoadingChatBox] = useState(false);
+
     // access single chat
     const handleAccessChat = async (id) => {
         setLoadingChatBox(true);
@@ -152,11 +156,11 @@ const Chat = () => {
                             {
                                 loadingChats ? (
                                     <div className="flex flex-col gap-[20px]">
-                                        <Skeleton variant="rounded" width={300} height={80} />
-                                        <Skeleton variant="rounded" width={300} height={80} />
-                                        <Skeleton variant="rounded" width={300} height={80} />
-                                        <Skeleton variant="rounded" width={300} height={80} />
-                                        <Skeleton variant="rounded" width={300} height={80} />
+                                        <Skeleton variant="rounded" width={300} height={60} sx={{ bgcolor: 'grey.900' }} />
+                                        <Skeleton variant="rounded" width={300} height={60} sx={{ bgcolor: 'grey.900' }} />
+                                        <Skeleton variant="rounded" width={300} height={60} sx={{ bgcolor: 'grey.900' }} />
+                                        <Skeleton variant="rounded" width={300} height={60} sx={{ bgcolor: 'grey.900' }} />
+                                        <Skeleton variant="rounded" width={300} height={60} sx={{ bgcolor: 'grey.900' }} />
                                     </div>
                                 ) : (
                                     <div className="animate__animated animate__fadeIn">
@@ -170,7 +174,7 @@ const Chat = () => {
                                                             <div key={index} className="">
                                                                 {/* if is group chat, access group chat through chat id */}
                                                                 {chat.isGroupChat ? (
-                                                                    <div onClick={() => { setSelectId(chat?._id); handleAccessGroupChat(chat?._id); setSingleChat({}) }} className={`flex justify-between items-center w-full py-[20px] border-b-[1px] h-[80px] border-gray-600 cursor-pointer hover:bg-gray-800 ${selectId === chat?._id ? 'bg-gray-800' : ''}  `} >
+                                                                    <div onClick={() => { setSelectId(chat?._id); handleAccessGroupChat(chat?._id); setSingleChat({}) }} className={`flex justify-between items-center w-full py-[20px] border-b-[1px] h-[80px] border-gray-600 cursor-pointer hover:bg-[#292929] ${selectId === chat?._id ? 'bg-gray-800' : ''}  `} >
                                                                         <div className="flex items-center gap-[20px] pl-[20px]">
                                                                             <div className="w-[50px]">
                                                                                 <img key={index} src={chat?.groupPhoto} alt="ava" className="w-[40px] h-[40px] object-cover rounded-[50%]" />
@@ -184,7 +188,7 @@ const Chat = () => {
                                                                     </div>
                                                                 ) : (
                                                                     // if is single chat, access chat through receiver id
-                                                                    <div onClick={() => { setSelectId(chat?.receiver[0]?._id), handleAccessChat(chat?.receiver[0]?._id); setSingleGroupChat({}) }} className={`flex justify-between items-center w-full py-[20px] border-b-[1px] h-[80px] border-gray-600 cursor-pointer hover:bg-gray-800 ${selectId === chat?.receiver[0]?._id ? 'bg-gray-800' : ''}`} >
+                                                                    <div onClick={() => { setSelectId(chat?.receiver[0]?._id), handleAccessChat(chat?.receiver[0]?._id); setSingleGroupChat({}) }} className={`flex justify-between items-center w-full py-[20px] border-b-[1px] h-[80px] border-gray-600 cursor-pointer hover:bg-[#292929] ${selectId === chat?.receiver[0]?._id ? 'bg-gray-800' : ''}`} >
                                                                         <div className="flex items-center gap-[20px] pl-[20px]">
                                                                             <div className="w-[50px]">
                                                                                 <img key={index} src={chat?.receiver[0]?.profilePic} alt="ava" className="w-[40px] h-[40px] object-cover rounded-[50%]" />
@@ -224,16 +228,15 @@ const Chat = () => {
                         </p>
                     </div>
                 ) : (
-                    <MessageContainer loadingChatBox={loadingChatBox} selectId={selectId} singleChat={singleChat} singleGroupChat={singleGroupChat} />
+                    <MessageContainer loadingChatBox={loadingChatBox} singleChat={singleChat} singleGroupChat={singleGroupChat} />
                 )
             }
 
 
             {/* Create Group Chat */}
             <Modal open={openModal} onClose={() => setOpenModal(false)}>
-                <div className='absolute top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%] shadow-lg w-[400px] bg-gray-200 text-black h-[200px] max-md:h-[200px] rounded-[20px] flex flex-col gap-[20px] justify-center items-center '>
-                    <IoIosCloseCircleOutline onClick={() => setOpenModal(false)} className='absolute top-[10px] right-[10px] text-[30px] cursor-pointer hover:text-red-[400]' />
-
+                <div className='absolute top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%] shadow-lg w-[500px] bg-[#232323] text-black h-[400px] overflow-hidden overflow-y-scroll max-md:h-[200px] rounded-[10px]'>
+                    <CreateGroupChat setOpenModal={setOpenModal} setSingleGroupChat={setSingleGroupChat} handleFetchAllChats={handleFetchAllChats} setSelectId={setSelectId} setLoadingChatBox={setLoadingChatBox} />
                 </div>
             </Modal>
 
