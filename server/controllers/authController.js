@@ -73,17 +73,20 @@ export const signIn = async (req, res, next) => {
     );
 
     const { password: past, ...rest } = validUser._doc;
+
+    const isProduction = process.env.NODE_ENV === "production";
+
     res
       .status(200)
       .cookie("access_token", accessToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "None",
+        secure: isProduction, // // true trong production, false trong localhost
+        sameSite: isProduction ? "None" : "Lax", // SameSite=None only in production
       })
       .cookie("refresh_token", refreshToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "None",
+        secure: isProduction, // // true trong production, false trong localhost
+        sameSite: isProduction ? "None" : "Lax", // SameSite=None only in production
       })
       .json(rest);
   } catch (error) {

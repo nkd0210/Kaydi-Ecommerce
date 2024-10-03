@@ -6,7 +6,7 @@ import {
   createGroupChat,
   getAllChatsOfUser,
   removeFromGroupChat,
-  renameGroupChat,
+  updateGroupChat,
 } from "../controllers/chatController.js";
 import { verifyToken } from "../utils/verifyUser.js";
 
@@ -16,7 +16,7 @@ router.post("/accessSingleChat", verifyToken, accessSingleChat);
 router.post("/accessGroupChat/:groupChatId", verifyToken, accessGroupChat);
 router.get("/getAllChatsOfUser", verifyToken, getAllChatsOfUser);
 router.post("/createGroupChat", verifyToken, createGroupChat);
-router.put("/renameGroupChat/:groupChatId", verifyToken, renameGroupChat);
+router.put("/updateGroupChat/:groupChatId", verifyToken, updateGroupChat);
 router.put(
   "/removeFromGroupChat/:groupChatId",
   verifyToken,

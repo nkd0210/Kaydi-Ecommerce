@@ -139,7 +139,7 @@ const AdminDashboard = () => {
     return (
         <div className='flex'>
             <ToastContainer />
-            <div className='flex flex-col justify-between items-center p-[20px] gap-[20px] h-screen w-[200px] text-[18px] bg-black text-white max-md:hidden'>
+            <div className='flex flex-col justify-between items-center p-[20px] gap-[20px] h-screen min-w-[200px] text-[18px] bg-black text-white max-md:hidden'>
                 <div>
                     <div onClick={() => setOpenModal(true)} className='w-[80px] h-[80px] cursor-pointer hover:opacity-70 my-[20px]'>
                         <img src={currentUser?.profilePic} alt="" className='w-full h-full object-cover rounded-[50%]' />
@@ -160,7 +160,7 @@ const AdminDashboard = () => {
                 </div>
             </div>
 
-            <div className='md:hidden absolute top-[10px] left-[10px] z-20' onClick={() => setOpenSidebar(true)}>
+            <div className='md:hidden absolute top-[10px] left-[10px] z-20 cursor-pointer' onClick={() => setOpenSidebar(true)}>
                 <FaBars />
             </div>
 

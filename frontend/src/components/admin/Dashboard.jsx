@@ -146,7 +146,7 @@ const Dashboard = () => {
 
     return (
         <div className='py-[20px] px-[40px] max-md:px-[10px] h-full overflow-y-scroll'>
-            <h1 className='uppercase font-semibold text-[22px]'>Admin Dashboard</h1>
+            <h1 className='uppercase font-semibold text-[22px] mt-[10px]'>Admin Dashboard</h1>
 
             <div className='mt-[20px]'>
                 <h2 className='font-semibold text-[20px] uppercase'>Overview</h2>

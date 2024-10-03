@@ -154,9 +154,9 @@ export const createGroupChat = async (req, res, next) => {
   }
 };
 
-export const renameGroupChat = async (req, res, next) => {
+export const updateGroupChat = async (req, res, next) => {
   const { groupChatId } = req.params;
-  const { chatName } = req.body;
+  const { chatName, groupPhoto } = req.body;
 
   const findChat = await Chat.findById(groupChatId);
   if (!findChat) {
@@ -167,7 +167,10 @@ export const renameGroupChat = async (req, res, next) => {
     const updatedChat = await Chat.findByIdAndUpdate(
       groupChatId,
       {
-        chatName: chatName,
+        $set: {
+          chatName: chatName,
+          groupPhoto: groupPhoto,
+        },
       },
       { new: true }
     )
@@ -182,18 +185,26 @@ export const renameGroupChat = async (req, res, next) => {
 
 export const removeFromGroupChat = async (req, res, next) => {
   const { groupChatId } = req.params;
-  const { userId } = req.body;
+  const { userDeletedId } = req.body;
+
+  const userId = req.user.id;
 
   const findChat = await Chat.findById(groupChatId);
   if (!findChat) {
     return res.status(404).json({ message: "Chat not found" });
   }
 
+  if (findChat.groupAdmin._id.toString() !== userId) {
+    return res.status(403).json({
+      message: "You are not allowed to remove this user from this group chat",
+    });
+  }
+
   try {
     const removedFromChat = await Chat.findByIdAndUpdate(
       groupChatId,
       {
-        $pull: { users: userId },
+        $pull: { members: userDeletedId },
       },
       { new: true }
     )
@@ -207,19 +218,19 @@ export const removeFromGroupChat = async (req, res, next) => {
 };
 
 export const addToGroupChat = async (req, res, next) => {
-  const { chatId } = req.params;
+  const { groupChatId } = req.params;
   const { userId } = req.body;
 
-  const findChat = await Chat.findById(chatId);
+  const findChat = await Chat.findById(groupChatId);
   if (!findChat) {
     return res.status(404).json({ message: "Chat not found" });
   }
 
   try {
     const addedToChat = await Chat.findByIdAndUpdate(
-      chatId,
+      groupChatId,
       {
-        $push: { users: userId },
+        $push: { members: userId },
       },
       { new: true }
     )

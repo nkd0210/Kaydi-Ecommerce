@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import Loader from "./Loader";
+import Loader from "../Loader";
 
 import { CiSearch } from "react-icons/ci";
 import Skeleton from '@mui/material/Skeleton';
@@ -109,7 +109,8 @@ const CreateGroupChat = ({ setOpenModal, setSingleGroupChat, handleFetchAllChats
 
     const [loadingCreateGroupChat, setLoadingCreateGroupChat] = useState(false);
 
-    const handleCreateGroupChat = async () => {
+    const handleCreateGroupChat = async (e) => {
+        e.preventDefault();
         setLoadingCreateGroupChat(true);
         try {
             const res = await fetch(`/api/chat/createGroupChat`, {
@@ -152,9 +153,9 @@ const CreateGroupChat = ({ setOpenModal, setSingleGroupChat, handleFetchAllChats
                 ) : (
                     <div className="p-[20px] flex flex-col gap-[20px] ">
                         <div className="flex justify-between">
-                            <p onClick={() => setOpenModal(false)} className="text-blue-400 cursor-pointer hover:text-opacity-75">Hủy</p>
+                            <p onClick={() => setOpenModal(false)} className={`text-blue-400 cursor-pointer hover:text-opacity-75 `}>Hủy</p>
                             <h2 className="text-white">Nhóm mới</h2>
-                            <p onClick={handleCreateGroupChat} className="text-blue-400 cursor-pointer hover:text-opacity-75">Tạo</p>
+                            <button disabled={groupName.length === 0 && selectedUser.length === 0} onClick={handleCreateGroupChat} className={`text-blue-400 cursor-pointer hover:text-opacity-75 ${groupName.length > 0 && selectedUser.length > 0 ? 'cursor-pointer' : 'cursor-not-allowed'}`}>Tạo</button>
                         </div>
                         <input onChange={handleChangeGroupName} value={groupName} type="text" placeholder="Tên nhóm" className="bg-transparent text-white" />
                         <div className="w-full flex gap-[10px] bg-[#2a2a2d] rounded-[10px] px-[10px] py-[10px] justify-start items-center animate__animated animate__fadeIn ">

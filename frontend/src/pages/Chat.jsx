@@ -8,9 +8,9 @@ import { BiConversation } from "react-icons/bi";
 import { PiNotePencilBold } from "react-icons/pi";
 
 import Loader from '../components/Loader';
-import MessageContainer from "../components/MessageContainer";
-import SearchChat from "../components/SearchChat";
-import CreateGroupChat from "../components/CreateGroupChat";
+import MessageContainer from "../components/chat/MessageContainer";
+import SearchChat from "../components/chat/SearchChat";
+import CreateGroupChat from "../components/chat/CreateGroupChat";
 
 import Modal from '@mui/material/Modal';
 import { IoIosCloseCircleOutline } from "react-icons/io";
@@ -115,11 +115,13 @@ const Chat = () => {
         }
     }
 
+
+
     return (
-        <div className="bg-[#212121] w-screen h-screen text-white flex ">
+        <div className="bg-[#212121] w-screen h-screen  text-white flex ">
 
             {/* SIDEBAR */}
-            <div className="min-w-[320px] flex flex-col gap-[20px]  bg-[#171717]">
+            <div className="min-w-[320px] h-full overflow-y-scroll flex flex-col gap-[20px]  bg-[#171717]">
                 <div className="flex justify-between p-[20px]">
 
                     <FaHome
@@ -228,7 +230,7 @@ const Chat = () => {
                         </p>
                     </div>
                 ) : (
-                    <MessageContainer loadingChatBox={loadingChatBox} singleChat={singleChat} singleGroupChat={singleGroupChat} />
+                    <MessageContainer loadingChatBox={loadingChatBox} singleChat={singleChat} singleGroupChat={singleGroupChat} handleAccessGroupChat={handleAccessGroupChat} handleFetchAllChats={handleFetchAllChats} />
                 )
             }
 
