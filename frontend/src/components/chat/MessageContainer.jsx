@@ -3,23 +3,62 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import ChatInformation from "./ChatInformation";
-
+import MessageBox from "./MessageBox";
 
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import Skeleton from '@mui/material/Skeleton';
+import { LuPlusCircle } from "react-icons/lu";
+import { BsSendFill } from "react-icons/bs";
+import { GrFormPrevious } from "react-icons/gr";
 
 import "animate.css"
 
 
-const MessageContainer = ({ loadingChatBox, singleChat, singleGroupChat, handleAccessGroupChat, handleFetchAllChats }) => {
+const MessageContainer = ({ currentUser, messages, loadingChatBox, setSelectId, openMainSidebar, setOpenMainSidebar, singleChat, singleGroupChat, handleAccessChat, handleAccessGroupChat, handleFetchAllChats }) => {
 
-    const [openSidebar, setOpenSidebar] = useState(false);
+    const [openInformationBar, setOpenInformationBar] = useState(false);
 
+    const chatId = singleChat?.chat?._id || singleGroupChat?._id;
+
+    const [inputMessage, setInputMessage] = useState('');
+
+    const handleChangeInputMessage = (e) => {
+        setInputMessage(e.target.value);
+    }
+
+    const handleSendMessage = async () => {
+        try {
+            const res = await fetch(`/api/message/sendMessage`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    chatId: chatId,
+                    content: inputMessage
+                })
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                console.log(data.message);
+                return;
+            } else {
+                setInputMessage('');
+                if (singleChat && Object.keys(singleChat).length > 0) {
+                    handleAccessChat(singleChat?.receiver?._id);
+                } else if (singleGroupChat && Object.keys(singleGroupChat).length > 0) {
+                    handleAccessGroupChat(chatId);
+                }
+            }
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
 
     return (
         <div className='w-full h-screen'>
             {/* TOP BAR */}
-            <div className="w-full h-[60px]  py-[10px] px-[20px] border-b-[1px] border-gray-700 flex justify-between items-center">
+            <div className="w-full h-[60px] py-[10px] px-[20px] border-b-[1px] border-[#383939] flex justify-between items-center">
                 {
                     loadingChatBox ? (
                         <div className="flex w-full justify-between items-center">
@@ -35,14 +74,24 @@ const MessageContainer = ({ loadingChatBox, singleChat, singleGroupChat, handleA
                                 singleGroupChat && Object.keys(singleGroupChat).length > 0 ? (
                                     <>
                                         <div className="flex items-center gap-[10px]">
+                                            {
+                                                openMainSidebar == false && (
+                                                    <GrFormPrevious onClick={() => { setOpenMainSidebar(true); setSelectId(''); handleFetchAllChats() }} className="text-[26px] cursor-pointer hover:text-blue-400" />
+                                                )
+                                            }
                                             <img src={singleGroupChat?.groupPhoto} alt="" className="w-[40px] h-[40px] object-cover rounded-[50%]" />
                                             <p>{singleGroupChat?.chatName}</p>
                                         </div>
-                                        <IoMdInformationCircleOutline onClick={() => setOpenSidebar(!openSidebar)} className="text-[30px] text-gray-300 hover:text-gray-400 cursor-pointer" />
+                                        <IoMdInformationCircleOutline onClick={() => setOpenInformationBar(!openInformationBar)} className="text-[30px] text-gray-300 hover:text-gray-400 cursor-pointer" />
                                     </>
                                 ) : singleChat && Object.keys(singleChat).length > 0 ? (
                                     <>
                                         <div className="flex items-center gap-[10px]">
+                                            {
+                                                openMainSidebar == false && (
+                                                    <GrFormPrevious onClick={() => { setOpenMainSidebar(true); setSelectId(''); handleFetchAllChats() }} className="text-[26px] cursor-pointer hover:text-blue-400" />
+                                                )
+                                            }
                                             <img src={singleChat?.receiver?.profilePic} alt="" className="w-[40px] h-[40px] object-cover rounded-[50%]" />
                                             <p>{singleChat?.receiver?.username}</p>
                                         </div>
@@ -59,18 +108,30 @@ const MessageContainer = ({ loadingChatBox, singleChat, singleGroupChat, handleA
 
             {/* BOX CHAT */}
             <div className="flex">
-                <div className={`${openSidebar ? 'w-3/4' : 'w-full'} h-full p-[10px]`}>
-                    Messages chat here
+
+                {/* main chat */}
+                <div className={`${openInformationBar ? 'w-3/4' : 'w-full'} p-[10px] flex flex-col gap-[10px]  h-[calc(100vh-60px)] overflow-y-scroll`}>
+                    <div className="h-[calc(100vh-100px)] overflow-y-scroll p-[10px]" >
+                        {
+                            messages?.map((message, index) => (
+                                <MessageBox key={index} currentUser={currentUser} message={message} />
+                            ))
+                        }
+                    </div>
+                    <div className="flex gap-[10px] items-center">
+                        <LuPlusCircle className="text-[26px] text-gray-400 cursor-pointer hover:text-blue-500" />
+                        <input onChange={handleChangeInputMessage} value={inputMessage} type="text" placeholder="Aa" className="rounded-[20px] bg-[#3a3b3c] w-full p-[10px]" />
+                        <BsSendFill onClick={handleSendMessage} className="text-[20px] text-gray-400 cursor-pointer hover:text-blue-500" />
+                    </div>
                 </div>
-                {/* SIDEBAR */}
-                {openSidebar && (
+
+                {/* sidebar */}
+                {openInformationBar && (
                     <div className=" w-1/4 animate__animated animate__fadeInRight">
-                        <ChatInformation singleGroupChat={singleGroupChat} handleAccessGroupChat={handleAccessGroupChat} handleFetchAllChats={handleFetchAllChats} />
+                        <ChatInformation singleGroupChat={singleGroupChat} handleAccessGroupChat={handleAccessGroupChat} />
                     </div>
                 )}
             </div>
-
-
 
 
         </div>

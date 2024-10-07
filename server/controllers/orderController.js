@@ -30,6 +30,19 @@ export const createOrder = async (req, res, next) => {
         .json({ message: "Other function are not supported" });
     }
 
+    for (const product of products) {
+      const findProduct = await Product.findById(product.productId);
+      if (!findProduct) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+      if (findProduct.stock < product.quantity) {
+        return res.status(400).json({ message: "Not enough stock" });
+      }
+
+      findProduct.stock -= product.quantity;
+      await findProduct.save();
+    }
+
     const newOrder = new Order({
       userId,
       receiverName,

@@ -4,7 +4,7 @@ const messageSchema = new mongoose.Schema(
   {
     sender: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: " User",
+      ref: "User",
     },
     content: {
       type: String,
@@ -15,6 +15,16 @@ const messageSchema = new mongoose.Schema(
       ref: "Chat",
     },
     receiver: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    photo: {
+      type: String,
+      default: "",
+    },
+    seenBy: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",

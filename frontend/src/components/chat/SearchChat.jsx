@@ -6,7 +6,7 @@ import { IoMdAddCircleOutline } from "react-icons/io";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { CiSearch } from "react-icons/ci";
 
-const SearchChat = ({ setSingleChat, setSelectId, setIsSearch, searchKey, setSearchKey, searchUser, setSearchUser, handleFetchAllChats }) => {
+const SearchChat = ({ setMessages, setSingleChat, setSelectId, setIsSearch, searchKey, setSearchKey, searchUser, setSearchUser, handleFetchAllChats }) => {
 
     const handleChange = (e) => {
         setSearchKey(e.target.value);
@@ -53,6 +53,7 @@ const SearchChat = ({ setSingleChat, setSelectId, setIsSearch, searchKey, setSea
                 setIsSearch(false);
                 setSingleChat(data);
                 handleFetchAllChats();
+                setMessages(data?.chat?.messages);
             }
         } catch (error) {
             console.log(error.message);

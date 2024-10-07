@@ -25,7 +25,6 @@ const Chat = () => {
 
     const [allChats, setAllChats] = useState([]);
     const [loadingChats, setLoadingChats] = useState(false);
-    const [singleChat, setSingleChat] = useState({});
 
     // lay ra tat ca doan chat cua user
     const handleFetchAllChats = async () => {
@@ -60,9 +59,14 @@ const Chat = () => {
     const [isSearch, setIsSearch] = useState(false);
     const [searchKey, setSearchKey] = useState('');
     const [searchUser, setSearchUser] = useState([]); // luu tru cac user khi search
-
     const [openModal, setOpenModal] = useState(false);
     const [loadingChatBox, setLoadingChatBox] = useState(false);
+
+    const [messages, setMessages] = useState([]);
+
+    const [singleChat, setSingleChat] = useState({});
+
+    const [openMainSidebar, setOpenMainSidebar] = useState(true);
 
     // access single chat
     const handleAccessChat = async (id) => {
@@ -81,6 +85,8 @@ const Chat = () => {
                 return;
             } else {
                 setSingleChat(data);
+                setMessages(data?.chat?.messages);
+                setOpenMainSidebar(false);
             }
         } catch (error) {
             console.log(error.message);
@@ -107,6 +113,8 @@ const Chat = () => {
                 return;
             } else {
                 setSingleGroupChat(data);
+                setMessages(data?.messages);
+                setOpenMainSidebar(false);
             }
         } catch (error) {
             console.log(error.message);
@@ -115,109 +123,158 @@ const Chat = () => {
         }
     }
 
+    const formatDate = (dateString) => {
+        const messageDate = new Date(dateString);
+        const today = new Date();
+
+        // check if message is send today
+        const isToday =
+            messageDate.getDate() === today.getDate() &&
+            messageDate.getMonth() === today.getMonth() &&
+            messageDate.getFullYear() === today.getFullYear();
+
+        if (isToday) {
+            const hours = messageDate.getHours().toString().padStart(2, '0');
+            const minutes = messageDate.getMinutes().toString().padStart(2, '0');
+            return `${hours}:${minutes}`;
+        } else {
+            const day = messageDate.getDate().toString().padStart(2, '0');
+            const month = (messageDate.getMonth() + 1).toString().padStart(2, '0');
+            return `${day}/${month}`;
+        }
+    }
 
 
     return (
         <div className="bg-[#212121] w-screen h-screen  text-white flex ">
 
             {/* SIDEBAR */}
-            <div className="min-w-[320px] h-full overflow-y-scroll flex flex-col gap-[20px]  bg-[#171717]">
-                <div className="flex justify-between p-[20px]">
+            {
+                openMainSidebar && (
+                    <div className="min-w-[320px] h-full overflow-y-scroll flex flex-col gap-[20px]  bg-[#171717]">
+                        <div className="flex justify-between p-[20px]">
 
-                    <FaHome
-                        onClick={() => navigate(currentUser.isAdmin ? '/admin' : '/')}
-                        className="text-[20px] cursor-pointer hover:text-red-300"
-                    />
-                    <div className="flex items-center gap-[10px]">
-                        <img src={currentUser?.profilePic} alt="avatar" className="w-[30px] h-[30px] object-cover rounded-[50%]" />
-                        <div onClick={() => setOpenModal(true)} className="border rounded-[50%] w-[30px] h-[30px] flex items-center justify-center bg-[#212121] hover:bg-[#424242] hover:cursor-pointer ">
-                            <PiNotePencilBold className="text-[16px] text-gray-300 cursor-pointer" />
-                        </div>
-                    </div>
-
-                </div>
-
-                {
-                    isSearch ? (
-                        <SearchChat setSingleChat={setSingleChat} setSelectId={setSelectId} setIsSearch={setIsSearch} searchKey={searchKey} setSearchKey={setSearchKey} searchUser={searchUser} setSearchUser={setSearchUser} handleFetchAllChats={handleFetchAllChats} />
-                    ) : (
-                        <>
-                            <div className="px-[20px]">
-                                <div className="w-full flex gap-[10px] bg-[#2a2a2d] rounded-[20px] px-[10px] py-[5px] justify-start items-center animate__animated animate__fadeIn ">
-                                    <CiSearch className="text-[20px]" />
-                                    <input type="text" className="bg-transparent w-full" placeholder="Search" onClick={() => setIsSearch(true)} />
+                            <FaHome
+                                onClick={() => navigate(currentUser.isAdmin ? '/admin' : '/')}
+                                className="text-[20px] cursor-pointer hover:text-red-300"
+                            />
+                            <div className="flex items-center gap-[10px]">
+                                <img src={currentUser?.profilePic} alt="avatar" className="w-[30px] h-[30px] object-cover rounded-[50%]" />
+                                <div onClick={() => setOpenModal(true)} className="border rounded-[50%] w-[30px] h-[30px] flex items-center justify-center bg-[#212121] hover:bg-[#424242] hover:cursor-pointer ">
+                                    <PiNotePencilBold className="text-[16px] text-gray-300 cursor-pointer" />
                                 </div>
                             </div>
 
-                            <div className="flex justify-evenly rounded-[10px] p-[10px]">
-                                <p className="cursor-pointer hover:text-red-300">Active now</p>
-                                <p className="cursor-pointer hover:text-red-300">All</p>
-                            </div>
+                        </div>
 
-                            {/*  HIEN TAT CA DOAN CHAT CUA USER */}
-                            {
-                                loadingChats ? (
-                                    <div className="flex flex-col gap-[20px]">
-                                        <Skeleton variant="rounded" width={300} height={60} sx={{ bgcolor: 'grey.900' }} />
-                                        <Skeleton variant="rounded" width={300} height={60} sx={{ bgcolor: 'grey.900' }} />
-                                        <Skeleton variant="rounded" width={300} height={60} sx={{ bgcolor: 'grey.900' }} />
-                                        <Skeleton variant="rounded" width={300} height={60} sx={{ bgcolor: 'grey.900' }} />
-                                        <Skeleton variant="rounded" width={300} height={60} sx={{ bgcolor: 'grey.900' }} />
+                        {
+                            isSearch ? (
+                                <SearchChat setMessages={setMessages} setSingleChat={setSingleChat} setSelectId={setSelectId} setIsSearch={setIsSearch} searchKey={searchKey} setSearchKey={setSearchKey} searchUser={searchUser} setSearchUser={setSearchUser} handleFetchAllChats={handleFetchAllChats} />
+                            ) : (
+                                <>
+                                    <div className="px-[20px]">
+                                        <div className="w-full flex gap-[10px] bg-[#2a2a2d] rounded-[20px] px-[10px] py-[5px] justify-start items-center animate__animated animate__fadeIn ">
+                                            <CiSearch className="text-[20px]" />
+                                            <input type="text" className="bg-transparent w-full" placeholder="Search" onClick={() => setIsSearch(true)} />
+                                        </div>
                                     </div>
-                                ) : (
-                                    <div className="animate__animated animate__fadeIn">
-                                        {
-                                            allChats.length === 0 ? (
-                                                <p className="text-center text-red-200">No chat found!</p>
-                                            ) : (
-                                                <>
-                                                    {
-                                                        allChats?.map((chat, index) => (
-                                                            <div key={index} className="">
-                                                                {/* if is group chat, access group chat through chat id */}
-                                                                {chat.isGroupChat ? (
-                                                                    <div onClick={() => { setSelectId(chat?._id); handleAccessGroupChat(chat?._id); setSingleChat({}) }} className={`flex justify-between items-center w-full py-[20px] border-b-[1px] h-[80px] border-gray-600 cursor-pointer hover:bg-[#292929] ${selectId === chat?._id ? 'bg-gray-800' : ''}  `} >
-                                                                        <div className="flex items-center gap-[20px] pl-[20px]">
-                                                                            <div className="w-[50px]">
-                                                                                <img key={index} src={chat?.groupPhoto} alt="ava" className="w-[40px] h-[40px] object-cover rounded-[50%]" />
-                                                                            </div>
-                                                                            <div className="flex flex-col">
-                                                                                <p className="text-[12px]">{chat?.chatName}</p>
-                                                                                <p className="text-[12px]">chat</p>
-                                                                            </div>
-                                                                        </div>
-                                                                        <p className="text-[12px] pr-[20px]">Now</p>
-                                                                    </div>
-                                                                ) : (
-                                                                    // if is single chat, access chat through receiver id
-                                                                    <div onClick={() => { setSelectId(chat?.receiver[0]?._id), handleAccessChat(chat?.receiver[0]?._id); setSingleGroupChat({}) }} className={`flex justify-between items-center w-full py-[20px] border-b-[1px] h-[80px] border-gray-600 cursor-pointer hover:bg-[#292929] ${selectId === chat?.receiver[0]?._id ? 'bg-gray-800' : ''}`} >
-                                                                        <div className="flex items-center gap-[20px] pl-[20px]">
-                                                                            <div className="w-[50px]">
-                                                                                <img key={index} src={chat?.receiver[0]?.profilePic} alt="ava" className="w-[40px] h-[40px] object-cover rounded-[50%]" />
-                                                                            </div>
-                                                                            <div className="flex flex-col">
-                                                                                <p className="text-[12px]">{chat?.receiver[0]?.username}</p>
-                                                                                <p className="text-[12px]">chat</p>
-                                                                            </div>
-                                                                        </div>
-                                                                        <p className="text-[12px] pr-[20px]">Now</p>
-                                                                    </div>
-                                                                )}
-                                                            </div>
-                                                        ))
-                                                    }
-                                                </>
-                                            )
-                                        }
+
+                                    <div className="flex justify-evenly rounded-[10px] p-[10px]">
+                                        <p className="cursor-pointer hover:text-red-300">Active now</p>
+                                        <p className="cursor-pointer hover:text-red-300">All</p>
                                     </div>
-                                )
-                            }
 
-                        </>
-                    )
-                }
+                                    {/*  HIEN TAT CA DOAN CHAT CUA USER */}
+                                    {
+                                        loadingChats ? (
+                                            <div className="flex flex-col gap-[20px]">
+                                                <Skeleton animation="wave" variant="rounded" width={300} height={60} sx={{ bgcolor: 'grey.900' }} />
+                                                <Skeleton animation="wave" variant="rounded" width={300} height={60} sx={{ bgcolor: 'grey.900' }} />
+                                                <Skeleton animation="wave" variant="rounded" width={300} height={60} sx={{ bgcolor: 'grey.900' }} />
+                                                <Skeleton animation="wave" variant="rounded" width={300} height={60} sx={{ bgcolor: 'grey.900' }} />
+                                                <Skeleton animation="wave" variant="rounded" width={300} height={60} sx={{ bgcolor: 'grey.900' }} />
+                                            </div>
+                                        ) : (
+                                            <div className="animate__animated animate__fadeIn">
+                                                {
+                                                    allChats.length === 0 ? (
+                                                        <p className="text-center text-red-200">No chat found!</p>
+                                                    ) : (
+                                                        <>
+                                                            {
+                                                                allChats?.map((chat, index) => (
+                                                                    <div key={index} className="">
+                                                                        {/* if is group chat, access group chat through chat id */}
+                                                                        {chat.isGroupChat ? (
+                                                                            <div onClick={() => { setSelectId(chat?._id); handleAccessGroupChat(chat?._id); setSingleChat({}) }} className={`flex justify-between items-center w-full py-[20px] border-b-[1px] h-[80px] border-gray-600 cursor-pointer hover:bg-[#292929] ${selectId === chat?._id ? 'bg-gray-800' : ''}  `} >
+                                                                                <div className="flex items-center gap-[20px] pl-[20px]">
+                                                                                    <div className="w-[50px]">
+                                                                                        <img key={index} src={chat?.groupPhoto} alt="ava" className="w-[40px] h-[40px] object-cover rounded-[50%]" />
+                                                                                    </div>
+                                                                                    <div className="flex flex-col">
+                                                                                        <p className="text-[12px]">{chat?.chatName}</p>
+                                                                                        {
+                                                                                            chat?.latestMessage ? (
+                                                                                                <p className="text-[12px] w-[150px] truncate">{chat?.latestMessage?.content}</p>
+                                                                                            ) : (
+                                                                                                <p className="text-[12px] font-bold">Start a chat now</p>
+                                                                                            )
+                                                                                        }
+                                                                                    </div>
+                                                                                </div>
+                                                                                {
+                                                                                    chat?.latestMessageAt ? (
+                                                                                        <p className="text-[12px] pr-[20px]">{formatDate(chat?.latestMessageAt)}</p>
+                                                                                    ) : (
+                                                                                        <p className="text-[12px] pr-[20px]">Now</p>
+                                                                                    )
+                                                                                }
+                                                                            </div>
+                                                                        ) : (
+                                                                            // if is single chat, access chat through receiver id
+                                                                            <div onClick={() => { setSelectId(chat?.receiver[0]?._id), handleAccessChat(chat?.receiver[0]?._id); setSingleGroupChat({}) }} className={`flex justify-between items-center w-full py-[20px] border-b-[1px] h-[80px] border-gray-600 cursor-pointer hover:bg-[#292929] ${selectId === chat?.receiver[0]?._id ? 'bg-gray-800' : ''}`} >
+                                                                                <div className="flex items-center gap-[20px] pl-[20px]">
+                                                                                    <div className="w-[50px]">
+                                                                                        <img key={index} src={chat?.receiver[0]?.profilePic} alt="ava" className="w-[40px] h-[40px] object-cover rounded-[50%]" />
+                                                                                    </div>
+                                                                                    <div className="flex flex-col">
+                                                                                        <p className="text-[12px]">{chat?.receiver[0]?.username}</p>
+                                                                                        {
+                                                                                            chat?.latestMessage ? (
+                                                                                                <p className="text-[12px]  w-[150px] truncate">{chat?.latestMessage?.content}</p>
+                                                                                            ) : (
+                                                                                                <p className="text-[12px] font-bold">Start a chat now</p>
+                                                                                            )
+                                                                                        }
+                                                                                    </div>
+                                                                                </div>
+                                                                                {
+                                                                                    chat?.latestMessageAt ? (
+                                                                                        <p className="text-[12px] pr-[20px]">{formatDate(chat?.latestMessageAt)}</p>
+                                                                                    ) : (
+                                                                                        <p className="text-[12px] pr-[20px]">Now</p>
+                                                                                    )
+                                                                                }
+                                                                            </div>
+                                                                        )}
+                                                                    </div>
+                                                                ))
+                                                            }
+                                                        </>
+                                                    )
+                                                }
+                                            </div>
+                                        )
+                                    }
 
-            </div>
+                                </>
+                            )
+                        }
+
+                    </div>
+                )
+            }
+
 
             {/* CHAT BOX */}
 
@@ -230,7 +287,19 @@ const Chat = () => {
                         </p>
                     </div>
                 ) : (
-                    <MessageContainer loadingChatBox={loadingChatBox} singleChat={singleChat} singleGroupChat={singleGroupChat} handleAccessGroupChat={handleAccessGroupChat} handleFetchAllChats={handleFetchAllChats} />
+                    <MessageContainer
+                        currentUser={currentUser}
+                        messages={messages}
+                        loadingChatBox={loadingChatBox}
+                        setSelectId={setSelectId}
+                        openMainSidebar={openMainSidebar}
+                        setOpenMainSidebar={setOpenMainSidebar}
+                        singleChat={singleChat}
+                        singleGroupChat={singleGroupChat}
+                        handleAccessChat={handleAccessChat}
+                        handleAccessGroupChat={handleAccessGroupChat}
+                        handleFetchAllChats={handleFetchAllChats}
+                    />
                 )
             }
 

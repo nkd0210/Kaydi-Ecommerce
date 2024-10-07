@@ -5,6 +5,12 @@ export const accessSingleChat = async (req, res, next) => {
   const { receiverId } = req.body;
   const userId = req.user.id;
 
+  if (!userId || !receiverId) {
+    return res.status(400).json({
+      message: "Invalid user or receiver ID.",
+    });
+  }
+
   try {
     var isChat = await Chat.find({
       isGroupChat: false,
@@ -14,13 +20,20 @@ export const accessSingleChat = async (req, res, next) => {
       ],
     })
       .populate("members", "-password")
-      .populate("latestMessage");
-
-    // lay thong tin cua nguoi chat cuoi cung
-    isChat = await User.populate(isChat, {
-      path: "latestMessage.sender",
-      select: "username email profilePic",
-    });
+      .populate({
+        path: "messages",
+        populate: {
+          path: "sender",
+          select: "username profilePic",
+        },
+      })
+      .populate({
+        path: "latestMessage",
+        populate: {
+          path: "sender",
+          select: "username profilePic",
+        },
+      });
 
     const findUser = await User.findById(receiverId); // lay thong tin cua nguoi muon chat cung
 
@@ -34,7 +47,19 @@ export const accessSingleChat = async (req, res, next) => {
         isGroupChat: false,
         members: [userId, receiverId],
       };
+
+      if (
+        chatData.members.some(
+          (member) => member === null || member === undefined
+        )
+      ) {
+        return res.status(400).json({
+          message: "One or more members are invalid",
+        });
+      }
+
       const newChat = await Chat.create(chatData);
+
       // after create new chat, find that chat and populate all the user information except password
       const populatedChat = await Chat.findOne({ _id: newChat._id }).populate(
         "members",
@@ -42,7 +67,7 @@ export const accessSingleChat = async (req, res, next) => {
       );
 
       return res.status(200).json({
-        // chat: populatedChat,
+        chat: populatedChat,
         receiver: findUser,
       });
     }
@@ -61,18 +86,26 @@ export const accessGroupChat = async (req, res, next) => {
     })
       .populate("members", "-password")
       .populate("groupAdmin", "-password")
-      .populate("latestMessage");
+      .populate({
+        path: "messages",
+        populate: {
+          path: "sender",
+          select: "username profilePic",
+        },
+      })
+      .populate({
+        path: "latestMessage",
+        populate: {
+          path: "sender",
+          select: "username profilePic",
+        },
+      });
 
     if (!findGroupChat) {
       return res.status(404).json({ message: "Group chat not found" });
     }
 
-    const populatedGroupChat = await User.populate(findGroupChat, {
-      path: "latestMessage.sender",
-      select: "username email profilePic",
-    });
-
-    return res.status(200).json(populatedGroupChat);
+    return res.status(200).json(findGroupChat);
   } catch (error) {
     next(error);
   }
@@ -134,6 +167,10 @@ export const createGroupChat = async (req, res, next) => {
   }
 
   const members = [userId, ...memberIds];
+
+  if (members.some((member) => member === null || member === undefined)) {
+    return res.status(400).json({ message: "One or more members are invalid" });
+  }
 
   try {
     const newGroupChat = await Chat.create({

@@ -3,7 +3,7 @@ import User from "../models/userModel.js";
 import Chat from "../models/chatModel.js";
 
 export const getAllMessages = async (req, res, next) => {
-  const { chatId } = req.params.chatId;
+  const { chatId } = req.params;
 
   const findChat = await Chat.findById(chatId);
   if (!findChat) {
@@ -11,8 +11,11 @@ export const getAllMessages = async (req, res, next) => {
   }
   try {
     const messages = await Message.find({ chat: chatId })
-      .populate("sender", "username email profilePic")
-      .populate("chat");
+      .populate("sender", "username profilePic")
+      .populate({
+        path: "chat",
+        select: "chatName latestMessage latestMessageAt",
+      });
 
     return res.status(200).json(messages);
   } catch (error) {
@@ -29,25 +32,50 @@ export const sendMessage = async (req, res, next) => {
       .json({ message: "Chat ID and content are required" });
   }
 
-  var newMessage = {
+  var message = {
     sender: req.user.id,
     content: content,
     chat: chatId,
+    seenBy: req.user.id,
   };
 
   try {
-    var message = await Message.create(newMessage);
+    var newMessage = await Message.create(message);
 
-    message = await message.populate("sender", "username profilePic");
-    message = await message.populate("chat");
-    message = await User.populate(message, {
-      path: "chat.users",
-      select: "username email profilePic",
-    });
-
-    await Chat.findByIdAndUpdate(chatId, { latestMessage: message });
-
-    return res.status(200).json(message);
+    const updatedChat = await Chat.findByIdAndUpdate(
+      chatId,
+      {
+        $push: { messages: newMessage._id },
+        $set: {
+          latestMessage: newMessage,
+          latestMessageAt: newMessage.createdAt,
+        },
+      },
+      { new: true }
+    )
+      .populate({
+        path: "messages",
+        model: "Message",
+        populate: [
+          {
+            path: "sender",
+            select: "username profilePic",
+          },
+          {
+            path: "seenBy",
+            select: "username profilePic",
+          },
+        ],
+      })
+      .populate({
+        path: "members",
+        model: "User",
+      })
+      .populate({
+        path: "latestMessage",
+        model: "Message",
+      });
+    return res.status(200).json(updatedChat);
   } catch (error) {
     next(error);
   }

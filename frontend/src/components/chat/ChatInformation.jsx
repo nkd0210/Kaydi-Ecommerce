@@ -28,7 +28,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 import 'animate.css';
 
-const ChatInformation = ({ singleGroupChat, handleAccessGroupChat, handleFetchAllChats }) => {
+const ChatInformation = ({ singleGroupChat, handleAccessGroupChat }) => {
 
     // change info like name or photo
     const [openOptionChat, setOpenOptionChat] = useState(false);
@@ -141,7 +141,6 @@ const ChatInformation = ({ singleGroupChat, handleAccessGroupChat, handleFetchAl
             } else {
                 setOpenModalName(false);
                 setOpenModalImage(false);
-                handleFetchAllChats();
                 handleAccessGroupChat(singleGroupChat._id);
             }
         } catch (error) {
@@ -253,7 +252,6 @@ const ChatInformation = ({ singleGroupChat, handleAccessGroupChat, handleFetchAl
                 return;
             } else {
                 setOpenModalAdd(false);
-                handleFetchAllChats();
                 handleAccessGroupChat(singleGroupChat._id);
             }
         } catch (error) {
@@ -283,7 +281,6 @@ const ChatInformation = ({ singleGroupChat, handleAccessGroupChat, handleFetchAl
             } else {
                 setOpenUser('');
                 setOpenModalDelete(false);
-                handleFetchAllChats();
                 handleAccessGroupChat(singleGroupChat._id);
             }
         } catch (error) {
@@ -295,7 +292,7 @@ const ChatInformation = ({ singleGroupChat, handleAccessGroupChat, handleFetchAl
 
 
     return (
-        <div className='flex flex-col gap-[20px] p-[20px] border-l-[1px] border-gray-700 h-[calc(100vh-60px)] overflow-y-scroll '>
+        <div className='flex flex-col gap-[20px] p-[20px] border-l-[1px] border-[#383939] h-[calc(100vh-60px)] overflow-y-scroll '>
             <div className='flex flex-col gap-[10px] items-center justify-center'>
                 <img src={singleGroupChat?.groupPhoto} alt="" className='w-[60px] h-[60px] rounded-[50%] object-cover' />
                 <p className='font-semibold text-[14px]'>{singleGroupChat?.chatName}</p>
