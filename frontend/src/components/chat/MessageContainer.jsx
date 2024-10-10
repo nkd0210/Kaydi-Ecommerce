@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import ChatInformation from "./ChatInformation";
 import MessageBox from "./MessageBox";
+import { pusherClient } from '../../lib/pusher';
 
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import Skeleton from '@mui/material/Skeleton';
@@ -11,20 +12,38 @@ import { LuPlusCircle } from "react-icons/lu";
 import { BsSendFill } from "react-icons/bs";
 import { GrFormPrevious } from "react-icons/gr";
 
+
 import "animate.css"
 
 
-const MessageContainer = ({ currentUser, messages, loadingChatBox, setSelectId, openMainSidebar, setOpenMainSidebar, singleChat, singleGroupChat, handleAccessChat, handleAccessGroupChat, handleFetchAllChats }) => {
+const MessageContainer = ({ currentUser, chatId, messages, setMessages, loadingChatBox, setSelectId, openMainSidebar, setOpenMainSidebar, singleChat, singleGroupChat, handleAccessGroupChat, handleFetchAllChats }) => {
 
     const [openInformationBar, setOpenInformationBar] = useState(false);
 
-    const chatId = singleChat?.chat?._id || singleGroupChat?._id;
+    // const chatId = singleChat?.chat?._id || singleGroupChat?._id;
 
     const [inputMessage, setInputMessage] = useState('');
 
     const handleChangeInputMessage = (e) => {
         setInputMessage(e.target.value);
     }
+
+    // const fetchAllMessages = async (id) => {
+    //     try {
+    //         const res = await fetch(`/api/message/getAllMessages/${id}`, {
+    //             method: "GET"
+    //         });
+    //         const data = await res.json();
+    //         if (!res.ok) {
+    //             console.log(data.message);
+    //             return;
+    //         } else {
+    //             setMessages(data);
+    //         }
+    //     } catch (error) {
+    //         console.log(error.message);
+    //     }
+    // }
 
     const handleSendMessage = async () => {
         try {
@@ -44,16 +63,40 @@ const MessageContainer = ({ currentUser, messages, loadingChatBox, setSelectId, 
                 return;
             } else {
                 setInputMessage('');
-                if (singleChat && Object.keys(singleChat).length > 0) {
-                    handleAccessChat(singleChat?.receiver?._id);
-                } else if (singleGroupChat && Object.keys(singleGroupChat).length > 0) {
-                    handleAccessGroupChat(chatId);
-                }
+                // fetchAllMessages(chatId);
             }
         } catch (error) {
             console.log(error.message);
         }
     }
+
+    useEffect(() => {
+        pusherClient.subscribe(chatId);
+
+        const handleMessage = async (newMessage) => {
+            setMessages((prevMessage) => {
+                return [...prevMessage, newMessage];
+            })
+        }
+
+        pusherClient.bind("new-message", handleMessage);
+
+        return () => {
+            pusherClient.unsubscribe(chatId);
+            pusherClient.unbind("new-message", handleMessage);
+        }
+
+    }, [chatId]);
+
+    /* Scrolling down to the bottom when having the new message */
+    const bottomRef = useRef(null);
+
+    useEffect(() => {
+        bottomRef.current?.scrollIntoView({
+            behavior: "smooth",
+        });
+    }, [messages]);
+
 
     return (
         <div className='w-full h-screen'>
@@ -114,9 +157,10 @@ const MessageContainer = ({ currentUser, messages, loadingChatBox, setSelectId, 
                     <div className="h-[calc(100vh-100px)] overflow-y-scroll p-[10px]" >
                         {
                             messages?.map((message, index) => (
-                                <MessageBox key={index} currentUser={currentUser} message={message} />
+                                <MessageBox key={index} currentUser={currentUser} message={message} loadingChatBox={loadingChatBox} />
                             ))
                         }
+                        <div ref={bottomRef} />
                     </div>
                     <div className="flex gap-[10px] items-center">
                         <LuPlusCircle className="text-[26px] text-gray-400 cursor-pointer hover:text-blue-500" />

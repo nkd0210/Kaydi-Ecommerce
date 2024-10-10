@@ -1,5 +1,6 @@
 import Chat from "../models/chatModel.js";
 import User from "../models/userModel.js";
+import Message from "../models/messageModel.js";
 
 export const accessSingleChat = async (req, res, next) => {
   const { receiverId } = req.body;
@@ -38,6 +39,16 @@ export const accessSingleChat = async (req, res, next) => {
     const findUser = await User.findById(receiverId); // lay thong tin cua nguoi muon chat cung
 
     if (isChat.length > 0) {
+      await Message.updateMany(
+        {
+          chat: isChat[0]._id,
+          seenBy: { $ne: userId }, // if user hasn't seen the message
+        },
+        {
+          $addToSet: { seenBy: userId },
+        }
+      );
+
       return res.status(200).json({
         chat: isChat[0],
         receiver: findUser,
@@ -78,6 +89,7 @@ export const accessSingleChat = async (req, res, next) => {
 
 export const accessGroupChat = async (req, res, next) => {
   const { groupChatId } = req.params;
+  const userId = req.user.id;
 
   try {
     const findGroupChat = await Chat.findOne({
@@ -104,6 +116,16 @@ export const accessGroupChat = async (req, res, next) => {
     if (!findGroupChat) {
       return res.status(404).json({ message: "Group chat not found" });
     }
+
+    await Message.updateMany(
+      {
+        chat: findGroupChat._id,
+        seenBy: { $ne: userId },
+      },
+      {
+        $addToSet: { seenBy: userId },
+      }
+    );
 
     return res.status(200).json(findGroupChat);
   } catch (error) {

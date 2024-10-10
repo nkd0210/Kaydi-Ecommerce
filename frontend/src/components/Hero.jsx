@@ -10,7 +10,7 @@ import hero4 from '/heroImage/hero4.webp'
 const Hero = () => {
 
   var settings = {
-    dots: true,
+    dots: false,
     infinite: true,
     speed: 500,
     slidesToShow: 1,

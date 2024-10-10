@@ -1,6 +1,7 @@
 import Message from "../models/messageModel.js";
 import User from "../models/userModel.js";
 import Chat from "../models/chatModel.js";
+import { pusherServer } from "../lib/pusher.js";
 
 export const getAllMessages = async (req, res, next) => {
   const { chatId } = req.params;
@@ -10,12 +11,14 @@ export const getAllMessages = async (req, res, next) => {
     return res.status(404).json({ message: "Chat not found" });
   }
   try {
-    const messages = await Message.find({ chat: chatId })
-      .populate("sender", "username profilePic")
-      .populate({
-        path: "chat",
-        select: "chatName latestMessage latestMessageAt",
-      });
+    const messages = await Message.find({ chat: chatId }).populate(
+      "sender",
+      "username profilePic"
+    );
+    // .populate({
+    //   path: "chat",
+    //   select: "chatName latestMessage latestMessageAt",
+    // });
 
     return res.status(200).json(messages);
   } catch (error) {
@@ -32,8 +35,10 @@ export const sendMessage = async (req, res, next) => {
       .json({ message: "Chat ID and content are required" });
   }
 
+  const currentUser = await User.findById(req.user.id);
+
   var message = {
-    sender: req.user.id,
+    sender: currentUser,
     content: content,
     chat: chatId,
     seenBy: req.user.id,
@@ -75,6 +80,23 @@ export const sendMessage = async (req, res, next) => {
         path: "latestMessage",
         model: "Message",
       });
+
+    /* Trigger a Pusher event for a specific chat about the new message */
+    await pusherServer.trigger(chatId, "new-message", newMessage);
+
+    /* Triggers a Pusher event for each member of the chat about the chat update with the latest message */
+    const latestMessage = updatedChat.messages[updatedChat.messages.length - 1];
+    updatedChat.members.forEach(async (member) => {
+      try {
+        await pusherServer.trigger(member._id.toString(), "update-chat", {
+          id: chatId,
+          messages: [latestMessage],
+        });
+      } catch (error) {
+        console.error("Failed to trigger update-chat event");
+      }
+    });
+
     return res.status(200).json(updatedChat);
   } catch (error) {
     next(error);
