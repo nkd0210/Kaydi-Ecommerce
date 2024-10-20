@@ -369,7 +369,27 @@ export const getTotalAmountPerDay = async (req, res, next) => {
       .json({ message: "You are not admin to get total amount per day" });
   }
   try {
+    const startOfMonth = new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      1
+    );
+    const startOfNextMonth = new Date(
+      new Date().getFullYear(),
+      new Date().getMonth() + 1,
+      1
+    );
+
     const totalAmountPerDay = await Order.aggregate([
+      {
+        // Match only orders created in the current month
+        $match: {
+          createdAt: {
+            $gte: startOfMonth,
+            $lt: startOfNextMonth,
+          },
+        },
+      },
       {
         $group: {
           _id: {
@@ -385,6 +405,34 @@ export const getTotalAmountPerDay = async (req, res, next) => {
     ]);
 
     res.status(200).json(totalAmountPerDay);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getTotalAmountPerMonth = async (req, res, next) => {
+  if (!req.user.isAdmin) {
+    return res.status(401).json({
+      message: "You are not authorized to get total amount per month",
+    });
+  }
+  try {
+    const totalAmountPerMonth = await Order.aggregate([
+      {
+        $group: {
+          _id: {
+            $dateToString: { format: "%Y-%m", date: "$createdAt" },
+          },
+          totalAmount: { $sum: "$totalAmount" },
+        },
+      },
+      // Sort the results by month in ascending order
+      {
+        $sort: { _id: 1 },
+      },
+    ]);
+
+    res.status(200).json(totalAmountPerMonth);
   } catch (error) {
     next(error);
   }

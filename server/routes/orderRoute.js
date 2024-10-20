@@ -12,6 +12,7 @@ import {
   getTotalAmountPerDay,
   getAllOrdersOfCustomer,
   exportOrders,
+  getTotalAmountPerMonth,
 } from "../controllers/orderController.js";
 
 const router = express.Router();
@@ -29,6 +30,7 @@ router.put(
   updateOrderPaymentCheck
 );
 router.get("/getTotalAmountPerDay", verifyToken, getTotalAmountPerDay);
+router.get("/getTotalAmountPerMonth", verifyToken, getTotalAmountPerMonth);
 router.get("/getAllOrdersOfCustomer", verifyToken, getAllOrdersOfCustomer);
 router.get("/exportOrders", verifyToken, exportOrders);
 

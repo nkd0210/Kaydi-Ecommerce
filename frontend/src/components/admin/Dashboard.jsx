@@ -113,6 +113,26 @@ const Dashboard = () => {
         }
     }
 
+    const [orderPerMonth, setOrderPerMonth] = useState([]);
+
+    const handleFetchTotalAmountPerMonth = async () => {
+        try {
+            const res = await fetch(`/api/order/getTotalAmountPerMonth`, {
+                method: "GET",
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                console.log(data.message);
+                return;
+            } else {
+                setOrderPerMonth(data);
+            }
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+
+
     const [voucherInfo, setVoucherInfo] = useState({});
     const [vouchers, setVouchers] = useState([]);
 
@@ -140,6 +160,7 @@ const Dashboard = () => {
         handleFetchUsers();
         handleFetchOrders();
         handleFetchTotalAmountPerDay();
+        handleFetchTotalAmountPerMonth();
         handleFetchVouchers();
     }, [])
 
@@ -247,11 +268,11 @@ const Dashboard = () => {
                         <div className='w-[full] h-[350px] rounded-[10px] border border-black mb-[20px] p-[20px]'>
                             <Bar
                                 data={{
-                                    labels: orderPerDay?.map((data) => data._id),
+                                    labels: orderPerMonth?.map((data) => data._id),
                                     datasets: [
                                         {
-                                            label: "Total price per day",
-                                            data: orderPerDay?.map((data) => data.totalAmount),
+                                            label: "Total price per month",
+                                            data: orderPerMonth?.map((data) => data.totalAmount),
                                             borderRadius: 10,
                                             backgroundColor: "rgba(75, 192, 192, 0.2)",
                                             borderColor: "rgba(75, 192, 192, 1)",
