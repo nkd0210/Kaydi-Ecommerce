@@ -16,6 +16,7 @@ import Modal from '@mui/material/Modal';
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import Skeleton from '@mui/material/Skeleton';
 import "animate.css"
+import { pusherClient } from "../lib/pusher";
 
 
 const Chat = () => {
@@ -148,13 +149,52 @@ const Chat = () => {
 
     const [chatId, setChatId] = useState('');
 
+    useEffect(() => {
+        if (currentUser) {
+            pusherClient.subscribe(currentUser._id);
+
+            const handleChatUpdate = (updatedChat) => {
+                setAllChats((prevChats) => {
+                    const chatIndex = prevChats.findIndex(chat => chat._id == updatedChat.id);
+
+                    if (chatIndex !== -1) {
+
+                        const updatedMessages = [
+                            ...prevChats[chatIndex].messages,
+                            ...updatedChat.messages
+                        ];
+
+                        const newChats = [...prevChats];
+                        newChats[chatIndex] = {
+                            ...newChats[chatIndex],
+                            messages: updatedMessages,
+                            latestMessage: updatedMessages[updatedMessages.length - 1],
+                        };
+
+                        return newChats;
+                    } else {
+                        return [...prevChats, updatedChat];
+                    }
+                })
+            }
+
+            pusherClient.bind("update-chat", handleChatUpdate);
+
+            return () => {
+                pusherClient.unbind("update-chat", handleChatUpdate);
+                pusherClient.unsubscribe(currentUser._id);
+            }
+
+        }
+    }, [currentUser])
+
     return (
         <div className="bg-[#212121] w-screen h-screen  text-white flex ">
 
             {/* SIDEBAR */}
             {
                 openMainSidebar && (
-                    <div className="min-w-[320px] h-full overflow-y-scroll flex flex-col gap-[20px] bg-[#171717] transition-all duration-300 opacity-100">
+                    <div className="min-w-[320px] max-md:w-full h-full overflow-y-scroll flex flex-col gap-[20px] bg-[#171717] transition-all duration-300 opacity-100">
                         <div className="flex justify-between p-[20px]">
 
                             <FaHome
@@ -284,7 +324,7 @@ const Chat = () => {
 
             {
                 !selectId || isSearch ? (
-                    <div className="flex-1 flex-col gap-[20px] p-[20px] bg-[#212121] flex justify-center items-center">
+                    <div className="flex-1 max-md:hidden flex-col gap-[20px] p-[20px] bg-[#212121] flex justify-center items-center">
                         <BiConversation className="text-[50px] text-gray-400" />
                         <p className="text-[20px] text-gray-400">
                             Select conversation to start messaging

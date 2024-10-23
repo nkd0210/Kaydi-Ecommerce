@@ -63,36 +63,29 @@ const Voucher = () => {
     }, []);
 
     // create voucher
-    const [productApplyInput, setProductApplyInput] = useState([]);
+
     const [productApply, setProductApply] = useState([]);
-    const [categoryApplyInput, setCategoryApplyInput] = useState([]);
     const [categoryApply, setCategoryApply] = useState([]);
 
     const handleChangeFormCreate = (e) => {
         setFormCreate({ ...formCreate, [e.target.id]: e.target.value })
     }
 
-    const handleInputCreateProduct = (e) => {
-        setProductApplyInput(e.target.value)
-    }
-
-    const handleInputCreateCategory = (e) => {
-        setCategoryApplyInput(e.target.value)
-    }
-
-    const handleAddCreateProduct = () => {
-        if (productApplyInput.trim()) {
-            setProductApply([...productApply, productApplyInput.trim()]);
-            setProductApplyInput('');
+    const toggleItem = (item, list, setList) => {
+        if (list.includes(item)) {
+            setList(list.filter(i => i !== item)); // Remove the item if it's already in the list
+        } else {
+            setList([...list, item]);  // Add the item if it's not in the list
         }
-    }
+    };
 
-    const handleAddCreateCategory = () => {
-        if (categoryApplyInput.trim()) {
-            setCategoryApply([...categoryApply, categoryApplyInput.trim()]);
-            setCategoryApplyInput('');
-        }
-    }
+    const toggleProduct = (productId) => {
+        toggleItem(productId, productApply, setProductApply);
+    };
+
+    const toggleCategory = (categoryId) => {
+        toggleItem(categoryId, categoryApply, setCategoryApply);
+    };
 
     const handleRemoveCreateProduct = (index) => {
         setProductApply((prevProduct) => prevProduct.filter((_, id) => id !== index))
@@ -133,10 +126,6 @@ const Voucher = () => {
         }
     }, [productModal])
 
-    const selectProduct = (productId) => {
-        setProductApply([...productApply, productId]);
-    }
-
     const [allCategories, setAllCategories] = useState([]);
     const [categoryModal, setCategoryModal] = useState(false);
     const [loadingCategory, setLoadingCategory] = useState(false);
@@ -167,10 +156,6 @@ const Voucher = () => {
             fetchAllCategories();
         }
     }, [categoryModal]);
-
-    const selectCategory = (categoryId) => {
-        setCategoryApply([...categoryApply, categoryId]);
-    }
 
     const [formCreate, setFormCreate] = useState({});
     const [loadingCreate, setLoadingCreate] = useState(false);
@@ -274,8 +259,6 @@ const Voucher = () => {
         }
     }
 
-    const [productEditInput, setProductEditInput] = useState([]); // input field for product
-    const [categoryEditInput, setCategoryEditInput] = useState([]); // input field for category
     const [productApplyEdit, setProductApplyEdit] = useState([]); // show product
     const [categoryApplyEdit, setCategoryApplyEdit] = useState([]); // show category
 
@@ -286,26 +269,12 @@ const Voucher = () => {
         }
     }, [prevVoucher])
 
-    const handleInputEditProduct = (e) => {
-        setProductEditInput(e.target.value);
+    const toggleEditProduct = (productId) => {
+        toggleItem(productId, productApplyEdit, setProductApplyEdit);
     }
 
-    const handleInputEditCategory = (e) => {
-        setCategoryEditInput(e.target.value);
-    }
-
-    const handleAddEditProduct = () => {
-        if (productEditInput.trim()) {
-            setProductApplyEdit([...productApplyEdit, productEditInput.trim()]);
-            setProductEditInput('');
-        }
-    }
-
-    const handleAddEditCategory = () => {
-        if (categoryEditInput.trim()) {
-            setCategoryApplyEdit([...categoryApplyEdit, categoryEditInput.trim()]);
-            setCategoryEditInput('');
-        }
+    const toggleEditCategory = (categoryId) => {
+        toggleItem(categoryId, categoryApplyEdit, setCategoryApplyEdit);
     }
 
     const handleRemoveEditProduct = (index) => {
@@ -314,14 +283,6 @@ const Voucher = () => {
 
     const handleRemoveEditCategory = (index) => {
         setCategoryApplyEdit((prevCategory) => prevCategory.filter((_, id) => id !== index))
-    }
-
-    const selectProductEdit = (productId) => {
-        setProductApplyEdit([...productApplyEdit, productId]);
-    }
-
-    const selectCategoryEdit = (categoryId) => {
-        setCategoryApplyEdit([...categoryApplyEdit, categoryId]);
     }
 
     const [formEdit, setFormEdit] = useState([]);
@@ -530,7 +491,7 @@ const Voucher = () => {
                     <IoIosCloseCircleOutline onClick={() => setOpenCreateModal(false)} className='absolute top-[10px] right-[10px] text-[30px] cursor-pointer hover:text-red-[400]' />
                     <form onSubmit={handleSubmitCreateForm} className='p-[20px]'>
                         <h3 className='py-[20px]'>Create Voucher</h3>
-                        {/* code+discount */}
+                        {/* code + discount */}
                         <div className='grid grid-cols-2 max-md:grid-cols-1 gap-[20px] mb-[20px]'>
                             <div className='rounded-[10px] bg-gray-100 py-[20px] px-[10px] flex flex-col '>
                                 <label className='px-[10px]'>Code</label>
@@ -560,10 +521,6 @@ const Voucher = () => {
                                     <label className='px-[10px]'>Products applicable</label>
                                     <p onClick={() => setProductModal(true)} className='text-black cursor-pointer hover:text-blue-500'>(all products)</p>
                                 </div>
-                                <div className='flex justify-between'>
-                                    <input value={productApplyInput} onChange={handleInputCreateProduct} type="text" id='applyProducts' placeholder='enter product' className='bg-transparent rounded-[10px] px-[10px] w-[400px] max-md:w-[300px] ' />
-                                    <div onClick={handleAddCreateProduct} className='cursor-pointer'>Add</div>
-                                </div>
 
                                 {/* Nested Modal Product */}
                                 <Modal
@@ -580,7 +537,7 @@ const Voucher = () => {
                                             ) : (
                                                 <div>
                                                     {allProducts.map((product, index) => (
-                                                        <div onClick={() => selectProduct(product._id)} className='border rounded-[10px] p-[10px] my-[10px] border-black cursor-pointer grid grid-cols-2 max-md:grid-cols-1 max-md:text-[12px]' key={index}>
+                                                        <div onClick={() => toggleProduct(product._id)} className={`border rounded-[10px] p-[10px] my-[10px] border-black cursor-pointer grid grid-cols-2 max-md:grid-cols-1 max-md:text-[12px] ${productApply.includes(product._id) ? 'bg-gray-200' : ''}`} key={index}>
                                                             <div className='flex gap-[20px] '>
                                                                 <p>ID: </p>
                                                                 <p>{product._id}</p>
@@ -612,10 +569,6 @@ const Voucher = () => {
                                     <label className='px-[10px]'>Categories applicable</label>
                                     <p onClick={() => setCategoryModal(true)} className='text-black cursor-pointer hover:text-blue-500'>(all categories)</p>
                                 </div>
-                                <div className='flex justify-between'>
-                                    <input value={categoryApplyInput} onChange={handleInputCreateCategory} type="text" id='applyProducts' placeholder='enter category' className='bg-transparent rounded-[10px] px-[10px] w-[400px] max-md:w-[300px] ' />
-                                    <div onClick={handleAddCreateCategory}>Add</div>
-                                </div>
 
                                 {/* Nested Modal Category */}
                                 <Modal
@@ -632,7 +585,7 @@ const Voucher = () => {
                                             ) : (
                                                 <div>
                                                     {allCategories.map((category, index) => (
-                                                        <div onClick={() => selectCategory(category._id)} className='border rounded-[10px] p-[10px] my-[10px] border-black cursor-pointer grid grid-cols-2 max-md:grid-cols-1 max-md:text-[12px]' key={index}>
+                                                        <div onClick={() => toggleCategory(category._id)} className={`border rounded-[10px] p-[10px] my-[10px] border-black cursor-pointer grid grid-cols-2 max-md:grid-cols-1 max-md:text-[12px] ${categoryApply.includes(category._id) ? 'bg-gray-200' : ''}`} key={index}>
                                                             <div className='flex gap-[20px] '>
                                                                 <p>ID: </p>
                                                                 <p>{category._id}</p>
@@ -681,7 +634,7 @@ const Voucher = () => {
                             <Loader />
                         ) : (
                             <>
-                                {/* code+discount */}
+                                {/* code + discount */}
                                 <div className='grid grid-cols-2 max-md:grid-cols-1 gap-[20px] mb-[20px]'>
                                     <div className='rounded-[10px] bg-gray-100 py-[20px] px-[10px] flex flex-col '>
                                         <label className='px-[10px]'>Code</label>
@@ -712,10 +665,6 @@ const Voucher = () => {
                                             <label className='px-[10px]'>Products applicable</label>
                                             <p onClick={() => setProductModal(true)} className='text-black cursor-pointer hover:text-blue-500'>(all products)</p>
                                         </div>
-                                        <div className='flex justify-between'>
-                                            <input value={productEditInput} onChange={handleInputEditProduct} type="text" id='applyProducts' placeholder='enter product' className='bg-transparent rounded-[10px] px-[10px] w-[400px] max-md:w-[300px] ' />
-                                            <div onClick={handleAddEditProduct} className='cursor-pointer'>Add</div>
-                                        </div>
 
                                         {/* Nested Modal Product */}
                                         <Modal
@@ -732,7 +681,7 @@ const Voucher = () => {
                                                     ) : (
                                                         <div>
                                                             {allProducts.map((product, index) => (
-                                                                <div onClick={() => selectProductEdit(product._id)} className='border rounded-[10px] p-[10px] my-[10px] border-black cursor-pointer grid grid-cols-2 max-md:grid-cols-1 max-md:text-[12px]' key={index}>
+                                                                <div onClick={() => toggleEditProduct(product._id)} className={`border rounded-[10px] p-[10px] my-[10px] border-black cursor-pointer grid grid-cols-2 max-md:grid-cols-1 max-md:text-[12px] ${productApplyEdit.includes(product._id) ? 'bg-gray-200' : ''}`} key={index}>
                                                                     <div className='flex gap-[20px] '>
                                                                         <p>ID: </p>
                                                                         <p>{product._id}</p>
@@ -765,10 +714,6 @@ const Voucher = () => {
                                             <label className='px-[10px]'>Categories applicable</label>
                                             <p onClick={() => setCategoryModal(true)} className='text-black cursor-pointer hover:text-blue-500'>(all categories)</p>
                                         </div>
-                                        <div className='flex justify-between'>
-                                            <input value={categoryEditInput} onChange={handleInputEditCategory} type="text" id='applyProducts' placeholder='enter category' className='bg-transparent rounded-[10px] px-[10px] w-[400px] max-md:w-[300px] ' />
-                                            <div onClick={handleAddEditCategory}>Add</div>
-                                        </div>
 
                                         {/* Nested Modal Category */}
                                         <Modal
@@ -785,7 +730,7 @@ const Voucher = () => {
                                                     ) : (
                                                         <div>
                                                             {allCategories.map((category, index) => (
-                                                                <div onClick={() => selectCategoryEdit(category._id)} className='border rounded-[10px] p-[10px] my-[10px] border-black cursor-pointer grid grid-cols-2 max-md:grid-cols-1 max-md:text-[12px]' key={index}>
+                                                                <div onClick={() => toggleEditCategory(category._id)} className={`border rounded-[10px] p-[10px] my-[10px] border-black cursor-pointer grid grid-cols-2 max-md:grid-cols-1 max-md:text-[12px] ${categoryApplyEdit.includes(category._id) ? 'bg-gray-200' : ''}`} key={index}>
                                                                     <div className='flex gap-[20px] '>
                                                                         <p>ID: </p>
                                                                         <p>{category._id}</p>

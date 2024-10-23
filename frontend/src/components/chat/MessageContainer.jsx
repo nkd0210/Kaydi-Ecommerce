@@ -164,7 +164,16 @@ const MessageContainer = ({ currentUser, chatId, messages, setMessages, loadingC
                     </div>
                     <div className="flex gap-[10px] items-center">
                         <LuPlusCircle className="text-[26px] text-gray-400 cursor-pointer hover:text-blue-500" />
-                        <input onChange={handleChangeInputMessage} value={inputMessage} type="text" placeholder="Aa" className="rounded-[20px] bg-[#3a3b3c] w-full p-[10px]" />
+                        <input
+                            onChange={handleChangeInputMessage}
+                            value={inputMessage} type="text"
+                            placeholder="Aa"
+                            className="rounded-[20px] bg-[#3a3b3c] w-full p-[10px]"
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    handleSendMessage();
+                                }
+                            }} />
                         <BsSendFill onClick={handleSendMessage} className="text-[20px] text-gray-400 cursor-pointer hover:text-blue-500" />
                     </div>
                 </div>
