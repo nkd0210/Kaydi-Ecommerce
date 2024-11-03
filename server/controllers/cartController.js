@@ -56,6 +56,7 @@ export const addToCart = async (req, res, next) => {
   }
 };
 
+// xoa san pham theo productId trong gio hang
 export const removeFromCart = async (req, res, next) => {
   const { userId, productId, color, size } = req.body;
   try {
@@ -88,8 +89,14 @@ export const removeFromCart = async (req, res, next) => {
 
     // Save the updated cart
     const updatedCart = await cart.save();
+
+    const totalProducts = updatedCart.products.reduce(
+      (total, item) => total + item.quantity,
+      0
+    );
+
     res.status(200).json({
-      message: "Product removed from cart successfully",
+      totalProducts,
       cart: updatedCart,
     });
   } catch (error) {
@@ -110,9 +117,7 @@ export const getUserCart = async (req, res, next) => {
     const cart = await Cart.findOne({ userId });
 
     if (!cart) {
-      return res
-        .status(404)
-        .json({ message: "This user don't have any items in cart" });
+      return res.json({ message: "This user don't have any items in cart" });
     }
 
     const uniqueProductCount = cart.products.length;
@@ -189,7 +194,6 @@ export const updateUserCart = async (req, res, next) => {
 
     res.status(200).json({
       totalProducts,
-      uniqueProductCount,
       cart: updatedCart,
     });
   } catch (error) {
@@ -229,6 +233,7 @@ export const getItemsInCart = async (req, res, next) => {
   }
 };
 
+// xoa tat ca san pham trong gio hang
 export const removeItemsFromCart = async (req, res, next) => {
   const { userId, productsRemove } = req.body;
   if (req.user.id !== userId) {

@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { signOutSuccess } from '../redux/user/userSlice'
+import { clearCart } from '../redux/cart/cartSlice'
+import { setClearOrder } from '../redux/order/orderSlice'
 import { FaBars } from "react-icons/fa";
 
 const Navigation = () => {
@@ -20,6 +22,8 @@ const Navigation = () => {
       return;
     } else {
       dispatch(signOutSuccess());
+      dispatch(clearCart());
+      dispatch(setClearOrder());
       navigate('/');
     }
   }
@@ -34,7 +38,7 @@ const Navigation = () => {
         <span className='cursor-pointer hover:opacity-70'>Kaydi Tourist</span>
         <span className='cursor-pointer hover:opacity-70'>Kaydi FoodStore</span>
       </div>
-      <div className='hidden max-md:block'>
+      <div className='hidden max-lg:block'>
         <FaBars className='cursor-pointer' onClick={() => setOpenBar(!openBar)} />
       </div>
       {openBar && (
@@ -50,7 +54,7 @@ const Navigation = () => {
           )}
         </div>
       )}
-      <div className='flex gap-[20px] max-md:hidden'>
+      <div className='flex gap-[20px] max-lg:hidden'>
         <span className='cursor-pointer hover:opacity-70'>Tham gia KaydiClub</span>
         <span className='cursor-pointer hover:opacity-70'>Blog</span>
         <span className='cursor-pointer hover:opacity-70'>Về Kaydi Ecommerce</span>

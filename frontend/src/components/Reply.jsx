@@ -67,7 +67,7 @@ const Reply = () => {
       {
         loadingReview ? (
           <Loader />
-        ) : reviews.length === 0 ? (
+        ) : !reviews ? (
           <div className='text-red-400'>Chưa có đánh giá nào của bạn!</div>
         ) : (
           <div className='flex flex-col gap-[40px]'>

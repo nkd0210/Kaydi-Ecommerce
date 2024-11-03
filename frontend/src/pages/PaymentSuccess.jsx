@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { setClearOrder } from '../redux/order/orderSlice'
-
+import { setCartSuccess } from '../redux/cart/cartSlice'
 import "animate.css"
 
 // TOAST
@@ -12,6 +12,9 @@ import 'react-toastify/dist/ReactToastify.css';
 const PaymentSuccess = () => {
 
     const { orderId } = useParams();
+    const { products, totalPrice } = useSelector((state) => state.order);
+    const { currentUser } = useSelector((state) => state.user);
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -29,19 +32,37 @@ const PaymentSuccess = () => {
         }
     }
 
-    const handleShowPaymentSuccess = () => {
-        toast.success("Thanh toán thành công")
+    const handleRemoveProductInCart = async () => {
+        try {
+            const res = await fetch(`/api/cart/removeItemsInCart`, {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    userId: currentUser?._id,
+                    productsRemove: products
+                })
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                console.log(data.message);
+                return;
+            } else {
+                dispatch(setCartSuccess(data));
+            }
+        } catch (error) {
+            console.log(error.message);
+        }
+
     }
 
     useEffect(() => {
         if (orderId) {
-            handleShowPaymentSuccess();
+            handleRemoveProductInCart();
         }
     }, [orderId])
 
     return (
         <div className='h-screen flex justify-center items-center'>
-            <ToastContainer position='top-center' autoClose={5000} hideProgressBar={true} />
             <div className='flex max-md:flex-col gap-[20px] p-[30px] justify-center items-center  border border-[#1e894d] rounded-[20px] animate__animated animate__fadeInDown'>
                 {/* left */}
                 <div className='flex flex-col gap-[20px] w-[400px] max-md:justify-center max-md:items-center'>

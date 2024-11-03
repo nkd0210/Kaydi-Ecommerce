@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Navigation from "../components/Navigation";
 import Navbar from "../components/Navbar";
 import Loader from '../components/Loader';
+import Comment from '../components/Comment';
 import Footer from '../components/Footer';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -18,11 +19,8 @@ import { LuRefreshCcw } from "react-icons/lu";
 import { FiPhoneCall } from "react-icons/fi";
 import { BsArrowsCollapse } from "react-icons/bs";
 import { BsArrowsExpand } from "react-icons/bs";
-import StarIcon from '@mui/icons-material/Star';
-import StarHalfIcon from '@mui/icons-material/StarHalf';
 
 import styled from 'styled-components';
-import 'animate.css';
 
 // ANIMATE
 import 'animate.css';
@@ -69,13 +67,19 @@ const ProductDetail = () => {
         }
     }
 
+    const handleIncreaseQuantity = () => {
+        if (showQuantity < detailProduct?.stock) {
+            setShowQuantity(showQuantity + 1)
+        }
+    }
+
     // Handle fetch recommend product
     const [recommendProduct, setReCommendProduct] = useState([]);
     const [loadingRecommentProduct, setLoadingRecommentProduct] = useState(false);
 
     const fetchRecommendProduct = async () => {
         setLoadingRecommentProduct(true);
-        const res = await fetch(`/api/product/getRecentProduct/8`, {
+        const res = await fetch(`/api/product/getRecommendProduct/${productId}`, {
             method: "GET"
         });
         const data = await res.json();
@@ -187,10 +191,8 @@ const ProductDetail = () => {
     const [commentInfo, setCommentInfo] = useState({});
     const [comments, setComments] = useState([]);
     const [loadingComment, setLoadingComment] = useState([]);
-
-    const [page, setPage] = useState(1);
-    const [totalPage, setTotalPage] = useState(1);
     const [reviewCount, setReviewCount] = useState(0);
+    const [totalPage, setTotalPage] = useState(1);
 
     const handleFetchComment = async (page) => {
         setLoadingComment(true);
@@ -215,26 +217,6 @@ const ProductDetail = () => {
         }
     }
 
-    const handleNextPage = () => {
-        if (page < totalPage) {
-            setPage(prevPage => {
-                const newPage = prevPage + 1;
-                handleFetchComment(newPage);
-                return newPage;
-            });
-        }
-    };
-
-    const handlePreviousPage = () => {
-        if (page > 1) {
-            setPage(prevPage => {
-                const newPage = prevPage - 1;
-                handleFetchComment(newPage);
-                return newPage;
-            });
-        }
-    };
-
     useEffect(() => {
         if (productId) {
             fetchDetailProduct();
@@ -242,8 +224,6 @@ const ProductDetail = () => {
             handleFetchComment();
         }
     }, [productId]);
-
-    const roundedRating = Math.round(commentInfo?.averageRating * 2) / 2;
 
     return (
         <Wrapper>
@@ -296,7 +276,7 @@ const ProductDetail = () => {
                                             onClick={(e) => setShowSize(size)}
                                             key={index}
                                             id='sizes'
-                                            className="w-[80px] h-[40px] rounded-[10px] text-center border border-black py-[10px] px-[20px] cursor-pointer hover:bg-gray-100"
+                                            className="w-[100px] h-[40px] rounded-[10px] text-center border border-black py-[10px] px-[20px] cursor-pointer hover:bg-gray-100"
                                         >
                                             {size}
                                         </div>
@@ -308,7 +288,7 @@ const ProductDetail = () => {
                                     <p className='text-[18px]'>
                                         {showQuantity}
                                     </p>
-                                    <CiCirclePlus className='text-[20px] cursor-pointer' onClick={() => setShowQuantity(showQuantity + 1)} />
+                                    <CiCirclePlus className='text-[20px] cursor-pointer' onClick={handleIncreaseQuantity} />
                                 </div>
                                 <div className='grid grid-cols-2 gap-[20px] mt-[10px]'>
                                     <div className='flex gap-[10px] items-center border shadow-lg rounded-[20px] p-[10px]'>
@@ -395,70 +375,14 @@ const ProductDetail = () => {
                     )}
 
                     {/* COMMENT */}
-                    <div className='flex max-md:flex-col max-md:items-center gap-[30px] py-[40px]'>
-                        <div className='w-[300px] h-[300px] flex flex-col justify-center items-center gap-[10px] border p-[10px]  rounded-[10px] bg-gray-100'>
-                            <p className='uppercase font-semibold text-[20px]'>đánh giá sản phẩm</p>
-                            <p className='text-[40px] font-semibold'>{commentInfo?.averageRating || 0}</p>
-                            <div className='flex items-center gap-[5px]'>
-                                {[1, 2, 3, 4, 5].map((star) => (
-                                    <span key={star}>
-                                        {roundedRating >= star ? (
-                                            <StarIcon className=' text-yellow-400' />
-                                        ) : roundedRating >= star - 0.5 ? (
-                                            <StarHalfIcon className=' text-yellow-400' />
-                                        ) : (
-                                            <StarIcon className=' text-gray-400' />
-                                        )}
-                                    </span>
-                                ))}
-                            </div>
-                            <p className='text-gray-500'>{reviewCount || 0} đánh giá</p>
-                        </div>
-
-                        <div className='flex-1 w-full h-[400px] overflow-y-scroll hide-scrollbar '>
-                            {
-                                loadingComment ? (
-                                    <Loader />
-                                ) : (
-                                    <>
-                                        {
-                                            !comments ? (
-                                                <p className='mt-[20px]'>Chưa có bài đánh giá nào!</p>
-                                            ) : (
-                                                <div className='flex flex-col gap-[20px]'>
-                                                    <div className='flex flex-wrap max-md:flex-col gap-[20px] w-full animate__animated animate__fadeIn'>
-                                                        {comments?.map((comment, index) => (
-                                                            <div key={index} className='flex flex-col border rounded-[10px] p-[10px] items-start max-md:ml-[20px] gap-[10px] w-[500px] max-md:w-full'>
-                                                                <div className='flex items-center gap-[5px]'>
-                                                                    {[...Array(5)].map((_, index) => (
-                                                                        <StarIcon
-                                                                            key={index}
-                                                                            className={index < comment?.rating ? 'text-yellow-300' : 'text-gray-300'}
-                                                                        />
-                                                                    ))}
-                                                                </div>
-                                                                <p className='font-semibold text-[16px]'>{comment?.creator?.username}</p>
-                                                                <p className='text-[12px] text-gray-400'>
-                                                                    {comment?.order?.products[0]?.color}/{comment?.order?.products[0]?.size}/x{comment?.order?.products[0]?.quantity}
-                                                                </p>
-                                                                <p>{comment?.comment}</p>
-                                                                <p className='text-[12px] text-gray-400'>{new Date(comment?.createdAt).toLocaleDateString('vi-VN')}</p>
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                    <div className='flex justify-center mx-auto items-center gap-[10px] mb-[40px]'>
-                                                        <button onClick={handlePreviousPage} disabled={page === 1}>{`<`}</button>
-                                                        <p>{page}/{totalPage}</p>
-                                                        <button onClick={handleNextPage} disabled={page === totalPage}>{`>`}</button>
-                                                    </div>
-                                                </div>
-                                            )
-                                        }
-                                    </>
-                                )
-                            }
-                        </div>
-                    </div>
+                    <Comment
+                        commentInfo={commentInfo}
+                        comments={comments}
+                        loadingComment={loadingComment}
+                        reviewCount={reviewCount}
+                        handleFetchComment={handleFetchComment}
+                        totalPage={totalPage}
+                    />
 
 
                 </div>

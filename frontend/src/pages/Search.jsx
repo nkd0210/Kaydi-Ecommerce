@@ -16,7 +16,7 @@ const Search = () => {
     const { currentUser } = useSelector((state) => state.user);
     const { searchKey } = useParams();
 
-    const [newSearchKey, setNewSearchKey] = useState(searchKey);
+    const [newSearchKey, setNewSearchKey] = useState('');
 
     const navigate = useNavigate();
 
@@ -24,9 +24,11 @@ const Search = () => {
     const [showType, setShowType] = useState('grid');
     const [sortType, setSortType] = useState('');
 
-    // SHOW PRODUCTS
+    // SHOW PRODUCTS + CATEGORIES
     const [allProducts, setAllProducts] = useState([]);
     const [loadingProducts, setLoadingProduct] = useState(false);
+    const [allCategories, setAllCategories] = useState([]);
+    const [loadingCategory, setLoadingCategory] = useState(false);
 
     const [page, setPage] = useState(1);
     const [totalPage, setTotalPage] = useState(1);
@@ -38,7 +40,7 @@ const Search = () => {
         setProductCount(0);
         setAllProducts([]);
         try {
-            const res = await fetch(`/api/product/getProductPagination?page=${page}&limit=10`, {
+            const res = await fetch(`/api/product/getProductPagination?page=${page}&limit=12`, {
                 method: "GET"
             });
             const data = await res.json();
@@ -91,29 +93,6 @@ const Search = () => {
         }
     };
 
-    // const handleFetchAllProducts = async () => {
-    //     setLoadingProduct(true);
-    //     try {
-    //         const res = await fetch(`/api/product/getAllProduct`, {
-    //             method: "GET"
-    //         });
-    //         const data = await res.json();
-    //         if (!res.ok) {
-    //             console.log(data.message);
-    //             return;
-    //         } else {
-    //             setAllProducts(data.allProducts);
-    //         }
-    //     } catch (error) {
-    //         console.log(error.message);
-    //     } finally {
-    //         setLoadingProduct(false);
-    //     }
-    // }
-
-    const [allCategories, setAllCategories] = useState([]);
-    const [loadingCategory, setLoadingCategory] = useState(false);
-
     const handleFetchAllCategories = async () => {
         setLoadingCategory(true);
         try {
@@ -138,9 +117,12 @@ const Search = () => {
 
     useEffect(() => {
         handleFetchAllCategories();
-    }, [])
+        if (!searchKey || searchKey === null || searchKey === undefined) {
+            handleFetchProductsPagination(1);
+        }
+    }, []);
 
-    const handleFetchProductBySearchKey = async (page) => {
+    const handleFetchProductBySearchKey = async (page, searchKey) => {
         setLoadingProduct(true);
         setTotalPage(1);
         setProductCount(0);
@@ -154,9 +136,9 @@ const Search = () => {
                 console.log(data.message);
                 return;
             } else {
-                setAllProducts(data.findProducts);
-                setTotalPage(data.totalPages);
-                setProductCount(data.totalNumber);
+                setAllProducts(data.findProducts || []);
+                setTotalPage(data.totalPages || 1);
+                setProductCount(data.totalNumber || 0);
             }
         } catch (error) {
             console.log(error.message);
@@ -171,7 +153,7 @@ const Search = () => {
         if (searchKey) {
             setPage(1);
             setSelectCategory('');
-            handleFetchProductBySearchKey(1);
+            handleFetchProductBySearchKey(1, searchKey);
         }
     }, [searchKey])
 
@@ -208,14 +190,14 @@ const Search = () => {
         setNewSearchKey('');
         setSelectCategory(categoryName);
         setPage(1);
-        handleFetchProductByCategory(categoryName, page);
+        handleFetchProductByCategory(categoryName, 1);
     }
 
     const handleClickAll = () => {
         setNewSearchKey('');
         setSelectCategory('all');
         setPage(1);
-        handleFetchProductsPagination(page);
+        handleFetchProductsPagination(1);
     }
 
     const handleFilterProduct = async () => {

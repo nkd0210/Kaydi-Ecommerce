@@ -90,7 +90,7 @@ export const updateUser = async (req, res, next) => {
   if (req.user.id !== userId) {
     return res
       .status(401)
-      .json({ message: "You dont have permission to do this action" });
+      .json({ message: "You don't have permission to do this action" });
   }
   if (req.body.password) {
     if (req.body.password.length < 6) {
@@ -100,21 +100,25 @@ export const updateUser = async (req, res, next) => {
     }
     req.body.password = bcryptjs.hashSync(req.body.password);
   }
+
+  const updateFields = {
+    username: req.body.username,
+    email: req.body.email,
+    password: req.body.password,
+    gender: req.body.gender,
+    phoneNumber: req.body.phoneNumber,
+    dateOfBirth: req.body.dateOfBirth,
+    addressList: req.body.addressList,
+  };
+
+  if (req.body.profilePic) {
+    updateFields.profilePic = req.body.profilePic;
+  }
+
   try {
     const updatedUser = await User.findByIdAndUpdate(
       userId,
-      {
-        $set: {
-          username: req.body.username,
-          email: req.body.email,
-          password: req.body.password,
-          gender: req.body.gender,
-          phoneNumber: req.body.phoneNumber,
-          dateOfBirth: req.body.dateOfBirth,
-          addressList: req.body.addressList,
-          profilePic: req.body.profilePic,
-        },
-      },
+      { $set: updateFields },
       { new: true }
     );
     const { password, ...rest } = updatedUser._doc;

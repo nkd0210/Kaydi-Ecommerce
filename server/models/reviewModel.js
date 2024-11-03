@@ -32,6 +32,22 @@ const reviewSchema = new mongoose.Schema(
         type: String,
       },
     ],
+    reply: [
+      {
+        adminId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+        text: {
+          type: String,
+          required: true,
+        },
+        timestamp: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
   },
   { timestamps: true }
 );

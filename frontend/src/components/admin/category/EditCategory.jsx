@@ -31,10 +31,6 @@ const EditCategory = ({ categories, handleFetchCategories }) => {
     const [heroImage, setHeroImage] = useState('');
     const [loading, setLoading] = useState(true);
 
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.id]: e.target.value });
-    }
-
     const handleFetchSingleCategory = async (categoryId) => {
         setLoading(true);
         try {
@@ -54,6 +50,13 @@ const EditCategory = ({ categories, handleFetchCategories }) => {
     }
 
     useEffect(() => {
+        if (categoryId) {
+            handleFetchSingleCategory(categoryId);
+        }
+    }, [categoryId])
+
+
+    useEffect(() => {
         if (eachCategory) {
             setName(eachCategory.name);
             setTitle(eachCategory.title);
@@ -62,6 +65,9 @@ const EditCategory = ({ categories, handleFetchCategories }) => {
         }
     }, [eachCategory])
 
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.id]: e.target.value });
+    }
 
     const removeDesc = (index) => {
         setDescription((prevDesc) => prevDesc.filter((_, id) => id !== index))
@@ -147,14 +153,12 @@ const EditCategory = ({ categories, handleFetchCategories }) => {
         await handleFileUploadImage(heroImage);
     }
 
-
-
     const handleSubmitForm = async (e) => {
         e.preventDefault();
         setLoadingUpdate(true);
         const updateForm = {};
-        if (!formData.name) updateForm.name = formData.name;
-        if (!formData.title) updateForm.title = formData.title;
+        if (formData?.name) updateForm.name = formData.name;
+        if (formData?.title) updateForm.title = formData.title;
         if (description.length > 0) updateForm.description = description;
         if (formDataImage.length > 0) updateForm.heroImage = formDataImage;
 
@@ -252,7 +256,7 @@ const EditCategory = ({ categories, handleFetchCategories }) => {
                     </div>
 
                     <div className='flex gap-[20px]'>
-                        <button onClick={() => { setOpenModal(true); setCategoryId(category._id); handleFetchSingleCategory(category._id) }} type='submit' className='rounded-[20px] bg-blue-400 text-white w-[160px] p-[10px] hover:bg-opacity-70'>Edit</button>
+                        <button onClick={() => { setOpenModal(true); setCategoryId(category._id); }} type='submit' className='rounded-[20px] bg-blue-400 text-white w-[160px] p-[10px] hover:bg-opacity-70'>Edit</button>
                         <button onClick={() => { setOpenDeleteModal(true); setCategoryId(category._id) }} className='rounded-[20px] bg-red-400 text-white w-[160px] p-[10px] hover:bg-opacity-70'>Delete</button>
                     </div>
                 </div>
@@ -276,12 +280,12 @@ const EditCategory = ({ categories, handleFetchCategories }) => {
 
                                         <div className='flex max-md:flex-col gap-[20px]'>
                                             <p className='w-[160px] font-semibold'>Name: </p>
-                                            <input onChange={handleChange} type="text" value={name} id='name' className='border-gray-500 border-[2px] border-dashed px-[10px] ' />
+                                            <input onChange={handleChange} type="text" defaultValue={eachCategory?.name} id='name' className='border-gray-500 border-[2px] border-dashed px-[10px] ' />
                                         </div>
 
                                         <div className='flex max-md:flex-col gap-[20px]'>
                                             <p className='w-[160px] font-semibold'>Title: </p>
-                                            <input onChange={handleChange} type="text" value={title} id='title' className='border-gray-500 border-[2px] border-dashed px-[10px] ' />
+                                            <input onChange={handleChange} type="text" defaultValue={eachCategory?.title} id='title' className='border-gray-500 border-[2px] border-dashed px-[10px] ' />
                                         </div>
 
                                         <div className='flex max-md:flex-col flex-col'>

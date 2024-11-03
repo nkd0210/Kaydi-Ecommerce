@@ -96,7 +96,10 @@ export const getProductPagination = async (req, res, next) => {
 
     const skip = (page - 1) * limit;
 
-    const listProducts = await Product.find().skip(skip).limit(limit);
+    const listProducts = await Product.find()
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
 
     if (listProducts.length === 0) {
       return res.status(404).json({ message: "No product found" });
@@ -351,5 +354,49 @@ export const exportProducts = async (req, res, next) => {
   } catch (error) {
     console.error("Error exporting products to Excel:", error);
     res.status(500).send("Failed to export products to Excel");
+  }
+};
+
+export const getRecommendProducts = async (req, res, next) => {
+  const { productId } = req.params;
+  try {
+    const findProduct = await Product.findById(productId);
+
+    if (findProduct.length === 0) {
+      return res.json({ message: "No products found" });
+    }
+
+    const productCategories = findProduct.categories;
+
+    let findCategory = "";
+
+    const categoryPairs = {
+      shirt: "pants",
+      pants: "shirt",
+      underwear: "sport",
+      sport: "underwear",
+      accessory: "accessory",
+    };
+
+    const matchedCategory = productCategories.find(
+      (category) => category in categoryPairs
+    );
+    if (matchedCategory) {
+      findCategory = categoryPairs[matchedCategory];
+    }
+
+    const findProductsByCategory = await Product.find({
+      categories: findCategory,
+    })
+      .limit(8)
+      .sort({ createdAt: -1 });
+
+    if (findProductsByCategory.length === 0) {
+      return res.json({ message: "No product match in this category" });
+    }
+
+    res.status(200).json(findProductsByCategory);
+  } catch (error) {
+    next(error);
   }
 };

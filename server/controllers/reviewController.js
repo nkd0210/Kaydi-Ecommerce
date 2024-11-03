@@ -174,3 +174,37 @@ export const getUserReview = async (req, res, next) => {
     next(error);
   }
 };
+
+export const replyReview = async (req, res, next) => {
+  const { reviewId } = req.params;
+
+  if (!req.user.isAdmin) {
+    return res
+      .status(401)
+      .json({ message: "You are not allowed to reply this review" });
+  }
+
+  const { text } = req.body;
+
+  if (!text) {
+    return res.status(400).json({ message: "Reply text is required" });
+  }
+
+  try {
+    const findReview = await Review.findById(reviewId);
+
+    if (!findReview) {
+      return res.status(404).json({ message: "Review not found" });
+    }
+
+    findReview.reply.push({
+      adminId: req.user.id,
+      text,
+    });
+    await findReview.save();
+
+    res.status(200).json(findReview);
+  } catch (error) {
+    next(error);
+  }
+};

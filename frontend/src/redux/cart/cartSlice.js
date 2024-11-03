@@ -130,7 +130,7 @@ export const {
   addToCart,
   removeFromCart,
   clearCart,
-  toggleCartItem,
+  // toggleCartItem,
   setCartStart,
   setCartSuccess,
 } = cartSlice.actions;

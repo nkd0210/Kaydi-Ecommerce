@@ -11,6 +11,7 @@ import {
   getProductBySearch,
   getProductPagination,
   getRecentProduct,
+  getRecommendProducts,
   updateProduct,
 } from "../controllers/productController.js";
 
@@ -27,5 +28,6 @@ router.get("/getEachProduct/:productId", getEachProduct);
 router.get("/getProductBySearch/:searchKey", getProductBySearch);
 router.post("/getProductByFilter/:filterType", getProductByFilter);
 router.get("/exportProducts", verifyToken, exportProducts);
+router.get("/getRecommendProduct/:productId", getRecommendProducts);
 
 export default router;

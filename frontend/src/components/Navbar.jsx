@@ -16,6 +16,7 @@ import { FaAddressBook } from "react-icons/fa";
 import { ImReply } from "react-icons/im";
 import { MdOutlinePolicy } from "react-icons/md";
 import { FaRocketchat } from "react-icons/fa6";
+import { MdOutlineAdminPanelSettings } from "react-icons/md";
 
 import Drawer from "@mui/material/Drawer";
 
@@ -121,7 +122,7 @@ const Navbar = () => {
                     <ul className="flex ">
                         {categories?.map((category, index) => (
                             <li className="group px-[20px] py-[30px] cursor-pointer hover:bg-[#505050]" key={index}>
-                                <div onClick={() => { handleClickCategory(category.name) }} className="cursor-pointer hover:font-semibold uppercase text-[16px]">
+                                <div onClick={() => { handleClickCategory(category.name) }} className="cursor-pointer hover:font-semibold uppercase text-[16px] max-lg:text-[14px]">
                                     {category.title}
                                 </div>
                                 {/* expand */}
@@ -240,6 +241,17 @@ const Navbar = () => {
                                 <FaRocketchat className="text-[20px]" />
                                 <h3 className="text-[12px]">Nhắn tin</h3>
                             </div>
+                            {
+                                currentUser?.isAdmin && (
+                                    <div
+                                        onClick={() => navigate("/admin")}
+                                        className="cursor-pointer hover:bg-opacity-70 flex flex-col justify-center items-center w-[100px] h-[80px] text-center border bg-gray-200 rounded-[10px] mt-[10px] p-[10px]"
+                                    >
+                                        <MdOutlineAdminPanelSettings className="text-[20px]" />
+                                        <h3 className="text-[12px]"> Dashboard</h3>
+                                    </div>
+                                )
+                            }
                         </div>
                     </div>
                 </Drawer>

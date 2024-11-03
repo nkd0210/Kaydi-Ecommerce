@@ -31,7 +31,7 @@ function App() {
         <Route path='/collections/:category' element={<Collection />} />
         <Route path='/collections/:category/:subcategory' element={<Collection />} />
         <Route path='/review/:orderId' element={<Review />} />
-        <Route path='/search/:searchKey' element={<Search />} />
+        <Route path='/search/:searchKey?' element={<Search />} />
         <Route path='/chat' element={<Chat />} />
       </Routes>
     </BrowserRouter>

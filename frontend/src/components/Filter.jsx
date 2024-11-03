@@ -17,7 +17,7 @@ const Filter = ({ newSearchKey, setNewSearchKey, showType, setShowType, sortType
 
     const handleClickSearch = () => {
         navigate(`/search/${newSearchKey}`);
-        handleFetchProductBySearchKey();
+        handleFetchProductBySearchKey(1, newSearchKey);
     }
 
     return (
@@ -39,7 +39,7 @@ const Filter = ({ newSearchKey, setNewSearchKey, showType, setShowType, sortType
                     <BsList onClick={() => setShowType('list')} className={`text-[30px] cursor-pointer border rounded-[5px] p-[5px] ${showType === 'list' ? 'bg-gray-200' : ''}`} />
                 </div>
             </div>
-            <p>{productCount} sản phẩm tìm thấy</p>
+            <p>{productCount || 0} sản phẩm tìm thấy</p>
             <hr className='w-[500px] max-md:hidden' />
             <form className='flex items-center gap-[20px]'>
                 <label htmlFor='sort'>Sắp xếp</label>

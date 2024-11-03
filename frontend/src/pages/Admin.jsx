@@ -144,7 +144,7 @@ const AdminDashboard = () => {
                     <div onClick={() => setOpenModal(true)} className='w-[80px] h-[80px] cursor-pointer hover:opacity-70 my-[20px]'>
                         <img src={currentUser?.profilePic} alt="" className='w-full h-full object-cover rounded-[50%]' />
                     </div>
-                    <div className='flex flex-col gap-[40px] mt-[40px]'>
+                    <div className='flex flex-col gap-[40px] mt-[30px]'>
                         <div onClick={() => setActive('dashboard')} className={`cursor-pointer hover:text-red-400 ${active === 'dashboard' ? 'text-red-400' : 'text-white'}`}>Dashboard</div>
                         <div onClick={() => setActive('products')} className={`cursor-pointer hover:text-red-400 ${active === 'products' ? 'text-red-400' : 'text-white'}`}>Products</div>
                         <div onClick={() => setActive('category')} className={`cursor-pointer hover:text-red-400 ${active === 'category' ? 'text-red-400' : 'text-white'}`}>Category</div>
@@ -152,6 +152,7 @@ const AdminDashboard = () => {
                         <div onClick={() => setActive('voucher')} className={`cursor-pointer hover:text-red-400 ${active === 'voucher' ? 'text-red-400' : 'text-white'}`}>Voucher</div>
                         <div onClick={() => setActive('user')} className={`cursor-pointer hover:text-red-400 ${active === 'user' ? 'text-red-400' : 'text-white'}`}>User</div>
                         <div onClick={() => navigate('/chat')} className={`cursor-pointer hover:text-red-400 ${active === 'chat' ? 'text-red-400' : 'text-white'}`}>Chat</div>
+                        <div onClick={() => navigate('/')} className={`cursor-pointer hover:text-red-400 ${active === 'chat' ? 'text-red-400' : 'text-white'}`}>Website</div>
                     </div>
                 </div>
                 <div onClick={handleLogout} className='flex items-center justify-center gap-[10px] cursor-pointer hover:text-red-400'>
@@ -180,6 +181,7 @@ const AdminDashboard = () => {
                     <div onClick={() => { setActive('voucher'), setOpenSidebar(false) }} className={`cursor-pointer hover:text-red-400 ${active === 'voucher' ? 'text-red-400' : 'text-white'}`}>Voucher</div>
                     <div onClick={() => { setActive('user'), setOpenSidebar(false) }} className={`cursor-pointer hover:text-red-400 ${active === 'user' ? 'text-red-400' : 'text-white'}`}>User</div>
                     <div onClick={() => navigate('/chat')} className={`cursor-pointer hover:text-red-400 ${active === 'chat' ? 'text-red-400' : 'text-white'}`}>Chat</div>
+                    <div onClick={() => navigate('/')} className={`cursor-pointer hover:text-red-400 ${active === 'chat' ? 'text-red-400' : 'text-white'}`}>Website</div>
                     <div onClick={handleLogout} className={`cursor-pointer hover:text-red-400`}>Log out</div>
                 </div>
             </Drawer>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import Navbar from '../components/Navbar'
 import Navigation from '../components/Navigation'
 import { useSelector, useDispatch } from 'react-redux'
@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import { FaTrashAlt } from "react-icons/fa";
 import 'animate.css'
 
 const UserCart = () => {
@@ -20,7 +20,6 @@ const UserCart = () => {
     const { currentUser } = useSelector((state) => state.user);
     const { items, cartCount } = useSelector((state) => state.cart);
 
-    const [userCart, setUserCart] = useState({}); // contain the data of the cart
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -36,7 +35,6 @@ const UserCart = () => {
             if (!res.ok) {
                 console.log(data.message);
             } else {
-                setUserCart(data);
                 dispatch(setCartSuccess(data));
                 setLoading(false);
             }
@@ -61,7 +59,7 @@ const UserCart = () => {
                 quantity: 1,
                 actionType: "inc"
             };
-            setLoading(true);
+            // setLoading(true);
             try {
                 const res = await fetch(`/api/cart/updateUserCart/${currentUser._id}`, {
                     method: "PUT",
@@ -74,9 +72,7 @@ const UserCart = () => {
                 if (!res.ok) {
                     console.log(data.message);
                 } else {
-                    setUserCart(data);
                     dispatch(setCartSuccess(data));
-                    setLoading(false);
                 }
             } catch (error) {
                 console.log(error.message);
@@ -96,7 +92,7 @@ const UserCart = () => {
                 quantity: 1,
                 actionType: "dec"
             };
-            setLoading(true);
+            // setLoading(true);
             try {
                 const res = await fetch(`/api/cart/updateUserCart/${currentUser._id}`, {
                     method: "PUT",
@@ -109,9 +105,7 @@ const UserCart = () => {
                 if (!res.ok) {
                     console.log(data.message);
                 } else {
-                    setUserCart(data);
                     dispatch(setCartSuccess(data));
-                    setLoading(false);
                 }
             } catch (error) {
                 console.log(error.message);
@@ -120,6 +114,39 @@ const UserCart = () => {
             }
         }
     };
+
+    const handleRemoveItem = async (item, e) => {
+        e.stopPropagation();
+        if (item) {
+            const formRemove = {
+                userId: currentUser._id,
+                productId: item.productId,
+                color: item.color,
+                size: item.size
+            };
+            setLoading(true);
+            try {
+                const res = await fetch(`/api/cart/removeFromCart`, {
+                    method: "DELETE",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formRemove)
+                });
+                const data = await res.json();
+                if (!res.ok) {
+                    console.log(data.message);
+                } else {
+                    dispatch(setCartSuccess(data));
+                }
+            } catch (error) {
+                console.log(error.message);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+    }
 
 
     // order item
@@ -190,7 +217,7 @@ const UserCart = () => {
                                 <table className='w-full border-collapse overflow-y-scroll animate__animated animate__fadeInUp'>
                                     <thead>
                                         <tr className="border-b-[2px] ">
-                                            <th className="p-[10px] text-left"> <input type="checkbox" /></th>
+                                            <th className="p-[10px] text-left"> <input type="checkbox" className='w-[16px] h-[16px]' /></th>
                                             <th className="p-[10px] text-left">#</th>
                                             <th className="p-[10px] text-left">Name</th>
                                             <th className="p-[10px] text-left">Image</th>
@@ -198,6 +225,7 @@ const UserCart = () => {
                                             <th className="p-[10px] text-left">Size</th>
                                             <th className="p-[10px] text-left">Price</th>
                                             <th className="p-[10px] text-left">Quantity</th>
+                                            <th className="p-[10px] text-left">Option</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -206,6 +234,7 @@ const UserCart = () => {
                                                 <td className="p-[10px]">
                                                     <input
                                                         type="checkbox"
+                                                        className='w-[16px] h-[16px]'
                                                         onClick={(e) => e.stopPropagation()}
                                                         onChange={(e) => handleChooseItem(e, item)}
                                                         checked={chooseItems.some(i => i.productId === item.productId && i.color === item.color && i.size === item.size)}
@@ -225,6 +254,9 @@ const UserCart = () => {
                                                         {item.quantity}
                                                         <CiCirclePlus className='text-[20px]' onClick={(e) => handleIncrease(item, e)} />
                                                     </div>
+                                                </td>
+                                                <td className='p-[10px]'>
+                                                    <FaTrashAlt onClick={(e) => handleRemoveItem(item, e)} className='text-center text-[18px] hover:text-red-500 cursor-pointer' />
                                                 </td>
                                             </tr>
                                         ))}

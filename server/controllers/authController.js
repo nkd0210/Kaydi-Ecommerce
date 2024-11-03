@@ -58,7 +58,7 @@ export const signIn = async (req, res, next) => {
         isAdmin: validUser.isAdmin,
       },
       process.env.JWT_SECRET,
-      { expiresIn: "1d" }
+      { expiresIn: "12h" }
     );
 
     // Generate Refresh Token
@@ -69,7 +69,7 @@ export const signIn = async (req, res, next) => {
         isAdmin: validUser.isAdmin,
       },
       process.env.JWT_REFRESH_SECRET,
-      { expiresIn: "7d" }
+      { expiresIn: "1d" }
     );
 
     const { password: past, ...rest } = validUser._doc;
