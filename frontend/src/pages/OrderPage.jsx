@@ -265,7 +265,7 @@ const OrderPage = () => {
                             <p className='uppercase'>size: {product.size}</p>
                             <p className='uppercase'>số lượng: {product.quantity}</p>
                             <p className='uppercase'> giá: {product.price}&#8363;</p>
-                            <div onClick={() => handleRemoveItem(product)} className='flex gap-[10px] cursor-pointer hover:opacity-70'>
+                            <div onClick={() => handleRemoveItem(product)} className='flex gap-[10px] cursor-pointer hover:text-red-400'>
                               <CiTrash className='text-[20px]' />
                               <span>Xóa</span>
                             </div>

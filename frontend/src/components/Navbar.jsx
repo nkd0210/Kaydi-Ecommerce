@@ -114,7 +114,7 @@ const Navbar = () => {
             <div className="relative w-full flex justify-between items-center px-[20px] bg-[#212121] text-white">
                 {/* LOGO */}
                 <div onClick={() => navigate("/")} className="w-[80px] h-[80px]">
-                    <img src={Logo2} alt="logo" className="w-full h-full object-cover cursor-pointer" />
+                    <img src={Logo2} alt="logo" className="w-full h-full object-cover cursor-pointer" loading="lazy" />
                 </div>
 
                 {/* CATEGORY */}

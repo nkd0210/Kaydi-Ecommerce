@@ -39,7 +39,7 @@ const Order = () => {
         } catch (error) {
             console.log(error.message);
         } finally {
-            setLoadingOrders(false);
+            // setLoadingOrders(false);
         }
     }
 
@@ -143,100 +143,89 @@ const Order = () => {
 
     return (
         <div className='py-[20px] px-[40px] max-md:px-[10px] h-full overflow-y-scroll bg-gray-100'>
-            {
-                loadingOrders ? (
-                    <Loader />
-                ) : (
-                    <>
-
-                        <div className='flex justify-between max-md:flex-col max-md:flex-start max-md:my-[20px]'>
-                            <div className='flex gap-[20px] items-center'>
-                                <MdDashboard className='text-[30px]' />
-                                <h1 className='font-semibold text-[20px] max-md:text-[18px]'>Order Dashboard</h1>
-                            </div>
-                            <div className='flex gap-[20px] items-center max-md:flex-col max-md:items-start'>
-                                <div onClick={handleExportExcel} className='flex gap-[10px] rounded-[10px] p-[10px] items-center border bg-white w-[250px] mt-[20px] justify-center shadow-lg cursor-pointer hover:bg-red-400'>
-                                    <IoIosPrint className='text-[20px]' />
-                                    <p className='text-[16px]'>Print Excel</p>
-                                </div>
-                            </div>
+            <>
+                <div className='flex justify-between max-md:flex-col max-md:flex-start max-md:my-[20px]'>
+                    <div className='flex gap-[20px] items-center'>
+                        <MdDashboard className='text-[30px]' />
+                        <h1 className='font-semibold text-[20px] max-md:text-[18px]'>Order Dashboard</h1>
+                    </div>
+                    <div className='flex gap-[20px] items-center max-md:flex-col max-md:items-start'>
+                        <div onClick={handleExportExcel} className='flex gap-[10px] rounded-[10px] p-[10px] items-center border bg-white w-[250px] mt-[20px] justify-center shadow-lg cursor-pointer hover:bg-red-400'>
+                            <IoIosPrint className='text-[20px]' />
+                            <p className='text-[16px]'>Print Excel</p>
                         </div>
+                    </div>
+                </div>
 
-                        <div className='flex gap-[10px] mt-[20px] items-center'>
-                            <FaBusinessTime className='text-[20px]' />
-                            <h3 className='text-[16px] font-semibold'>Business Overview</h3>
+                <div className='flex gap-[10px] mt-[20px] items-center'>
+                    <FaBusinessTime className='text-[20px]' />
+                    <h3 className='text-[16px] font-semibold'>Business Overview</h3>
+                </div>
+
+                <div className='flex max-md:flex-wrap justify-center max-md:justify-start items-center gap-[20px] py-[30px] animate__animated animate__fadeIn'>
+                    <div className='bg-white rounded-[10px] p-[20px] flex items-center justify-center gap-[20px] w-[300px] shadow-md'>
+                        <div className='flex gap-[5px]'>
+                            <SiVirustotal className='text-[20px]' />
+                            <span>Total order: </span>
                         </div>
-
-                        <div className='flex max-md:flex-wrap justify-center max-md:justify-start items-center gap-[20px] py-[30px] animate__animated animate__fadeIn'>
-                            <div className='bg-white rounded-[10px] p-[20px] flex items-center justify-center gap-[20px] w-[300px] shadow-md'>
-                                <div className='flex gap-[5px]'>
-                                    <SiVirustotal className='text-[20px]' />
-                                    <span>Total order: </span>
-                                </div>
-                                <p>{orderData?.numberOfOrder}</p>
-                            </div>
-                            <div className='bg-white rounded-[10px] p-[20px] flex items-center justify-center gap-[20px] w-[300px] shadow-md'>
-                                <div className='flex gap-[5px]'>
-                                    <LiaCalendarWeekSolid className='text-[20px]' />
-                                    <span>Last week order: </span>
-                                </div>
-                                <p>{orderData?.lastWeekOrder}</p>
-                            </div>
-                            <div className='bg-white rounded-[10px] p-[20px] flex items-center justify-center gap-[20px] w-[300px] shadow-md'>
-                                <div className='flex gap-[5px]'>
-                                    <MdCalendarMonth className='text-[20px]' />
-                                    <span>Last month order: </span>
-                                </div>
-                                <p>{orderData?.lastMonthOrder}</p>
-                            </div>
+                        <p>{orderData?.numberOfOrder}</p>
+                    </div>
+                    <div className='bg-white rounded-[10px] p-[20px] flex items-center justify-center gap-[20px] w-[300px] shadow-md'>
+                        <div className='flex gap-[5px]'>
+                            <LiaCalendarWeekSolid className='text-[20px]' />
+                            <span>Last week order: </span>
                         </div>
-
-                        <div className='flex gap-[10px] items-center'>
-                            <MdCategory className='text-[20px]' />
-                            <h3 onClick={() => setOrderType('all')} className={`text-[16px] ${orderType === 'all' ? 'text-red-500' : ''} font-semibold cursor-pointer hover:text-red-500`}>All Orders</h3>
-                            <FaGripLinesVertical className='text-[20px]' />
-                            <h3 onClick={() => setOrderType('customer')} className={`text-[16px] ${orderType === 'customer' ? 'text-red-500' : ''} font-semibold cursor-pointer hover:text-red-500`}>Customer Orders</h3>
-
+                        <p>{orderData?.lastWeekOrder}</p>
+                    </div>
+                    <div className='bg-white rounded-[10px] p-[20px] flex items-center justify-center gap-[20px] w-[300px] shadow-md'>
+                        <div className='flex gap-[5px]'>
+                            <MdCalendarMonth className='text-[20px]' />
+                            <span>Last month order: </span>
                         </div>
+                        <p>{orderData?.lastMonthOrder}</p>
+                    </div>
+                </div>
 
-                        <div className='border rounded-[20px] mt-[20px] p-[10px] bg-white max-w-full overflow-x-scroll '>
-                            {Object.keys(allOrders).length === 0 ? (
-                                <div>Empty order! </div>
-                            ) : (
-                                <div className='flex flex-col gap-[40px]'>
-                                    {orderType === 'all' ? (
-                                        <>
-                                            {
-                                                allOrders?.map((order, index) => (
-                                                    <SingleOrder key={index} order={order} handleFetchOrder={handleFetchOrder} />
-                                                ))
-                                            }
-                                            <div className='flex justify-center mx-auto items-center gap-[10px] my-[40px]'>
-                                                <button onClick={handlePreviousPage} disabled={page === 1}>{`<`}</button>
-                                                <p>{orderData?.currentPage} / {orderData?.totalPages}</p>
-                                                <button onClick={handleNextPage} disabled={orderData?.currentPage === orderData?.totalPages}>{`>`}</button>
-                                            </div>
-                                        </>
-                                    ) : (
-                                        <>
-                                            {
-                                                customerOrders?.ordersByEachUser?.map((order, index) => (
-                                                    <CustomerOrder key={index} order={order} />
-                                                ))
-                                            }
-                                            <div className='flex justify-center mx-auto items-center gap-[10px] my-[40px]'>
-                                                <button onClick={handlePreviousPageCustomer} disabled={pageCustomer === 1}>{`<`}</button>
-                                                <p>{customerOrders?.currentPage} / {customerOrders?.totalPages}</p>
-                                                <button onClick={handleNextPageCustomer} disabled={customerOrders?.currentPage === customerOrders?.totalPages}>{`>`}</button>
-                                            </div>
-                                        </>
-                                    )}
+                <div className='flex gap-[10px] items-center'>
+                    <MdCategory className='text-[20px]' />
+                    <h3 onClick={() => setOrderType('all')} className={`text-[16px] ${orderType === 'all' ? 'text-red-500' : ''} font-semibold cursor-pointer hover:text-red-500`}>All Orders</h3>
+                    <FaGripLinesVertical className='text-[20px]' />
+                    <h3 onClick={() => setOrderType('customer')} className={`text-[16px] ${orderType === 'customer' ? 'text-red-500' : ''} font-semibold cursor-pointer hover:text-red-500`}>Customer Orders</h3>
+
+                </div>
+
+                <div className='border rounded-[20px] mt-[20px] p-[10px] bg-white max-w-full overflow-x-scroll '>
+                    <div className='flex flex-col gap-[40px]'>
+                        {orderType === 'all' ? (
+                            <>
+                                {
+                                    allOrders?.map((order, index) => (
+                                        <SingleOrder key={index} order={order} handleFetchOrder={handleFetchOrder} />
+                                    ))
+                                }
+                                <div className='flex justify-center mx-auto items-center gap-[10px] my-[40px]'>
+                                    <button onClick={handlePreviousPage} disabled={page === 1}>{`<`}</button>
+                                    <p>{orderData?.currentPage} / {orderData?.totalPages}</p>
+                                    <button onClick={handleNextPage} disabled={orderData?.currentPage === orderData?.totalPages}>{`>`}</button>
                                 </div>
-                            )}
-                        </div>
-                    </>
-                )
-            }
+                            </>
+                        ) : (
+                            <>
+                                {
+                                    customerOrders?.ordersByEachUser?.map((order, index) => (
+                                        <CustomerOrder key={index} order={order} />
+                                    ))
+                                }
+                                <div className='flex justify-center mx-auto items-center gap-[10px] my-[40px]'>
+                                    <button onClick={handlePreviousPageCustomer} disabled={pageCustomer === 1}>{`<`}</button>
+                                    <p>{customerOrders?.currentPage} / {customerOrders?.totalPages}</p>
+                                    <button onClick={handleNextPageCustomer} disabled={customerOrders?.currentPage === customerOrders?.totalPages}>{`>`}</button>
+                                </div>
+                            </>
+                        )}
+                    </div>
+                </div>
+            </>
         </div >
     )
 }

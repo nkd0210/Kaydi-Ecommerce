@@ -19,7 +19,7 @@ const Footer = () => {
                     <div className='flex max-md:flex-col p-[20px] '>
                         {/* LOGO */}
                         <a href="/" className='w-[200px] h-[150px]'>
-                            <img src="/logo/logo.png" alt="logo" className='w-full h-full' />
+                            <img src="/logo/logo.png" alt="logo" loading="lazy" className='w-full h-full' />
                         </a>
 
                         <div className='flex max-md:flex-col gap-[20px] max-md:gap-[50px]'>

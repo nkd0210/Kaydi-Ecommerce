@@ -16,11 +16,9 @@ import { GrFormPrevious } from "react-icons/gr";
 import "animate.css"
 
 
-const MessageContainer = ({ currentUser, chatId, messages, setMessages, loadingChatBox, setSelectId, openMainSidebar, setOpenMainSidebar, singleChat, singleGroupChat, handleAccessGroupChat, handleFetchAllChats }) => {
+const MessageContainer = ({ currentUser, chatId, messages, setMessages, loadingChatBox, setSelectId, openMainSidebar, setOpenMainSidebar, singleChat, singleGroupChat, handleAccessGroupChat, handleFetchAllChats, handleAccessChat }) => {
 
     const [openInformationBar, setOpenInformationBar] = useState(false);
-
-    // const chatId = singleChat?.chat?._id || singleGroupChat?._id;
 
     const [inputMessage, setInputMessage] = useState('');
 
@@ -28,22 +26,7 @@ const MessageContainer = ({ currentUser, chatId, messages, setMessages, loadingC
         setInputMessage(e.target.value);
     }
 
-    // const fetchAllMessages = async (id) => {
-    //     try {
-    //         const res = await fetch(`/api/message/getAllMessages/${id}`, {
-    //             method: "GET"
-    //         });
-    //         const data = await res.json();
-    //         if (!res.ok) {
-    //             console.log(data.message);
-    //             return;
-    //         } else {
-    //             setMessages(data);
-    //         }
-    //     } catch (error) {
-    //         console.log(error.message);
-    //     }
-    // }
+    console.log(chatId)
 
     const handleSendMessage = async () => {
         try {
@@ -181,7 +164,7 @@ const MessageContainer = ({ currentUser, chatId, messages, setMessages, loadingC
                 {/* sidebar */}
                 {openInformationBar && (
                     <div className=" w-1/4 animate__animated animate__fadeInRight">
-                        <ChatInformation singleGroupChat={singleGroupChat} handleAccessGroupChat={handleAccessGroupChat} />
+                        <ChatInformation setOpenInformationBar={setOpenInformationBar} singleGroupChat={singleGroupChat} handleAccessGroupChat={handleAccessGroupChat} handleAccessChat={handleAccessChat} />
                     </div>
                 )}
             </div>

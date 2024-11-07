@@ -63,9 +63,9 @@ export const getAllUsers = async (req, res, next) => {
 
 export const getAllUserToChat = async (req, res, next) => {
   try {
-    const allUsers = await User.find().select(
-      "-password -addressList -phoneNumber -gender -dateOfBirth"
-    );
+    const allUsers = await User.find({
+      _id: { $ne: req.user.id },
+    }).select("-password -addressList -phoneNumber -gender -dateOfBirth");
     if (allUsers.length === 0) {
       return res.status(404).json({ message: "No users were found" });
     }

@@ -5,6 +5,9 @@ import Navigation from '../components/Navigation';
 
 import { signInStart, signInSuccess, signInFailure } from '../redux/user/userSlice';
 
+import { GoogleAuthProvider, signInWithPopup, getAuth } from 'firebase/auth'
+
+
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -21,6 +24,7 @@ import Photographer5 from '/photographer5.jpg';
 import Navbar from '../components/Navbar';
 
 import 'animate.css'
+import OAuth from '../components/OAuth';
 
 const SignIn = () => {
 
@@ -72,6 +76,10 @@ const SignIn = () => {
     }
   }
 
+  const handleLoginGoogle = async () => {
+
+  }
+
   return (
     <>
       <Navigation />
@@ -109,9 +117,9 @@ const SignIn = () => {
 
               <hr className='w-3/4 max-md:w-full bg-gray-300 h-[2px]' />
 
-              <button type='submit' className='w-3/4 max-md:w-full border-blue-300 border rounded-[20px] p-[5px] bg-blue-300 text-white hover:bg-opacity-70 hover:text-black'>
-                Signin with Google
-              </button>
+              <div className='w-3/4 max-md:w-full border-blue-300 border rounded-[20px] p-[5px] bg-blue-300 text-white hover:bg-opacity-70 hover:text-black'>
+                <OAuth />
+              </div>
 
               <div className='text-gray-500 max-md:text-white flex gap-[10px] backdrop-blur-sm'>
                 Don't have any account ?

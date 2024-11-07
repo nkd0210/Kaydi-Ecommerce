@@ -225,6 +225,24 @@ const ProductDetail = () => {
         }
     }, [productId]);
 
+    const [openReply, setOpenReply] = useState({}); // only admin can open to create reply
+    const [replyCommentIds, setReplyCommentIds] = useState([]);
+    const [commentId, setCommentId] = useState('');
+
+    const toggleOpenReply = (id) => {
+        setOpenReply((prev) => ({ ...prev, [id]: !prev[id] }));
+        setCommentId(id);
+    };
+
+
+    const toggleReply = (id) => {
+        if (replyCommentIds.includes(id)) {
+            setReplyCommentIds(replyCommentIds.filter((replyId) => replyId !== id));
+        } else {
+            setReplyCommentIds([...replyCommentIds, id]);
+        }
+    }
+
     return (
         <Wrapper>
             <Navigation />
@@ -382,6 +400,14 @@ const ProductDetail = () => {
                         reviewCount={reviewCount}
                         handleFetchComment={handleFetchComment}
                         totalPage={totalPage}
+                        openReply={openReply}
+                        setOpenReply={setOpenReply}
+                        replyCommentIds={replyCommentIds}
+                        setReplyCommentIds={setReplyCommentIds}
+                        commentId={commentId}
+                        setCommentId={setCommentId}
+                        toggleOpenReply={toggleOpenReply}
+                        toggleReply={toggleReply}
                     />
 
 

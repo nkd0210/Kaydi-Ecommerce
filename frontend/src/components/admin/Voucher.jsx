@@ -25,7 +25,6 @@ import DataTable from 'react-data-table-component';
 const Voucher = () => {
 
     const [openCreateModal, setOpenCreateModal] = useState(false);
-    const [loadingVoucher, setLoadingVoucher] = useState(false);
     const { currentUser } = useSelector((state) => state.user);
     const [totalVoucher, setTotalVoucher] = useState('');
     const [lastWeekVouchers, setLastWeekVouchers] = useState('');
@@ -34,7 +33,6 @@ const Voucher = () => {
     const [allVouchers, setAllVouchers] = useState([]);
 
     const fetchAllVouchers = async () => {
-        setLoadingVoucher(true);
         try {
             const res = await fetch(`/api/voucher/getAllVouchers/${currentUser._id}`, {
                 method: "GET"
@@ -48,13 +46,9 @@ const Voucher = () => {
                 setTotalVoucher(data.totalVouchers);
                 setLastMonthVouchers(data.lastMonthVouchersCount);
                 setLastWeekVouchers(data.lastWeekVouchersCount);
-                setLoadingVoucher(false);
             }
         } catch (error) {
             console.log(error.message);
-        }
-        finally {
-            setLoadingVoucher(false);
         }
     }
 
@@ -388,100 +382,90 @@ const Voucher = () => {
 
     return (
         <div className='py-[20px] px-[40px] max-md:px-[10px] max-w-full h-full overflow-x-scroll overflow-y-scroll bg-gray-100'>
-            <>
-                {loadingVoucher ? (
-                    <Loader />
-                ) : (
-                    <div className='flex flex-col gap-[20px] max-w-full overflow-x-scroll'>
+            <div className='flex flex-col gap-[20px] max-w-full overflow-x-scroll'>
 
-                        <div className='flex justify-between max-md:flex-col max-md:flex-start max-md:my-[20px]'>
-                            <div className='flex gap-[20px] items-center'>
-                                <MdDashboard className='text-[30px]' />
-                                <h1 className='font-semibold text-[20px] max-md:text-[18px]'>Voucher Dashboard</h1>
-                            </div>
-                            <div className='flex gap-[20px] items-center max-md:flex-col max-md:items-start'>
-                                <div onClick={() => setOpenCreateModal(true)} className='flex gap-[10px] rounded-[10px] p-[10px] items-center border bg-white w-[250px] mt-[20px] justify-center shadow-lg cursor-pointer hover:bg-red-400'>
-                                    <CiCirclePlus className='text-[20px]' />
-                                    <p className='text-[16px]'>Create voucher</p>
-                                </div>
-                                <div onClick={handleExportExcel} className='flex gap-[10px] rounded-[10px] p-[10px] items-center border bg-white w-[250px] mt-[20px] justify-center shadow-lg cursor-pointer hover:bg-red-400'>
-                                    <IoIosPrint className='text-[20px]' />
-                                    <p className='text-[16px]'>Print Excel</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className='flex gap-[10px] items-center'>
-                            <FaBusinessTime className='text-[20px]' />
-                            <h3 className='text-[16px] font-semibold'>Business Overview</h3>
-                        </div>
-
-                        <div className='flex max-md:flex-wrap justify-center max-md:justify-start items-center gap-[20px] py-[30px] animate__animated animate__fadeIn'>
-                            <div className='bg-white rounded-[10px] p-[20px] flex items-center justify-center gap-[20px] w-[300px] shadow-md'>
-                                <div className='flex gap-[5px]'>
-                                    <SiVirustotal className='text-[20px]' />
-                                    <span>Total voucher: </span>
-                                </div>
-                                <p>{totalVoucher}</p>
-                            </div>
-                            <div className='bg-white rounded-[10px] p-[20px] flex items-center justify-center gap-[20px] w-[300px] shadow-md'>
-                                <div className='flex gap-[5px]'>
-                                    <LiaCalendarWeekSolid className='text-[20px]' />
-                                    <span>Last week voucher: </span>
-                                </div>
-                                <p>{lastWeekVouchers}</p>
-                            </div>
-                            <div className='bg-white rounded-[10px] p-[20px] flex items-center justify-center gap-[20px] w-[300px] shadow-md'>
-                                <div className='flex gap-[5px]'>
-                                    <MdCalendarMonth className='text-[20px]' />
-                                    <span>Last month voucher: </span>
-                                </div>
-                                <p>{lastMonthVouchers}</p>
-                            </div>
-                        </div>
-
-                        <div className='flex gap-[10px] items-center'>
-                            <MdCategory className='text-[20px]' />
-                            <h3 className='text-[16px] font-semibold'>All Voucher</h3>
-                        </div>
-
-                        <div className='border mt-[20px] p-[10px] bg-white max-h-[500px] max-w-full overflow-x-scroll overflow-y-scroll '>
-                            {Object.keys(allVouchers).length === 0 ? (
-                                <div>Empty voucher! </div>
-                            ) : (
-                                <div className='flex flex-wrap gap-[20px] animate__animated animate__fadeInRight'>
-                                    {allVouchers.map((voucher, index) => (
-                                        <VoucherCard key={index} voucher={voucher} />
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-
-                        <div className='flex gap-[10px] items-center'>
-                            <CiEdit className='text-[20px]' />
-                            <h3 className='text-[16px] font-semibold'>Edit Voucher</h3>
-                        </div>
-
-                        <div className='3xl:w-full w-[1300px] max-md:w-[500px]  overflow-scroll p-[20px] bg-white'>
-                            {loadingVoucher ? (
-                                <Loader />
-                            ) : (
-                                <DataTable
-                                    columns={columns}
-                                    data={allVouchers}
-                                    pagination
-                                    selectableRows
-                                    highlightOnHover
-                                    onRowClicked={(row) => handleRowClick(row._id)}
-                                    className='animate__animated animate__fadeInUp'
-                                />
-                            )}
-                        </div>
-
+                <div className='flex justify-between max-md:flex-col max-md:flex-start max-md:my-[20px]'>
+                    <div className='flex gap-[20px] items-center'>
+                        <MdDashboard className='text-[30px]' />
+                        <h1 className='font-semibold text-[20px] max-md:text-[18px]'>Voucher Dashboard</h1>
                     </div>
+                    <div className='flex gap-[20px] items-center max-md:flex-col max-md:items-start'>
+                        <div onClick={() => setOpenCreateModal(true)} className='flex gap-[10px] rounded-[10px] p-[10px] items-center border bg-white w-[250px] mt-[20px] justify-center shadow-lg cursor-pointer hover:bg-red-400'>
+                            <CiCirclePlus className='text-[20px]' />
+                            <p className='text-[16px]'>Create voucher</p>
+                        </div>
+                        <div onClick={handleExportExcel} className='flex gap-[10px] rounded-[10px] p-[10px] items-center border bg-white w-[250px] mt-[20px] justify-center shadow-lg cursor-pointer hover:bg-red-400'>
+                            <IoIosPrint className='text-[20px]' />
+                            <p className='text-[16px]'>Print Excel</p>
+                        </div>
+                    </div>
+                </div>
 
-                )}
-            </>
+                <div className='flex gap-[10px] items-center'>
+                    <FaBusinessTime className='text-[20px]' />
+                    <h3 className='text-[16px] font-semibold'>Business Overview</h3>
+                </div>
+
+                <div className='flex max-md:flex-wrap justify-center max-md:justify-start items-center gap-[20px] py-[30px] animate__animated animate__fadeIn'>
+                    <div className='bg-white rounded-[10px] p-[20px] flex items-center justify-center gap-[20px] w-[300px] shadow-md'>
+                        <div className='flex gap-[5px]'>
+                            <SiVirustotal className='text-[20px]' />
+                            <span>Total voucher: </span>
+                        </div>
+                        <p>{totalVoucher}</p>
+                    </div>
+                    <div className='bg-white rounded-[10px] p-[20px] flex items-center justify-center gap-[20px] w-[300px] shadow-md'>
+                        <div className='flex gap-[5px]'>
+                            <LiaCalendarWeekSolid className='text-[20px]' />
+                            <span>Last week voucher: </span>
+                        </div>
+                        <p>{lastWeekVouchers}</p>
+                    </div>
+                    <div className='bg-white rounded-[10px] p-[20px] flex items-center justify-center gap-[20px] w-[300px] shadow-md'>
+                        <div className='flex gap-[5px]'>
+                            <MdCalendarMonth className='text-[20px]' />
+                            <span>Last month voucher: </span>
+                        </div>
+                        <p>{lastMonthVouchers}</p>
+                    </div>
+                </div>
+
+                <div className='flex gap-[10px] items-center'>
+                    <MdCategory className='text-[20px]' />
+                    <h3 className='text-[16px] font-semibold'>All Voucher</h3>
+                </div>
+
+                <div className='border mt-[20px] p-[10px] bg-white max-h-[500px] max-w-full overflow-x-scroll overflow-y-scroll '>
+                    {Object.keys(allVouchers).length === 0 ? (
+                        <div>Empty voucher! </div>
+                    ) : (
+                        <div className='flex flex-wrap gap-[20px] animate__animated animate__fadeInRight'>
+                            {allVouchers.map((voucher, index) => (
+                                <VoucherCard key={index} voucher={voucher} />
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                <div className='flex gap-[10px] items-center'>
+                    <CiEdit className='text-[20px]' />
+                    <h3 className='text-[16px] font-semibold'>Edit Voucher</h3>
+                </div>
+
+                <div className='3xl:w-full w-[1300px] max-md:w-[500px]  overflow-scroll p-[20px] bg-white'>
+                    <DataTable
+                        columns={columns}
+                        data={allVouchers}
+                        pagination
+                        selectableRows
+                        highlightOnHover
+                        onRowClicked={(row) => handleRowClick(row._id)}
+                        className='animate__animated animate__fadeInUp'
+                    />
+
+                </div>
+
+            </div>
             {/* CREATE MODAL */}
             <Modal
                 open={openCreateModal}
@@ -681,7 +665,7 @@ const Voucher = () => {
                                                     ) : (
                                                         <div>
                                                             {allProducts.map((product, index) => (
-                                                                <div onClick={() => toggleEditProduct(product._id)} className={`border rounded-[10px] p-[10px] my-[10px] border-black cursor-pointer grid grid-cols-2 max-md:grid-cols-1 max-md:text-[12px] ${productApplyEdit.includes(product._id) ? 'bg-gray-200' : ''}`} key={index}>
+                                                                <div onClick={() => toggleEditProduct(product._id)} className={`border rounded-[10px] p-[10px] my-[10px] border-black cursor-pointer grid grid-cols-2 max-md:grid-cols-1 max-md:text-[12px] ${productApplyEdit?.includes(product._id) ? 'bg-gray-200' : ''}`} key={index}>
                                                                     <div className='flex gap-[20px] '>
                                                                         <p>ID: </p>
                                                                         <p>{product._id}</p>
@@ -730,7 +714,7 @@ const Voucher = () => {
                                                     ) : (
                                                         <div>
                                                             {allCategories.map((category, index) => (
-                                                                <div onClick={() => toggleEditCategory(category._id)} className={`border rounded-[10px] p-[10px] my-[10px] border-black cursor-pointer grid grid-cols-2 max-md:grid-cols-1 max-md:text-[12px] ${categoryApplyEdit.includes(category._id) ? 'bg-gray-200' : ''}`} key={index}>
+                                                                <div onClick={() => toggleEditCategory(category._id)} className={`border rounded-[10px] p-[10px] my-[10px] border-black cursor-pointer grid grid-cols-2 max-md:grid-cols-1 max-md:text-[12px] ${categoryApplyEdit?.includes(category._id) ? 'bg-gray-200' : ''}`} key={index}>
                                                                     <div className='flex gap-[20px] '>
                                                                         <p>ID: </p>
                                                                         <p>{category._id}</p>

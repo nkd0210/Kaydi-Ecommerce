@@ -120,7 +120,7 @@ const SportClothes = () => {
                         <Loader />
                     ) : (
                         <div className='relative'>
-                            <img src={heroImage} alt="hero image" className='w-full h-full object-cover ' />
+                            <img src={heroImage} alt="hero image" loading="lazy" className='w-full h-full object-cover ' />
                             <div className='absolute bottom-[30%] left-[50px] max-md:left-[20px] flex flex-col gap-[20px]'>
                                 <h2 className='uppercase text-[50px] font-semibold max-md:text-[14px]'>đồ chạy bộ</h2>
                                 <div onClick={() => navigate(`/collections/sport`)} className='w-[200px] max-md:w-[150px] rounded-[20px] bg-blue-500 text-white text-[16px] max-md:text-[12px] p-[10px] text-center hover:bg-opacity-70 cursor-pointer hover:text-black'>Khám phá ngay</div>
@@ -150,7 +150,7 @@ const SportClothes = () => {
                                     key={index}
                                     className='flex flex-col gap-[10px] px-[10px] animate__animated animate__fadeIn'>
                                     <div className='w-[300px] h-[400px] overflow-hidden'>
-                                        <img src={product?.listingPhotoPaths[0]} alt="image" className='w-full h-full object-cover rounded-[10px] transform transition-transform ease-in hover:scale-110 cursor-pointer' />
+                                        <img src={product?.listingPhotoPaths[0]} alt="image" loading="lazy" className='w-full h-full object-cover rounded-[10px] transform transition-transform ease-in hover:scale-110 cursor-pointer' />
                                     </div>
                                     <div className='flex flex-col my-[10px]'>
                                         <span>{product.name}</span>

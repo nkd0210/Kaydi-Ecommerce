@@ -217,7 +217,7 @@ const UserCart = () => {
                                 <table className='w-full border-collapse overflow-y-scroll animate__animated animate__fadeInUp'>
                                     <thead>
                                         <tr className="border-b-[2px] ">
-                                            <th className="p-[10px] text-left"> <input type="checkbox" className='w-[16px] h-[16px]' /></th>
+                                            <th className="p-[10px] text-left"> <input type="checkbox" className='w-[20px] h-[20px]' /></th>
                                             <th className="p-[10px] text-left">#</th>
                                             <th className="p-[10px] text-left">Name</th>
                                             <th className="p-[10px] text-left">Image</th>
@@ -230,11 +230,11 @@ const UserCart = () => {
                                     </thead>
                                     <tbody>
                                         {items.map((item, index) => (
-                                            <tr onClick={() => navigate(`/productDetail/${item?.productId}`)} key={index} className="border-b-[2px]">
+                                            <tr onClick={() => navigate(`/productDetail/${item?.productId}`)} key={index} className="border-b-[2px] cursor-pointer">
                                                 <td className="p-[10px]">
                                                     <input
                                                         type="checkbox"
-                                                        className='w-[16px] h-[16px]'
+                                                        className='w-[20px] h-[20px]'
                                                         onClick={(e) => e.stopPropagation()}
                                                         onChange={(e) => handleChooseItem(e, item)}
                                                         checked={chooseItems.some(i => i.productId === item.productId && i.color === item.color && i.size === item.size)}

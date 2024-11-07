@@ -28,7 +28,9 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 import 'animate.css';
 
-const ChatInformation = ({ singleGroupChat, handleAccessGroupChat }) => {
+const ChatInformation = ({ singleGroupChat, handleAccessGroupChat, handleAccessChat, setOpenInformationBar }) => {
+
+    const { currentUser } = useSelector((state) => state.user);
 
     // change info like name or photo
     const [openOptionChat, setOpenOptionChat] = useState(false);
@@ -290,7 +292,6 @@ const ChatInformation = ({ singleGroupChat, handleAccessGroupChat }) => {
         }
     }
 
-
     return (
         <div className='flex flex-col gap-[20px] p-[20px] border-l-[1px] border-[#383939] h-[calc(100vh-60px)] overflow-y-scroll '>
             <div className='flex flex-col gap-[10px] items-center justify-center'>
@@ -344,9 +345,9 @@ const ChatInformation = ({ singleGroupChat, handleAccessGroupChat }) => {
 
                                     <BsThreeDots onClick={() => { toggleUser(index); setSelectUserDeleted(user._id) }} className="cursor-pointer hover:text-gray-300" />
                                     {
-                                        openUser === index && (
+                                        openUser === index && user._id !== currentUser._id && (
                                             <div className="absolute bottom-[-80px] right-[12px] w-[180px] border-black rounded-[10px] shadow-lg h-[80px] z-10 bg-[#303030] flex flex-col gap-[10px] p-[10px]">
-                                                <div className="flex justify-start items-center gap-[10px] cursor-pointer">
+                                                <div onClick={() => { handleAccessChat(user._id); setOpenInformationBar(false) }} className="flex justify-start items-center gap-[10px] cursor-pointer">
                                                     <BiMessageRounded />
                                                     <p>Nhắn tin</p>
                                                 </div>

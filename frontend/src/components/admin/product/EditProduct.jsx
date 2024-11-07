@@ -304,6 +304,7 @@ const EditProduct = ({ productId, setOpenEdit, setOpenShow, handleFetchProductsD
             } else {
                 handleShowSucccessMessage("Update product successfully!")
                 handleFetchProduct();
+                handleFetchProductsDashboard();
             }
         } catch (error) {
             console.log(error.message);

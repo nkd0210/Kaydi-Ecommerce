@@ -9,7 +9,7 @@ import Skeleton from '@mui/material/Skeleton';
 import { IoCloseCircleSharp } from "react-icons/io5";
 import { IoCloseCircleOutline } from "react-icons/io5";
 
-const CreateGroupChat = ({ setOpenModal, setSingleGroupChat, handleFetchAllChats, setSelectId, setLoadingChatBox }) => {
+const CreateGroupChat = ({ setOpenModal, setSingleGroupChat, handleFetchAllChats, setSelectId, setChatId, setLoadingChatBox, setOpenMainSidebar }) => {
 
     const [allUsers, setAllUsers] = useState([]);
     const [loadingAllUser, setLoadingAllUser] = useState(false);
@@ -129,9 +129,11 @@ const CreateGroupChat = ({ setOpenModal, setSingleGroupChat, handleFetchAllChats
                 return;
             } else {
                 setSingleGroupChat(data);
+                setOpenMainSidebar(false);
                 setSelectId(data._id);
+                setChatId(data._id);
                 setOpenModal(false);
-                handleFetchAllChats();
+                // handleFetchAllChats();
                 setLoadingChatBox(true);
             }
         } catch (error) {

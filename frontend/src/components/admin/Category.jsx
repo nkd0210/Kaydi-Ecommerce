@@ -31,7 +31,6 @@ const Category = () => {
     const [totalCategory, setTotalCategory] = useState('');
     const [lastWeekCategoryCount, setLastWeekCategoryCount] = useState('');
     const [lastMonthCategoryCount, setLastMonthCategoryCount] = useState('');
-    const [loading, setLoading] = useState(true);
 
     const handleFetchCategories = async () => {
         try {
@@ -46,7 +45,6 @@ const Category = () => {
                 setTotalCategory(data.totalCategory);
                 setLastMonthCategoryCount(data.lastMonthCategoryCount);
                 setLastWeekCategoryCount(data.lastWeekCategoryCount);
-                setLoading(false);
             }
         } catch (error) {
             console.log(error.message);
@@ -188,69 +186,63 @@ const Category = () => {
     return (
         <div className='py-[20px] px-[40px] max-md:px-[10px] h-full overflow-y-scroll bg-gray-100'>
             <>
-                {loading ? (
-                    <Loader />
-                ) : (
-                    <>
-                        <ToastContainer />
-                        <div className='flex justify-between max-md:flex-col max-md:flex-start max-md:my-[20px]'>
-                            <div className='flex gap-[20px] items-center'>
-                                <MdDashboard className='text-[30px]' />
-                                <h1 className='font-semibold text-[20px] max-md:text-[18px]'>Category Dashboard</h1>
-                            </div>
-                            <div className='flex gap-[20px] items-center max-md:flex-col max-md:items-start'>
-                                <div onClick={() => setOpenCreateCategory(true)} className='flex gap-[10px] rounded-[10px] p-[10px] items-center border bg-white w-[250px] mt-[20px] justify-center shadow-lg cursor-pointer hover:bg-red-400'>
-                                    <CiCirclePlus className='text-[20px]' />
-                                    <p className='text-[16px]'>Create category</p>
-                                </div>
-                                <div onClick={handleExportExcel} className='flex gap-[10px] rounded-[10px] p-[10px] items-center border bg-white w-[250px] mt-[20px] justify-center shadow-lg cursor-pointer hover:bg-red-400'>
-                                    <IoIosPrint className='text-[20px]' />
-                                    <p className='text-[16px]'>Print Excel</p>
-                                </div>
-                            </div>
+                <ToastContainer />
+                <div className='flex justify-between max-md:flex-col max-md:flex-start max-md:my-[20px]'>
+                    <div className='flex gap-[20px] items-center'>
+                        <MdDashboard className='text-[30px]' />
+                        <h1 className='font-semibold text-[20px] max-md:text-[18px]'>Category Dashboard</h1>
+                    </div>
+                    <div className='flex gap-[20px] items-center max-md:flex-col max-md:items-start'>
+                        <div onClick={() => setOpenCreateCategory(true)} className='flex gap-[10px] rounded-[10px] p-[10px] items-center border bg-white w-[250px] mt-[20px] justify-center shadow-lg cursor-pointer hover:bg-red-400'>
+                            <CiCirclePlus className='text-[20px]' />
+                            <p className='text-[16px]'>Create category</p>
                         </div>
-
-                        <div className='flex gap-[10px] mt-[20px] items-center'>
-                            <FaBusinessTime className='text-[20px]' />
-                            <h3 className='text-[16px] font-semibold'>Business Overview</h3>
+                        <div onClick={handleExportExcel} className='flex gap-[10px] rounded-[10px] p-[10px] items-center border bg-white w-[250px] mt-[20px] justify-center shadow-lg cursor-pointer hover:bg-red-400'>
+                            <IoIosPrint className='text-[20px]' />
+                            <p className='text-[16px]'>Print Excel</p>
                         </div>
+                    </div>
+                </div>
 
-                        <div className='flex max-md:flex-wrap justify-center max-md:justify-start items-center gap-[20px] py-[30px] animate__animated animate__fadeIn'>
-                            <div className='bg-white rounded-[10px] p-[20px] flex items-center justify-center gap-[20px] w-[300px] shadow-md'>
-                                <div className='flex gap-[5px]'>
-                                    <SiVirustotal className='text-[20px]' />
-                                    <span>Total category: </span>
-                                </div>
-                                <p>{totalCategory}</p>
-                            </div>
-                            <div className='bg-white rounded-[10px] p-[20px] flex items-center justify-center gap-[20px] w-[300px] shadow-md'>
-                                <div className='flex gap-[5px]'>
-                                    <LiaCalendarWeekSolid className='text-[20px]' />
-                                    <span>Last week create: </span>
-                                </div>
-                                <p>{lastWeekCategoryCount}</p>
-                            </div>
-                            <div className='bg-white rounded-[10px] p-[20px] flex items-center justify-center gap-[20px] w-[300px] shadow-md'>
-                                <div className='flex gap-[5px]'>
-                                    <MdCalendarMonth className='text-[20px]' />
-                                    <span>Last month create: </span>
-                                </div>
-                                <p>{lastMonthCategoryCount}</p>
-                            </div>
+                <div className='flex gap-[10px] mt-[20px] items-center'>
+                    <FaBusinessTime className='text-[20px]' />
+                    <h3 className='text-[16px] font-semibold'>Business Overview</h3>
+                </div>
+
+                <div className='flex max-md:flex-wrap justify-center max-md:justify-start items-center gap-[20px] py-[30px] animate__animated animate__fadeIn'>
+                    <div className='bg-white rounded-[10px] p-[20px] flex items-center justify-center gap-[20px] w-[300px] shadow-md'>
+                        <div className='flex gap-[5px]'>
+                            <SiVirustotal className='text-[20px]' />
+                            <span>Total category: </span>
                         </div>
-
-                        <div className='flex gap-[10px] items-center'>
-                            <MdCategory className='text-[20px]' />
-                            <h3 className='text-[16px] font-semibold'>All Categories</h3>
+                        <p>{totalCategory}</p>
+                    </div>
+                    <div className='bg-white rounded-[10px] p-[20px] flex items-center justify-center gap-[20px] w-[300px] shadow-md'>
+                        <div className='flex gap-[5px]'>
+                            <LiaCalendarWeekSolid className='text-[20px]' />
+                            <span>Last week create: </span>
                         </div>
+                        <p>{lastWeekCategoryCount}</p>
+                    </div>
+                    <div className='bg-white rounded-[10px] p-[20px] flex items-center justify-center gap-[20px] w-[300px] shadow-md'>
+                        <div className='flex gap-[5px]'>
+                            <MdCalendarMonth className='text-[20px]' />
+                            <span>Last month create: </span>
+                        </div>
+                        <p>{lastMonthCategoryCount}</p>
+                    </div>
+                </div>
 
-                        <EditCategory
-                            categories={categories}
-                            handleFetchCategories={handleFetchCategories}
-                        />
+                <div className='flex gap-[10px] items-center'>
+                    <MdCategory className='text-[20px]' />
+                    <h3 className='text-[16px] font-semibold'>All Categories</h3>
+                </div>
 
-                    </>
-                )}
+                <EditCategory
+                    categories={categories}
+                    handleFetchCategories={handleFetchCategories}
+                />
+
             </>
 
             {/* CREATE */}

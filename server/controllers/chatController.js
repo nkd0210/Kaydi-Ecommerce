@@ -1,6 +1,7 @@
 import Chat from "../models/chatModel.js";
 import User from "../models/userModel.js";
 import Message from "../models/messageModel.js";
+import { pusherServer } from "../lib/pusher.js";
 
 export const accessSingleChat = async (req, res, next) => {
   const { receiverId } = req.body;
@@ -76,6 +77,24 @@ export const accessSingleChat = async (req, res, next) => {
         "members",
         "-password"
       );
+
+      const chatWithReceiver = {
+        ...populatedChat.toObject(),
+        receiver: [findUser],
+      };
+
+      // trigger a Pusher event for each member to notify a new chat
+      populatedChat.members.forEach(async (member) => {
+        try {
+          await pusherServer.trigger(
+            member._id.toString(),
+            "new-single-chat",
+            chatWithReceiver
+          );
+        } catch (error) {
+          console.error("Failed to trigger new-chat event");
+        }
+      });
 
       return res.status(200).json({
         chat: populatedChat,
@@ -206,6 +225,19 @@ export const createGroupChat = async (req, res, next) => {
     const populatedGroupChat = await Chat.findOne({ _id: newGroupChat._id })
       .populate("members", "-password")
       .populate("groupAdmin", "-password");
+
+    // trigger a Pusher event for each member to notify a new chat
+    populatedGroupChat.members.forEach(async (member) => {
+      try {
+        await pusherServer.trigger(
+          member._id.toString(),
+          "new-group-chat",
+          populatedGroupChat
+        );
+      } catch (error) {
+        console.error("Failed to trigger new-chat event");
+      }
+    });
 
     res.status(200).json(populatedGroupChat);
   } catch (error) {
