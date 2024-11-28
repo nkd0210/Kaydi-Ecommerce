@@ -6,9 +6,14 @@ import Navbar from "../components/Navbar";
 import Loader from '../components/Loader';
 import Comment from '../components/Comment';
 import Footer from '../components/Footer';
+import TableSize from '../components/TableSize';
+
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
+
+import Modal from '@mui/material/Modal';
+import { IoIosCloseCircleOutline } from "react-icons/io";
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -215,6 +220,7 @@ const ProductDetail = () => {
         } finally {
             setLoadingComment(false);
         }
+        console.log('fetch comment complete')
     }
 
     useEffect(() => {
@@ -242,6 +248,8 @@ const ProductDetail = () => {
             setReplyCommentIds([...replyCommentIds, id]);
         }
     }
+
+    const [openSize, setOpenSize] = useState(false);
 
     return (
         <Wrapper>
@@ -300,6 +308,7 @@ const ProductDetail = () => {
                                         </div>
                                     ))}
                                 </div>
+                                <p onClick={() => setOpenSize(true)} className='underline hover:text-gray-600 cursor-pointer'>Hướng dẫn chọn size</p>
                                 <p>Tồn kho: {detailProduct.stock}</p>
                                 <div className='w-[100px] border border-black p-[10px] rounded-[20px] flex justify-between items-center text-center'>
                                     <CiCircleMinus className='text-[20px] cursor-pointer' onClick={handleDecreaseQuantity} />
@@ -409,6 +418,21 @@ const ProductDetail = () => {
                         toggleOpenReply={toggleOpenReply}
                         toggleReply={toggleReply}
                     />
+
+                    {
+                        openSize && (
+                            <Modal
+                                open={openSize}
+                                onClose={() => setOpenSize(false)}
+                            >
+                                <div className='absolute top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%] shadow-lg w-[1000px] max-md:w-[400px] bg-white text-black h-[600px] overflow-y-scroll rounded-[20px] p-[20px] pt-[50px]'>
+                                    <IoIosCloseCircleOutline onClick={() => setOpenSize(false)} className='absolute top-[10px] right-[10px] text-[30px] cursor-pointer hover:text-red-[400]' />
+                                    <TableSize />
+                                </div>
+
+                            </Modal>
+                        )
+                    }
 
 
                 </div>

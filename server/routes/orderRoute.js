@@ -13,6 +13,8 @@ import {
   getAllOrdersOfCustomer,
   exportOrders,
   getTotalAmountPerMonth,
+  getAllOrderStatus,
+  getOrderTotalRevenue,
 } from "../controllers/orderController.js";
 
 const router = express.Router();
@@ -33,5 +35,7 @@ router.get("/getTotalAmountPerDay", verifyToken, getTotalAmountPerDay);
 router.get("/getTotalAmountPerMonth", verifyToken, getTotalAmountPerMonth);
 router.get("/getAllOrdersOfCustomer", verifyToken, getAllOrdersOfCustomer);
 router.get("/exportOrders", verifyToken, exportOrders);
+router.get("/getAllOrderStatus", verifyToken, getAllOrderStatus);
+router.get("/getOrderRevenue", verifyToken, getOrderTotalRevenue);
 
 export default router;

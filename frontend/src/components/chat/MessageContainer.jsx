@@ -16,7 +16,7 @@ import { GrFormPrevious } from "react-icons/gr";
 import "animate.css"
 
 
-const MessageContainer = ({ currentUser, chatId, messages, setMessages, loadingChatBox, setSelectId, openMainSidebar, setOpenMainSidebar, singleChat, singleGroupChat, handleAccessGroupChat, handleFetchAllChats, handleAccessChat }) => {
+const MessageContainer = ({ currentUser, chatId, messages, setMessages, loadingChatBox, setSelectId, openMainSidebar, setOpenMainSidebar, singleChat, singleGroupChat, handleAccessGroupChat, handleFetchAllChats, handleAccessChat, setSingleGroupChat }) => {
 
     const [openInformationBar, setOpenInformationBar] = useState(false);
 
@@ -164,7 +164,7 @@ const MessageContainer = ({ currentUser, chatId, messages, setMessages, loadingC
                 {/* sidebar */}
                 {openInformationBar && (
                     <div className=" w-1/4 animate__animated animate__fadeInRight">
-                        <ChatInformation setOpenInformationBar={setOpenInformationBar} singleGroupChat={singleGroupChat} handleAccessGroupChat={handleAccessGroupChat} handleAccessChat={handleAccessChat} />
+                        <ChatInformation setSingleGroupChat={setSingleGroupChat} setOpenInformationBar={setOpenInformationBar} singleGroupChat={singleGroupChat} handleAccessGroupChat={handleAccessGroupChat} handleAccessChat={handleAccessChat} />
                     </div>
                 )}
             </div>

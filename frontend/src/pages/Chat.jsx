@@ -147,8 +147,6 @@ const Chat = () => {
 
     const [chatId, setChatId] = useState("");
 
-    console.log("all chat outside the use effect: ", allChats);
-
     useEffect(() => {
         if (currentUser) {
             pusherClient.subscribe(currentUser._id);
@@ -467,6 +465,7 @@ const Chat = () => {
                     handleAccessChat={handleAccessChat}
                     handleAccessGroupChat={handleAccessGroupChat}
                     handleFetchAllChats={handleFetchAllChats}
+                    setSingleGroupChat={setSingleGroupChat}
                 />
             )}
 

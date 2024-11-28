@@ -1,6 +1,7 @@
 import User from "../models/userModel.js";
 import bcryptjs from "bcryptjs";
 import ExcelJS from "exceljs";
+import Chat from "../models/chatModel.js";
 
 export const getAllUsers = async (req, res, next) => {
   if (!req.user.isAdmin) {
@@ -70,6 +71,31 @@ export const getAllUserToChat = async (req, res, next) => {
       return res.status(404).json({ message: "No users were found" });
     }
     return res.status(200).json(allUsers);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getUserToAddInGroupChat = async (req, res, next) => {
+  const chatId = req.params.chatId;
+
+  try {
+    const findChat = await Chat.findById(chatId);
+    if (!findChat) {
+      return res.status(404).json({ message: "Chat not found" });
+    }
+
+    const memberIds = findChat.members.map((member) => member._id);
+
+    const userToAdd = await User.find({
+      _id: { $nin: memberIds },
+    }).select("-password -addressList -phoneNumber -gender -dateOfBirth");
+
+    if (userToAdd.length === 0) {
+      return res.json({ message: "No users to add in this chat" });
+    }
+
+    res.status(200).json(userToAdd);
   } catch (error) {
     next(error);
   }

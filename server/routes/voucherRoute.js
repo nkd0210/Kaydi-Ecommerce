@@ -10,6 +10,7 @@ import {
   applyVoucher,
   getVoucherByProductIds,
   exportVouchers,
+  getVoucherStatistic,
 } from "../controllers/voucherController.js";
 
 const router = express.Router();
@@ -26,5 +27,6 @@ router.get(
   getVoucherByProductIds
 );
 router.get("/exportVouchers", verifyToken, exportVouchers);
+router.get("/getVoucherStatistic", verifyToken, getVoucherStatistic);
 
 export default router;

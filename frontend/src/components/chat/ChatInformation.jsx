@@ -28,9 +28,10 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 import 'animate.css';
 
-const ChatInformation = ({ singleGroupChat, handleAccessGroupChat, handleAccessChat, setOpenInformationBar }) => {
+const ChatInformation = ({ setSingleGroupChat, singleGroupChat, handleAccessGroupChat, handleAccessChat, setOpenInformationBar }) => {
 
     const { currentUser } = useSelector((state) => state.user);
+    const chatId = singleGroupChat?._id;
 
     // change info like name or photo
     const [openOptionChat, setOpenOptionChat] = useState(false);
@@ -159,10 +160,10 @@ const ChatInformation = ({ singleGroupChat, handleAccessGroupChat, handleAccessC
     const [allUsers, setAllUsers] = useState([]);
     const [loadingAllUser, setLoadingAllUser] = useState(false);
 
-    const getAllUsersToChat = async () => {
+    const getAllUsersToAddInGroupChat = async () => {
         setLoadingAllUser(true);
         try {
-            const res = await fetch(`/api/user/getAllUsersToChat`, {
+            const res = await fetch(`/api/user/getUserToAddInGroupChat/${chatId}`, {
                 method: "GET"
             });
             const data = await res.json();
@@ -181,7 +182,7 @@ const ChatInformation = ({ singleGroupChat, handleAccessGroupChat, handleAccessC
     }
 
     useEffect(() => {
-        getAllUsersToChat();
+        getAllUsersToAddInGroupChat();
     }, []);
 
     const [selectedUser, setSelectedUser] = useState([]);
@@ -254,6 +255,7 @@ const ChatInformation = ({ singleGroupChat, handleAccessGroupChat, handleAccessC
                 return;
             } else {
                 setOpenModalAdd(false);
+                setSelectedUser([]);
                 handleAccessGroupChat(singleGroupChat._id);
             }
         } catch (error) {
@@ -283,6 +285,7 @@ const ChatInformation = ({ singleGroupChat, handleAccessGroupChat, handleAccessC
             } else {
                 setOpenUser('');
                 setOpenModalDelete(false);
+                setSelectedUser([]);
                 handleAccessGroupChat(singleGroupChat._id);
             }
         } catch (error) {
@@ -347,7 +350,7 @@ const ChatInformation = ({ singleGroupChat, handleAccessGroupChat, handleAccessC
                                     {
                                         openUser === index && user._id !== currentUser._id && (
                                             <div className="absolute bottom-[-80px] right-[12px] w-[180px] border-black rounded-[10px] shadow-lg h-[80px] z-10 bg-[#303030] flex flex-col gap-[10px] p-[10px]">
-                                                <div onClick={() => { handleAccessChat(user._id); setOpenInformationBar(false) }} className="flex justify-start items-center gap-[10px] cursor-pointer">
+                                                <div onClick={() => { handleAccessChat(user._id); setOpenInformationBar(false); setSingleGroupChat({}) }} className="flex justify-start items-center gap-[10px] cursor-pointer">
                                                     <BiMessageRounded />
                                                     <p>Nhắn tin</p>
                                                 </div>

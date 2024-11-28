@@ -309,3 +309,37 @@ export const exportVouchers = async (req, res, next) => {
     res.status(500).send("Failed to export vouchers to Excel");
   }
 };
+
+export const getVoucherStatistic = async (req, res, next) => {
+  if (!req.user.isAdmin) {
+    return res
+      .status(401)
+      .json({ message: "You are not authorized to get all order statuses" });
+  }
+
+  try {
+    const result = await Voucher.aggregate([
+      {
+        $sort: {
+          usedCount: -1,
+        },
+      },
+      {
+        $facet: {
+          mostUsed: [{ $limit: 1 }], // Top voucher
+          leastUsed: [{ $sort: { usedCount: 1 } }, { $limit: 1 }], // Least used voucher
+        },
+      },
+    ]);
+
+    const mostUsed = result[0]?.mostUsed?.[0] || null;
+    const leastUsed = result[0]?.leastUsed?.[0] || null;
+
+    res.status(200).json({
+      mostUsed,
+      leastUsed,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

@@ -280,19 +280,19 @@ const EditCategory = ({ categories, handleFetchCategories }) => {
 
                                         <div className='flex max-md:flex-col gap-[20px]'>
                                             <p className='w-[160px] font-semibold'>Name: </p>
-                                            <input onChange={handleChange} type="text" defaultValue={eachCategory?.name} id='name' className='border-gray-500 border-[2px] border-dashed px-[10px] ' />
+                                            <input onChange={handleChange} type="text" defaultValue={eachCategory?.name} id='name' className='border-gray-400 border rounded-[10px] py-[5px] px-[10px] ' />
                                         </div>
 
                                         <div className='flex max-md:flex-col gap-[20px]'>
                                             <p className='w-[160px] font-semibold'>Title: </p>
-                                            <input onChange={handleChange} type="text" defaultValue={eachCategory?.title} id='title' className='border-gray-500 border-[2px] border-dashed px-[10px] ' />
+                                            <input onChange={handleChange} type="text" defaultValue={eachCategory?.title} id='title' className='border-gray-400 border rounded-[10px] py-[5px] px-[10px] ' />
                                         </div>
 
                                         <div className='flex max-md:flex-col flex-col'>
                                             <div className='flex max-md:flex-col items-center max-md:items-start gap-[20px]'>
                                                 <p className='w-[160px] font-semibold'>Description: </p>
-                                                <input onChange={handleInputDesc} value={descInput} type="text" placeholder='Enter here' id='description' className='border-gray-500 border-[2px] border-dashed px-[10px] ' />
-                                                <div onClick={handlAddDesc} className='rounded-[10px] bg-black text-white hover:opacity-70 py-[3px] px-[10px] cursor-pointer'>Add</div>
+                                                <input onChange={handleInputDesc} value={descInput} type="text" placeholder='Enter here' id='description' className='border-gray-400 border rounded-[10px] py-[5px] px-[10px] ' />
+                                                <div onClick={handlAddDesc} className='rounded-[10px] bg-black text-white hover:opacity-70 py-[3px] px-[10px] cursor-pointer w-[80px] flex justify-center items-center text-center'>Add</div>
                                             </div>
                                             <div className='flex flex-wrap gap-[20px] w-[full] mt-[20px]'>
                                                 {description?.map((item, index) => (

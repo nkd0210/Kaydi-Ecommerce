@@ -6,10 +6,13 @@ import 'animate.css'
 import { BsFillGridFill, BsList } from 'react-icons/bs'
 import { CiSearch } from "react-icons/ci";
 
-const Filter = ({ newSearchKey, setNewSearchKey, showType, setShowType, sortType, setSortType, productCount, handleFetchProductBySearchKey }) => {
+const Filter = ({ selectCategory, newSearchKey, setNewSearchKey, showType, setShowType, sortType, setSortType, productCount, handleFetchProductBySearchKey }) => {
 
     const navigate = useNavigate();
 
+    useEffect(() => {
+        setSortType("default")
+    }, [selectCategory]);
 
     const handleKeyChange = (e) => {
         setNewSearchKey(e.target.value);
@@ -50,6 +53,7 @@ const Filter = ({ newSearchKey, setNewSearchKey, showType, setShowType, sortType
                     className='w-[200px] px-[10px] py-[5px] rounded-[5px]'
                     onChange={(e) => setSortType(e.target.value)}
                 >
+                    <option value="default">Mặc định </option>
                     <option value="priceLowToHigh">Giá (thấp nhất) </option>
                     <option value="priceHighToLow">Giá (cao nhất) </option>
                     <option value="nameAZ">Tên (a-z) </option>

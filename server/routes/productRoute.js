@@ -8,7 +8,9 @@ import {
   getEachProduct,
   getProductByCategory,
   getProductByFilter,
+  getProductByPriceRange,
   getProductBySearch,
+  getProductCombination,
   getProductPagination,
   getRecentProduct,
   getRecommendProducts,
@@ -23,11 +25,14 @@ router.get("/getAllProduct", getAllProduct);
 router.get("/getProductPagination", getProductPagination);
 router.put("/update/:productId", verifyToken, updateProduct);
 router.delete("/delete/:productId", verifyToken, deleteProduct);
-router.get("/getByCategory/:category", getProductByCategory);
 router.get("/getEachProduct/:productId", getEachProduct);
 router.get("/getProductBySearch/:searchKey", getProductBySearch);
-router.post("/getProductByFilter/:filterType", getProductByFilter);
 router.get("/exportProducts", verifyToken, exportProducts);
 router.get("/getRecommendProduct/:productId", getRecommendProducts);
+router.get("/getProductByPriceRange", getProductByPriceRange);
+router.post("/getProductByFilter/:filterType", getProductByFilter);
+
+router.get("/getByCategory/:category", getProductByCategory);
+router.get("/getProductCombination/:category", getProductCombination);
 
 export default router;

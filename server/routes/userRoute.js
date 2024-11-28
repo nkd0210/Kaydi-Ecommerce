@@ -6,6 +6,7 @@ import {
   getAllUsers,
   getAllUserToChat,
   getUser,
+  getUserToAddInGroupChat,
   searchUser,
   updateUser,
 } from "../controllers/userController.js";
@@ -19,5 +20,10 @@ router.delete("/delete/:userId", verifyToken, deleteUser);
 router.get("/exportUser", verifyToken, exportToExcel);
 router.get("/searchUser", verifyToken, searchUser);
 router.get("/getAllUsersToChat", verifyToken, getAllUserToChat);
+router.get(
+  "/getUserToAddInGroupChat/:chatId",
+  verifyToken,
+  getUserToAddInGroupChat
+);
 
 export default router;

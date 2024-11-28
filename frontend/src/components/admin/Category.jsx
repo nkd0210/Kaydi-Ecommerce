@@ -260,16 +260,16 @@ const Category = () => {
                             <form onSubmit={handleCreateForm} className='flex flex-col gap-[20px]'>
                                 <div className='flex max-md:flex-col gap-[20px]'>
                                     <p className='w-[160px] font-semibold'>Name:</p>
-                                    <input onChange={handleChangeCreate} type="text" id='name' placeholder='Enter category name' className='border-[2px] border-black border-dotted px-[10px]' />
+                                    <input onChange={handleChangeCreate} type="text" id='name' placeholder='Enter category name' className='border-gray-400 border rounded-[10px] py-[5px] px-[10px]' />
                                 </div>
                                 <div className='flex max-md:flex-col gap-[20px]'>
                                     <p className='w-[160px] font-semibold'>Title:</p>
-                                    <input onChange={handleChangeCreate} type="text" id='title' placeholder='Enter title name' className='border-[2px] border-black border-dotted px-[10px]' />
+                                    <input onChange={handleChangeCreate} type="text" id='title' placeholder='Enter title name' className='border-gray-400 border rounded-[10px] py-[5px] px-[10px]' />
                                 </div>
                                 <div className='flex max-md:flex-col gap-[20px]'>
                                     <p className='w-[160px] font-semibold'>Description:</p>
-                                    <input onChange={handleInputCreateDesc} value={inputCreateDesc} type="text" id='title' placeholder='Enter descriptions' className='border-[2px] border-black border-dotted px-[10px]' />
-                                    <div onClick={handleAddCreateDesc} className='rounded-[10px] bg-black text-white hover:opacity-70 py-[3px] px-[10px] cursor-pointer w-[100px] text-center'>Add</div>
+                                    <input onChange={handleInputCreateDesc} value={inputCreateDesc} type="text" id='title' placeholder='Enter descriptions' className='border-gray-400 border rounded-[10px] py-[5px] px-[10px]' />
+                                    <div onClick={handleAddCreateDesc} className='rounded-[10px] bg-black text-white hover:opacity-70 py-[3px] px-[10px] cursor-pointer w-[100px] flex justify-center items-center text-center'>Add</div>
                                 </div>
                                 <div className='flex flex-wrap gap-[20px] w-[full] mt-[20px]'>
                                     {createDesc?.map((item, index) => (

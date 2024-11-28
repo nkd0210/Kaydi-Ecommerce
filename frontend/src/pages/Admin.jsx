@@ -24,6 +24,23 @@ import 'react-toastify/dist/ReactToastify.css';
 import { RiLogoutCircleLine } from "react-icons/ri";
 import 'animate.css'
 
+import { MdOutlineDashboard } from "react-icons/md";
+import { TiShoppingCart } from "react-icons/ti";
+import { FaShippingFast } from "react-icons/fa";
+import { MdOutlineCategory } from "react-icons/md";
+import { IoTicketOutline } from "react-icons/io5";
+import { FaRegUser } from "react-icons/fa6";
+import { FaRocketchat } from "react-icons/fa";
+import { CgWebsite } from "react-icons/cg";
+import { FcBarChart } from "react-icons/fc";
+import { FcCustomerSupport } from "react-icons/fc";
+import { FcInTransit } from "react-icons/fc";
+import { FcConferenceCall } from "react-icons/fc";
+import { FcCurrencyExchange } from "react-icons/fc";
+import { FcDoughnutChart } from "react-icons/fc";
+import { FcShop } from "react-icons/fc";
+import { FcTemplate } from "react-icons/fc";
+
 const AdminDashboard = () => {
 
     const [openSidebar, setOpenSidebar] = useState(false);
@@ -140,19 +157,43 @@ const AdminDashboard = () => {
         <div className='flex'>
             <ToastContainer />
             <div className='flex flex-col justify-between items-center p-[20px] gap-[20px] h-screen min-w-[200px] text-[18px] bg-black text-white max-md:hidden'>
-                <div>
-                    <div onClick={() => setOpenModal(true)} className='w-[80px] h-[80px] cursor-pointer hover:opacity-70 my-[20px]'>
+                <div className='flex flex-col justify-center items-center'>
+                    <div onClick={() => setOpenModal(true)} className='w-[80px] h-[80px] cursor-pointer hover:opacity-70 my-[10px]'>
                         <img src={currentUser?.profilePic} alt="" className='w-full h-full object-cover rounded-[50%]' />
                     </div>
                     <div className='flex flex-col gap-[40px] mt-[30px]'>
-                        <div onClick={() => setActive('dashboard')} className={`cursor-pointer hover:text-red-400 ${active === 'dashboard' ? 'text-red-400' : 'text-white'}`}>Dashboard</div>
-                        <div onClick={() => setActive('products')} className={`cursor-pointer hover:text-red-400 ${active === 'products' ? 'text-red-400' : 'text-white'}`}>Products</div>
-                        <div onClick={() => setActive('category')} className={`cursor-pointer hover:text-red-400 ${active === 'category' ? 'text-red-400' : 'text-white'}`}>Category</div>
-                        <div onClick={() => setActive('order')} className={`cursor-pointer hover:text-red-400 ${active === 'order' ? 'text-red-400' : 'text-white'}`}>Order</div>
-                        <div onClick={() => setActive('voucher')} className={`cursor-pointer hover:text-red-400 ${active === 'voucher' ? 'text-red-400' : 'text-white'}`}>Voucher</div>
-                        <div onClick={() => setActive('user')} className={`cursor-pointer hover:text-red-400 ${active === 'user' ? 'text-red-400' : 'text-white'}`}>User</div>
-                        <div onClick={() => navigate('/chat')} className={`cursor-pointer hover:text-red-400 ${active === 'chat' ? 'text-red-400' : 'text-white'}`}>Chat</div>
-                        <div onClick={() => navigate('/')} className={`cursor-pointer hover:text-red-400 ${active === 'chat' ? 'text-red-400' : 'text-white'}`}>Website</div>
+                        <div onClick={() => setActive('dashboard')} className={`cursor-pointer flex items-center gap-[10px] hover:text-red-400 ${active === 'dashboard' ? 'text-red-400' : 'text-white'}`}>
+                            <FcBarChart />
+                            <p>Dashboard </p>
+                        </div>
+                        <div onClick={() => setActive('products')} className={`cursor-pointer flex items-center gap-[10px] hover:text-red-400 ${active === 'products' ? 'text-red-400' : 'text-white'}`}>
+                            <FcShop />
+                            <p>Products</p>
+                        </div>
+                        <div onClick={() => setActive('category')} className={`cursor-pointer flex items-center gap-[10px] hover:text-red-400 ${active === 'category' ? 'text-red-400' : 'text-white'}`}>
+                            <FcDoughnutChart />
+                            <p>Category</p>
+                        </div>
+                        <div onClick={() => setActive('order')} className={`cursor-pointer flex items-center gap-[10px] hover:text-red-400 ${active === 'order' ? 'text-red-400' : 'text-white'}`}>
+                            <FcInTransit />
+                            <p>Order</p>
+                        </div>
+                        <div onClick={() => setActive('voucher')} className={`cursor-pointer flex items-center gap-[10px] hover:text-red-400 ${active === 'voucher' ? 'text-red-400' : 'text-white'}`}>
+                            <FcCurrencyExchange />
+                            <p>Voucher</p>
+                        </div>
+                        <div onClick={() => setActive('user')} className={`cursor-pointer flex items-center gap-[10px] hover:text-red-400 ${active === 'user' ? 'text-red-400' : 'text-white'}`}>
+                            <FcConferenceCall />
+                            <p>User</p>
+                        </div>
+                        <div onClick={() => navigate('/chat')} className={`cursor-pointer flex items-center gap-[10px] hover:text-red-400 ${active === 'chat' ? 'text-red-400' : 'text-white'}`}>
+                            <FcCustomerSupport />
+                            <p>Chat </p>
+                        </div>
+                        <div onClick={() => navigate('/')} className={`cursor-pointer flex items-center gap-[10px] hover:text-red-400 ${active === 'chat' ? 'text-red-400' : 'text-white'}`}>
+                            <FcTemplate />
+                            <p>Website</p>
+                        </div>
                     </div>
                 </div>
                 <div onClick={handleLogout} className='flex items-center justify-center gap-[10px] cursor-pointer hover:text-red-400'>

@@ -161,36 +161,6 @@ export const deleteProduct = async (req, res, next) => {
   }
 };
 
-export const getProductByCategory = async (req, res, next) => {
-  const category = req.params.category;
-  try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-
-    const skip = (page - 1) * limit;
-
-    const allProducts = await Product.find({ categories: category });
-
-    const findProductByCategory = await Product.find({ categories: category })
-      .skip(skip)
-      .limit(limit);
-
-    const totalNumber = allProducts.length;
-
-    if (findProductByCategory.length === 0) {
-      return res.json({ message: "No product match in this category" });
-    }
-    res.status(200).json({
-      totalNumber,
-      currentPage: page,
-      totalPages: Math.ceil(totalNumber / limit),
-      findProductByCategory,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
 export const getEachProduct = async (req, res, next) => {
   const { productId } = req.params;
   try {
@@ -241,59 +211,6 @@ export const getProductBySearch = async (req, res, next) => {
       totalPages: Math.ceil(totalNumber / limit),
       findProducts: findProducts,
     });
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const getProductByFilter = async (req, res, next) => {
-  const { filterType } = req.params;
-  const { products } = req.body;
-
-  if (!Array.isArray(products)) {
-    return res.status(400).json({ message: "Invalid products data!" });
-  }
-
-  let sortOption = {};
-
-  switch (filterType) {
-    case "priceLowToHigh":
-      sortOption = (a, b) => a.price - b.price; // ascending
-      break;
-
-    case "priceHighToLow":
-      sortOption = (a, b) => b.price - a.price; // descending
-      break;
-
-    case "nameAZ":
-      sortOption = (a, b) =>
-        new Intl.Collator("vi", { sensitivity: "base" }).compare(
-          a.name,
-          b.name
-        ); // ascending
-      break;
-
-    case "nameZA":
-      sortOption = (a, b) =>
-        new Intl.Collator("vi", { sensitivity: "base" }).compare(
-          b.name,
-          a.name
-        ); // descending
-      break;
-
-    default:
-      return res.status(400).json({ message: "Invalid filter type!" });
-  }
-
-  try {
-    // Sort the products array based on the sortOption
-    const sortedProducts = products.sort(sortOption);
-
-    if (sortedProducts.length === 0) {
-      return res.json({ message: "No product found!" });
-    }
-
-    res.status(200).json(sortedProducts);
   } catch (error) {
     next(error);
   }
@@ -396,6 +313,175 @@ export const getRecommendProducts = async (req, res, next) => {
     }
 
     res.status(200).json(findProductsByCategory);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getProductByCategory = async (req, res, next) => {
+  const category = req.params.category;
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    const skip = (page - 1) * limit;
+
+    const allProducts = await Product.find({ categories: category });
+
+    const findProductByCategory = await Product.find({ categories: category })
+      .skip(skip)
+      .limit(limit);
+
+    const totalNumber = allProducts.length;
+
+    if (findProductByCategory.length === 0) {
+      return res.json({ message: "No product match in this category" });
+    }
+    res.status(200).json({
+      totalNumber,
+      currentPage: page,
+      totalPages: Math.ceil(totalNumber / limit),
+      findProductByCategory,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getProductByPriceRange = async (req, res, next) => {
+  try {
+    const { minPrice, maxPrice } = req.query;
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    const skip = (page - 1) * limit;
+
+    const query = {};
+
+    if (minPrice) {
+      query.price = {
+        ...query.price,
+        $gte: Number(minPrice),
+      };
+    }
+
+    if (maxPrice) {
+      query.price = {
+        ...query.price,
+        $lte: Number(maxPrice),
+      };
+    }
+
+    const totalNumber = await Product.countDocuments(query);
+
+    const products = await Product.find(query).skip(skip).limit(limit);
+
+    res.status(200).json({
+      totalNumber,
+      currentPage: page,
+      totalPages: Math.ceil(totalNumber / limit),
+      products,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getProductByFilter = async (req, res, next) => {
+  const { filterType } = req.params;
+  const { products } = req.body;
+
+  if (!Array.isArray(products)) {
+    return res.status(400).json({ message: "Invalid products data!" });
+  }
+
+  let sortOption = {};
+
+  switch (filterType) {
+    case "priceLowToHigh":
+      sortOption = (a, b) => a.price - b.price; // ascending
+      break;
+
+    case "priceHighToLow":
+      sortOption = (a, b) => b.price - a.price; // descending
+      break;
+
+    case "nameAZ":
+      sortOption = (a, b) =>
+        new Intl.Collator("vi", { sensitivity: "base" }).compare(
+          a.name,
+          b.name
+        ); // ascending
+      break;
+
+    case "nameZA":
+      sortOption = (a, b) =>
+        new Intl.Collator("vi", { sensitivity: "base" }).compare(
+          b.name,
+          a.name
+        ); // descending
+      break;
+
+    default:
+      return res.status(400).json({ message: "Invalid filter type!" });
+  }
+
+  try {
+    // Sort the products array based on the sortOption
+    const sortedProducts = products.sort(sortOption);
+
+    if (sortedProducts.length === 0) {
+      return res.json({ message: "No product found!" });
+    }
+
+    res.status(200).json(sortedProducts);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getProductCombination = async (req, res, next) => {
+  const { category } = req.params;
+  const { minPrice, maxPrice } = req.query;
+
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    const skip = (page - 1) * limit;
+
+    const query = {};
+
+    if (category && category !== "all") {
+      query.categories = category;
+    }
+
+    if (minPrice !== null && !isNaN(Number(minPrice))) {
+      query.price = query.price || {};
+      query.price.$gte = Number(minPrice);
+    }
+    if (maxPrice !== null && !isNaN(Number(maxPrice))) {
+      query.price = query.price || {};
+      query.price.$lte = Number(maxPrice);
+    }
+
+    const totalNumber = await Product.countDocuments(query);
+
+    const products = await Product.find(query).skip(skip).limit(limit);
+
+    if (products.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No products match your criteria." });
+    }
+
+    res.status(200).json({
+      totalNumber,
+      currentPage: page,
+      totalPages: Math.ceil(totalNumber / limit),
+      products,
+    });
   } catch (error) {
     next(error);
   }

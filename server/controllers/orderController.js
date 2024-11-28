@@ -590,3 +590,131 @@ export const exportOrders = async (req, res, next) => {
     res.status(500).send("Failed to export orders to Excel");
   }
 };
+
+export const getAllOrderStatus = async (req, res, next) => {
+  if (!req.user.isAdmin) {
+    return res
+      .status(401)
+      .json({ message: "You are not authorized to get all order statuses" });
+  }
+  try {
+    const statusCounts = await Order.aggregate([
+      {
+        $group: {
+          _id: "$status",
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          status: "$_id",
+          count: 1,
+        },
+      },
+    ]);
+
+    const result = {
+      pending: 0,
+      processing: 0,
+      shipped: 0,
+      delivered: 0,
+    };
+
+    statusCounts.forEach(({ status, count }) => {
+      result[status] = count;
+    });
+
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getOrderTotalRevenue = async (req, res, next) => {
+  if (!req.user.isAdmin) {
+    return res
+      .status(401)
+      .json({ message: "You are not authorized to get order total revenue" });
+  }
+  try {
+    const now = new Date();
+
+    const firstDayOfLastMonth = new Date(
+      now.getFullYear(),
+      now.getMonth() - 1,
+      1
+    );
+    const lastDayOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+
+    const startOfThisMonth = new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      1
+    );
+    const startOfNextMonth = new Date(
+      new Date().getFullYear(),
+      new Date().getMonth() + 1,
+      1
+    );
+
+    const revenues = await Order.aggregate([
+      {
+        $facet: {
+          totalRevenue: [
+            {
+              $group: {
+                _id: null,
+                total: { $sum: "$totalAmount" },
+              },
+            },
+          ],
+          lastMonthRevenue: [
+            {
+              $match: {
+                createdAt: {
+                  $gte: firstDayOfLastMonth,
+                  $lte: lastDayOfLastMonth,
+                },
+              },
+            },
+            {
+              $group: {
+                _id: null,
+                total: { $sum: "$totalAmount" },
+              },
+            },
+          ],
+          currentMonthRevenue: [
+            {
+              $match: {
+                createdAt: {
+                  $gte: startOfThisMonth,
+                  $lte: startOfNextMonth,
+                },
+              },
+            },
+            {
+              $group: {
+                _id: null,
+                total: { $sum: "$totalAmount" },
+              },
+            },
+          ],
+        },
+      },
+    ]);
+
+    const totalRevenue = revenues[0]?.totalRevenue[0]?.total || 0;
+    const lastMonthRevenue = revenues[0]?.lastMonthRevenue[0]?.total || 0;
+    const thisMonthRevenue = revenues[0]?.currentMonthRevenue[0]?.total || 0;
+
+    return res.status(200).json({
+      totalRevenue,
+      lastMonthRevenue,
+      thisMonthRevenue,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
