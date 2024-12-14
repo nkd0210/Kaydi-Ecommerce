@@ -1,6 +1,8 @@
 import User from "../models/userModel.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
+import nodemailer from "nodemailer";
 
 export const signUp = async (req, res, next) => {
   const { username, email, password } = req.body;
@@ -202,4 +204,88 @@ export const refreshToken = async (req, res, next) => {
 
     res.status(200).json({ message: "Token refreshed successfully" });
   });
+};
+
+export const forgotPassword = async (req, res, next) => {
+  const { email } = req.body;
+
+  if (!email || email === "") {
+    return res.status(400).json({ message: "Email is required" });
+  }
+
+  try {
+    const findUser = await User.findOne({ email });
+    if (!findUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+
+    findUser.resetPasswordToken = hashedToken;
+    findUser.resetPasswordExpires = Date.now() + 10 * 60 * 1000;
+    await findUser.save();
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    const resetLink = `http://localhost:5173/newPassword/${resetToken}`;
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: findUser.email,
+      subject: "Password Reset Request",
+      text: `Click the link to reset your password: ${resetLink}`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.status(200).json({
+      message: "Password reset email sent successfully. Check your inbox.",
+    });
+  } catch (error) {
+    console.error("Error in forgotPassword:", error);
+    next(error);
+  }
+};
+
+export const resetPassword = async (req, res, next) => {
+  const { token } = req.params;
+  const { newPassword } = req.body;
+
+  if (!token || !newPassword || newPassword === "") {
+    return res
+      .status(400)
+      .json({ message: "Token and new password are required" });
+  }
+
+  try {
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+    const findUser = await User.findOne({
+      resetPasswordToken: hashedToken,
+      resetPasswordExpires: { $gt: Date.now() },
+    });
+
+    if (!findUser) {
+      return res.status(404).json({ message: "Invalid token or expired" });
+    }
+
+    const hashedPassword = bcryptjs.hashSync(newPassword, 10);
+    findUser.password = hashedPassword;
+    findUser.resetPasswordToken = null;
+    findUser.resetPasswordExpires = null;
+
+    await findUser.save();
+
+    res.status(200).json({ message: "Password reset successfully" });
+  } catch (error) {
+    next(error);
+  }
 };

@@ -5,8 +5,10 @@ import {
   deleteProductReview,
   editReview,
   getProductReview,
+  getReviewStatistic,
   getUserReview,
   replyReview,
+  sortReviewStar,
 } from "../controllers/reviewController.js";
 
 const router = express.Router();
@@ -17,5 +19,7 @@ router.delete("/deleteReview/:reviewId", verifyToken, deleteProductReview);
 router.put("/updateReview/:reviewId", verifyToken, editReview);
 router.get("/getUserReview/:userId", verifyToken, getUserReview);
 router.post("/replyReview/:reviewId", verifyToken, replyReview);
+router.get("/getProductReviewByStar/:productId", sortReviewStar);
+router.get("/getReviewStatistic/:productId", getReviewStatistic);
 
 export default router;

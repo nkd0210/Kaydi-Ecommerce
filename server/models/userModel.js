@@ -40,6 +40,14 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    resetPasswordToken: {
+      type: String,
+      default: null, // Token will be set when a user requests password reset
+    },
+    resetPasswordExpires: {
+      type: Date,
+      default: null, // Expiration date for the reset token
+    },
   },
   {
     timestamps: true,

@@ -159,7 +159,7 @@ const Dashboard = () => {
                 <h2 className='font-semibold text-[20px] mb-[20px] uppercase'>Overview</h2>
                 <div className='flex flex-col max-md:flex-wrap gap-[40px] border rounded-[10px] p-[20px] animate__animated animate__fadeInRight w-full'>
                     <div className='flex max-md:flex-wrap gap-[30px]'>
-                        <div className='border w-[300px] h-[100px] rounded-[10px] shadow-lg  flex gap-[20px] justify-center items-center'>
+                        <div className='border w-[300px] h-[100px] rounded-[10px] shadow-yellow-300 shadow-md  flex gap-[20px] justify-center items-center'>
                             <div className='flex justify-center items-center gap-[10px]'>
                                 <FaSackDollar className='text-[46px] text-yellow-500' />
                             </div>
@@ -168,7 +168,7 @@ const Dashboard = () => {
                                 <p className='text-[16px] text-gray-600'>Total Revenue</p>
                             </div>
                         </div>
-                        <div className='border w-[300px] h-[100px] rounded-[10px] shadow-lg  flex gap-[20px] justify-center items-center'>
+                        <div className='border w-[300px] h-[100px] rounded-[10px] shadow-blue-300 shadow-md  flex gap-[20px] justify-center items-center'>
                             <div className='flex justify-center items-center gap-[10px]'>
                                 <MdCalendarMonth className='text-[46px] text-blue-500' />
                             </div>
@@ -177,7 +177,7 @@ const Dashboard = () => {
                                 <p className='text-[16px] text-gray-600'>Last Month Revenue</p>
                             </div>
                         </div>
-                        <div className='border w-[300px] h-[100px] rounded-[10px] shadow-lg  flex gap-[20px] justify-center items-center'>
+                        <div className='border w-[300px] h-[100px] rounded-[10px] shadow-green-300 shadow-md  flex gap-[20px] justify-center items-center'>
                             <div className='flex justify-center items-center gap-[10px]'>
                                 <FcMoneyTransfer className='text-[46px]' />
                             </div>
@@ -186,19 +186,22 @@ const Dashboard = () => {
                                 <p className='text-[16px] text-gray-600'>Current Month Revenue</p>
                             </div>
                         </div>
-                        <div className='w-[100px] h-[100px] rounded-[50%] border p-[10px]'>
-                            {
-                                orderRevenue?.thisMonthRevenue > orderRevenue?.lastMonthRevenue ? (
+
+                        {
+                            orderRevenue?.thisMonthRevenue > orderRevenue?.lastMonthRevenue ? (
+                                <div className='w-[100px] h-[100px] rounded-[50%] border border-green-400 shadow-green-200 shadow-md p-[10px]'>
                                     <div className='flex w-full h-full items-center justify-center'>
                                         <FcBullish className='text-[50px] text-center' />
                                     </div>
-                                ) : (
+                                </div>
+                            ) : (
+                                <div className='w-[100px] h-[100px] rounded-[50%] border border-red-400 shadow-red-200 shadow-md p-[10px]'>
                                     <div className='flex w-full h-full items-center justify-center'>
                                         <FcBearish className='text-[50px] text-center' />
                                     </div>
-                                )
-                            }
-                        </div>
+                                </div>
+                            )
+                        }
                     </div>
 
                     {/* BAR CHART */}

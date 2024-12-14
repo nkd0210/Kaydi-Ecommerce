@@ -84,7 +84,7 @@ const Products = () => {
 
 
     return (
-        <Wrapper className='py-[20px] px-[40px] max-md:px-[10px] h-full overflow-y-scroll bg-gray-100'>
+        <Wrapper className='py-[20px] px-[40px] max-md:px-[10px] max-w-full h-full overflow-y-scroll bg-gray-100'>
 
             <div className='w-full flex justify-between max-md:flex-col max-md:flex-start max-md:my-[20px]'>
                 {/* HEADER */}

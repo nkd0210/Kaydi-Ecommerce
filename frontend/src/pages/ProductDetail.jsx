@@ -24,6 +24,7 @@ import { LuRefreshCcw } from "react-icons/lu";
 import { FiPhoneCall } from "react-icons/fi";
 import { BsArrowsCollapse } from "react-icons/bs";
 import { BsArrowsExpand } from "react-icons/bs";
+import { GrBasket } from "react-icons/gr";
 
 import styled from 'styled-components';
 
@@ -97,7 +98,7 @@ const ProductDetail = () => {
     }
 
     // add to cart
-    const [openBox, setOpenBox] = useState(true);
+    const [openBox, setOpenBox] = useState(false);
     const { currentUser } = useSelector((state) => state.user);
 
     const handleShowErrorMessage = (message) => {
@@ -107,6 +108,13 @@ const ProductDetail = () => {
     const handleShowSucccessMessage = (message) => {
         toast.success(message)
     }
+
+    useEffect(() => {
+        if (openBox === false && (showColor !== '' || showSize !== '' || showQuantity !== 1)) {
+            setOpenBox(true);
+        }
+    }, [showColor, showSize, showQuantity])
+
 
     const handleAddToCart = async () => {
         if (!currentUser) {
@@ -202,7 +210,7 @@ const ProductDetail = () => {
     const handleFetchComment = async (page) => {
         setLoadingComment(true);
         try {
-            const res = await fetch(`/api/review/getProductReview/${productId}?page=${page}&limit=2`, {
+            const res = await fetch(`/api/review/getProductReview/${productId}?page=${page}&limit=3`, {
                 method: "GET"
             });
             const data = await res.json();
@@ -220,7 +228,6 @@ const ProductDetail = () => {
         } finally {
             setLoadingComment(false);
         }
-        console.log('fetch comment complete')
     }
 
     useEffect(() => {
@@ -396,27 +403,32 @@ const ProductDetail = () => {
                             </div>
                         </div>
                     ) : (
-                        <div className='fixed border bottom-[10px] max-md:bottom-[50px] right-[10px] w-[50px] h-[50px] rounded-[20px] shadow-xl z-20 bg-gray-100 p-[10px] flex justify-center items-center '>
-                            <BsArrowsExpand onClick={() => setOpenBox(true)} className='cursor-pointer hover:text-red-400 text-[20px]' />
+                        <div onClick={() => setOpenBox(true)} className='fixed border cursor-pointer bottom-[10px] max-md:bottom-[50px] right-[10px] w-[50px] h-[50px] rounded-[20px] shadow-lg z-20 bg-gray-100 p-[10px] flex justify-center items-center '>
+                            <GrBasket className=' text-blue-400 hover:text-red-400 text-[20px]' />
                         </div>
                     )}
 
                     {/* COMMENT */}
                     <Comment
+                        productId={productId}
                         commentInfo={commentInfo}
+                        setCommentInfo={setCommentInfo}
                         comments={comments}
-                        loadingComment={loadingComment}
+                        setComments={setComments}
                         reviewCount={reviewCount}
+                        setReviewCount={setReviewCount}
                         handleFetchComment={handleFetchComment}
                         totalPage={totalPage}
+                        setTotalPage={setTotalPage}
                         openReply={openReply}
                         setOpenReply={setOpenReply}
                         replyCommentIds={replyCommentIds}
-                        setReplyCommentIds={setReplyCommentIds}
                         commentId={commentId}
                         setCommentId={setCommentId}
                         toggleOpenReply={toggleOpenReply}
                         toggleReply={toggleReply}
+                        loadingComment={loadingComment}
+                        setLoadingComment={setLoadingComment}
                     />
 
                     {

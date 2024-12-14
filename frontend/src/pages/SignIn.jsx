@@ -76,10 +76,6 @@ const SignIn = () => {
     }
   }
 
-  const handleLoginGoogle = async () => {
-
-  }
-
   return (
     <>
       <Navigation />
@@ -94,13 +90,13 @@ const SignIn = () => {
 
               <div className='w-3/4 max-md:w-full border border-blue-300 rounded-[20px] flex items-center text-center gap-[10px] p-[5px] '>
                 <TfiEmail className='text-gray-400 mx-[10px]' />
-                <input onChange={handleChange} id='email' type="email" placeholder='Email' className=' outline-none bg-transparent w-full backdrop-blur-sm ' />
+                <input onChange={handleChange} id='email' type="email" required placeholder='Email' className=' outline-none bg-transparent w-full backdrop-blur-sm ' />
               </div>
 
               <div className='w-3/4 max-md:w-full border border-blue-300 rounded-[20px] flex justify-between items-center text-center gap-[10px] p-[5px] '>
                 <div className='flex items-center'>
                   <RiLockPasswordLine className='text-gray-400 mx-[10px] text-[20px]' />
-                  <input onChange={handleChange} id='password' type={showPassword ? 'text' : 'password'} placeholder='Password' className='mx-[10px] outline-none bg-transparent w-full backdrop-blur-sm' />
+                  <input onChange={handleChange} id='password' type={showPassword ? 'text' : 'password'} required placeholder='Password' className='mx-[10px] outline-none bg-transparent w-full backdrop-blur-sm' />
                 </div>
                 <button onClick={handleShowPassword} className='mx-[10px]'>
                   {showPassword ? (
@@ -110,6 +106,9 @@ const SignIn = () => {
                   )}
                 </button>
               </div>
+              <div className='w-3/4 flex justify-start'>
+                <p onClick={() => navigate("/resetPassword")} className='text-blue-400 text-[14px] cursor-pointer hover:text-blue-500'>Forgot your password?</p>
+              </div>
 
               <button type='submit' className='w-3/4 max-md:w-full border-blue-300 border rounded-[20px] p-[5px] bg-blue-300 text-white hover:bg-opacity-70 hover:text-black'>
                 Sign In
@@ -117,13 +116,13 @@ const SignIn = () => {
 
               <hr className='w-3/4 max-md:w-full bg-gray-300 h-[2px]' />
 
-              <div className='w-3/4 max-md:w-full border-blue-300 border rounded-[20px] p-[5px] bg-blue-300 text-white hover:bg-opacity-70 hover:text-black'>
+              <div className='w-3/4 max-md:w-full border-blue-300 border rounded-[20px] p-[5px] cursor-pointer bg-blue-300 text-white hover:bg-opacity-70 hover:text-black'>
                 <OAuth />
               </div>
 
               <div className='text-gray-500 max-md:text-white flex gap-[10px] backdrop-blur-sm'>
                 Don't have any account ?
-                <Link to='/signUp'>Sign Up</Link>
+                <Link to='/signUp' className='hover:text-blue-400'>Sign Up</Link>
               </div>
 
             </form>

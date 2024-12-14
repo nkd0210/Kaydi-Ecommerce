@@ -208,3 +208,77 @@ export const replyReview = async (req, res, next) => {
     next(error);
   }
 };
+
+export const sortReviewStar = async (req, res, next) => {
+  const { productId } = req.params;
+  const { star } = req.query;
+
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 6;
+
+    const skip = (page - 1) * limit;
+
+    const starRating = parseInt(star);
+    if (!starRating || starRating < 1 || starRating > 5) {
+      return res.status(400).json({ message: "Invalid star rating." });
+    }
+
+    const filteredReviews = await Review.find({
+      product: productId,
+      rating: starRating,
+    })
+      .sort({ createdAt: -1 })
+      .populate("creator product order");
+
+    const totalNumber = filteredReviews.length;
+
+    const paginatedReviews = await Review.find({
+      product: productId,
+      rating: starRating,
+    })
+      .sort({ createdAt: -1 })
+      .populate("creator product order")
+      .skip(skip)
+      .limit(limit);
+
+    if (paginatedReviews.length === 0) {
+      return res.json({ message: "No reviews found for this star rating." });
+    }
+
+    res.status(200).json({
+      totalNumber,
+      currentPage: page,
+      totalPages: Math.ceil(totalNumber / limit),
+      reviews: paginatedReviews,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getReviewStatistic = async (req, res, next) => {
+  const { productId } = req.params;
+  try {
+    const allProductReviews = await Review.find({ product: productId });
+
+    const reviewStats = {
+      total: allProductReviews.length,
+      1: 0,
+      2: 0,
+      3: 0,
+      4: 0,
+      5: 0,
+    };
+
+    allProductReviews.forEach((review) => {
+      if (review.rating >= 1 && review.rating <= 5) {
+        reviewStats[review.rating]++;
+      }
+    });
+
+    res.status(200).json(reviewStats);
+  } catch (error) {
+    next(error);
+  }
+};

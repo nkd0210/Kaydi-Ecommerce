@@ -267,11 +267,6 @@ const Search = () => {
         }
     }, [minPrice, maxPrice])
 
-
-    console.log("selectCategory: " + selectCategory);
-    console.log("min price: " + minPrice);
-    console.log("max price: " + maxPrice);
-
     return (
         <>
             <Navigation />

@@ -105,18 +105,18 @@ const SignUp = () => {
 
                             <div className='w-3/4 max-md:w-full border border-blue-300 rounded-[20px] flex items-center text-center gap-[10px] p-[5px] '>
                                 <HiOutlineUser className='text-gray-400 mx-[10px]  ' />
-                                <input onChange={handleChange} type="text" placeholder='Username' id='username' className='outline-none bg-transparent w-full backdrop-blur-sm' />
+                                <input onChange={handleChange} type="text" placeholder='Username' id='username' required className='outline-none bg-transparent w-full backdrop-blur-sm' />
                             </div>
 
                             <div className='w-3/4 max-md:w-full border border-blue-300 rounded-[20px] flex items-center text-center gap-[10px] p-[5px] '>
                                 <TfiEmail className='text-gray-400 mx-[10px]' />
-                                <input onChange={handleChange} type="email" placeholder='Email' id='email' className=' outline-none bg-transparent w-full backdrop-blur-sm ' />
+                                <input onChange={handleChange} type="email" placeholder='Email' id='email' required className=' outline-none bg-transparent w-full backdrop-blur-sm ' />
                             </div>
 
                             <div className='w-3/4 max-md:w-full border border-blue-300 rounded-[20px] flex justify-between items-center text-center gap-[10px] p-[5px] '>
                                 <div className='flex items-center'>
                                     <RiLockPasswordLine className='text-gray-400 mx-[10px] text-[20px]' />
-                                    <input onChange={handleChange} type={showPassword ? 'text' : 'password'} placeholder='Password' id='password' className='mx-[10px] outline-none bg-transparent w-full backdrop-blur-sm' />
+                                    <input onChange={handleChange} type={showPassword ? 'text' : 'password'} required placeholder='Password' id='password' className='mx-[10px] outline-none bg-transparent w-full backdrop-blur-sm' />
                                 </div>
                                 <button onClick={handleShowPassword} className='mx-[10px]'>
                                     {showPassword ? (
@@ -130,7 +130,7 @@ const SignUp = () => {
                             <div className='w-3/4 max-md:w-full border border-blue-300 rounded-[20px] flex justify-between items-center text-center gap-[10px] p-[5px] '>
                                 <div className='flex items-center'>
                                     <RiLockPasswordLine className='text-gray-400 mx-[10px] text-[20px]' />
-                                    <input onChange={handleConfirmPwd} type={showConfirmPwd ? 'text' : 'password'} placeholder='Confirm Password' className='mx-[10px] outline-none bg-transparent w-full backdrop-blur-sm' />
+                                    <input onChange={handleConfirmPwd} type={showConfirmPwd ? 'text' : 'password'} required placeholder='Confirm Password' className='mx-[10px] outline-none bg-transparent w-full backdrop-blur-sm' />
                                 </div>
                                 <button onClick={handleShowConfirmPwd} className='mx-[10px]'>
                                     {showConfirmPwd ? (
@@ -153,7 +153,7 @@ const SignUp = () => {
 
                             <div className='text-gray-500 max-md:text-white flex gap-[10px] backdrop-blur-sm'>
                                 Already have an account ?
-                                <Link to='/signIn'>Login</Link>
+                                <Link to='/signIn' className='hover:text-blue-400'>Login</Link>
                             </div>
 
                         </form>

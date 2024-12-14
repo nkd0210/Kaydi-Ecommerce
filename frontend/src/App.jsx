@@ -13,6 +13,8 @@ import Collection from './pages/Collection';
 import Review from './pages/Review';
 import Search from './pages/Search';
 import Chat from './pages/Chat';
+import ResetPassword from './pages/ResetPassword';
+import NewPassword from './pages/NewPassword';
 
 function App() {
   return (
@@ -21,6 +23,8 @@ function App() {
         <Route path='/' element={<Home />} />
         <Route path='/signIn' element={<SignIn />} />
         <Route path='/signUp' element={<SignUp />} />
+        <Route path='/resetPassword' element={<ResetPassword />} />
+        <Route path='/newPassword/:resetToken' element={<NewPassword />} />
         <Route path='/profile/:activeParam' element={<Profile />} />
         <Route path='/productDetail/:productId' element={<ProductDetail />} />
         <Route path='/admin' element={<Admin />} />
