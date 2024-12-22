@@ -486,3 +486,30 @@ export const getProductCombination = async (req, res, next) => {
     next(error);
   }
 };
+
+export const searchProductAdmin = async (req, res, next) => {
+  const { searchKey } = req.params;
+
+  if (!req.user.isAdmin) {
+    return res
+      .status(403)
+      .json({ message: "You are not admin to perform this action." });
+  }
+
+  try {
+    const findProducts = await Product.find({
+      name: {
+        $regex: searchKey,
+        $options: "i",
+      },
+    });
+
+    if (findProducts.length === 0) {
+      return res.json({ message: "No product found with this name" });
+    }
+
+    res.status(200).json(findProducts);
+  } catch (error) {
+    next(error);
+  }
+};

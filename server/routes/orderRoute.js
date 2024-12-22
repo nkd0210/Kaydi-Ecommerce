@@ -15,6 +15,7 @@ import {
   getTotalAmountPerMonth,
   getAllOrderStatus,
   getOrderTotalRevenue,
+  searchOrderAdmin,
 } from "../controllers/orderController.js";
 
 const router = express.Router();
@@ -37,5 +38,6 @@ router.get("/getAllOrdersOfCustomer", verifyToken, getAllOrdersOfCustomer);
 router.get("/exportOrders", verifyToken, exportOrders);
 router.get("/getAllOrderStatus", verifyToken, getAllOrderStatus);
 router.get("/getOrderRevenue", verifyToken, getOrderTotalRevenue);
+router.get("/searchOrderAdmin/:searchKey", verifyToken, searchOrderAdmin);
 
 export default router;

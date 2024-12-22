@@ -16,6 +16,7 @@ import { TbPlayerTrackNext } from "react-icons/tb";
 import { MdOutlineKeyboardDoubleArrowLeft } from "react-icons/md";
 import { PiArrowFatLinesRightLight } from "react-icons/pi";
 import { FaRegCalendarAlt } from "react-icons/fa";
+import { CiBarcode } from "react-icons/ci";
 
 import 'animate.css'
 
@@ -73,33 +74,15 @@ const SingleOrder = ({ order, handleFetchOrder }) => {
                     <Loader />
                 ) : (
                     <>
-                        {/* customer info */}
-                        <div className='flex gap-[20px] pb-[20px] border-b-[1px] border-gray-400'>
-                            <ToastContainer />
-                            <div className='flex gap-[10px]'>
-                                <p>Name: </p>
-                                <p className='text-gray-500'>{order?.receiverName}</p>
-                                <FaGripLinesVertical className='text-[20px] ' />
-                            </div>
-                            <div className='flex gap-[10px]'>
-                                <p>Phone: </p>
-                                <p className='text-gray-500'>{order?.receiverPhone}</p>
-                                <FaGripLinesVertical className='text-[20px]' />
-                            </div>
-                            <div className='flex gap-[10px]'>
-                                <p>Note: </p>
-                                <p className='text-gray-500'>{order?.receiverNote ? order.receiverNote : 'None'}</p>
-                                <FaGripLinesVertical className='text-[20px]' />
-                            </div>
-                            <div className='flex gap-[10px]'>
-                                <p>Address: </p>
-                                <p className='text-gray-500'>{order?.shippingAddress}</p>
-                            </div>
+                        {/* code info */}
+                        <div className='flex items-center gap-[10px]'>
+                            <CiBarcode className='text-[18px] ' />
+                            <p>Order Code: </p>
+                            <p className='text-gray-500'>{order?._id}</p>
                         </div>
 
                         {/* product info */}
                         <div className='flex flex-col gap-[20px]'>
-
                             {products.map((product, index) => (
                                 <div key={index} className='flex gap-[40px] items-center' >
                                     <div className='flex items-center gap-[10px]'>

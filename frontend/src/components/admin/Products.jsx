@@ -15,6 +15,7 @@ import { LiaCalendarWeekSolid } from "react-icons/lia";
 import { SiVirustotal } from "react-icons/si";
 import { FaGripLinesVertical } from "react-icons/fa";
 import { IoIosArrowDropdown } from "react-icons/io";
+import { GoSearch } from "react-icons/go";
 
 import 'animate.css';
 
@@ -79,6 +80,36 @@ const Products = () => {
             }
         } catch (error) {
             console.log(error.message);
+        }
+    }
+
+    const [searchKey, setSearchKey] = useState('');
+
+    const handleChange = (e) => {
+        setSearchKey(e.target.value);
+    }
+
+    const handleSearchProduct = async () => {
+        try {
+            const res = await fetch(`/api/product/searchProductAdmin/${searchKey}`, {
+                method: "GET"
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                console.log(data.message);
+                return;
+            }
+            setAllProducts(data);
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+
+    const handleClickSearch = () => {
+        if (searchKey === null || searchKey === "" || searchKey === undefined) {
+            handleFetchProductsDashboard();
+        } else {
+            handleSearchProduct();
         }
     }
 
@@ -164,7 +195,17 @@ const Products = () => {
             <div className='3xl:w-full w-[1300px] max-md:w-full'>
                 {
                     openShow && (
-                        <ShowProduct loading={loading} allProducts={allProducts} setOpenShow={setOpenShow} setOpenEdit={setOpenEdit} setProductId={setProductId} />
+                        <div className='flex flex-col gap-[20px]'>
+                            <div className='flex gap-[10px] items-center justify-start animate__animated animate__fadeInUp'>
+                                <div className='w-[500px] h-[30px] border bg-white text-black rounded-[5px]'>
+                                    <input onChange={handleChange} value={searchKey} type="text" placeholder='Search product name ...' className='w-full rounded-[5px] px-[10px] py-[5px]' />
+                                </div>
+                                <div onClick={handleClickSearch} className='w-[50px] h-[30px] bg-white rounded-[10px] flex justify-center items-center cursor-pointer hover:bg-gray-200'>
+                                    <GoSearch className='text-[20px]' />
+                                </div>
+                            </div>
+                            <ShowProduct loading={loading} allProducts={allProducts} setOpenShow={setOpenShow} setOpenEdit={setOpenEdit} setProductId={setProductId} />
+                        </div>
                     )
                 }
             </div>

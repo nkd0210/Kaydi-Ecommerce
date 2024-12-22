@@ -5,6 +5,7 @@ import Stripe from "stripe";
 import dotenv from "dotenv";
 dotenv.config();
 import ExcelJS from "exceljs";
+import mongoose from "mongoose";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -713,6 +714,53 @@ export const getOrderTotalRevenue = async (req, res, next) => {
       totalRevenue,
       lastMonthRevenue,
       thisMonthRevenue,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const searchOrderAdmin = async (req, res, next) => {
+  if (!req.user.isAdmin) {
+    return res
+      .status(401)
+      .json({ message: "You are not admin to search orders" });
+  }
+
+  const { searchKey } = req.params;
+
+  try {
+    let query = {};
+
+    if (mongoose.Types.ObjectId.isValid(searchKey)) {
+      query._id = searchKey;
+    } else {
+      query.receiverName = {
+        $regex: searchKey,
+        $options: "i",
+      };
+    }
+
+    const allFoundedOrders = await Order.find(query);
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    const skip = (page - 1) * limit;
+
+    if (allFoundedOrders.length === 0) {
+      return res.json({ message: "No order founded" });
+    }
+
+    const totalPages = Math.ceil(allFoundedOrders.length / limit);
+
+    const ordersPagination = await Order.find(query).limit(limit).skip(skip);
+
+    res.status(200).json({
+      numberOfOrder: allFoundedOrders.length,
+      currentPage: page,
+      totalPages,
+      findOrder: ordersPagination,
     });
   } catch (error) {
     next(error);

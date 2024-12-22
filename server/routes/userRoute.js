@@ -8,6 +8,7 @@ import {
   getUser,
   getUserToAddInGroupChat,
   searchUser,
+  searchUserAdmin,
   updateUser,
 } from "../controllers/userController.js";
 
@@ -25,5 +26,6 @@ router.get(
   verifyToken,
   getUserToAddInGroupChat
 );
+router.get("/searchUserAdmin/:searchKey", verifyToken, searchUserAdmin);
 
 export default router;

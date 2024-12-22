@@ -18,6 +18,7 @@ import { FaBusinessTime } from "react-icons/fa";
 import { MdCalendarMonth } from "react-icons/md";
 import { LiaCalendarWeekSolid } from "react-icons/lia";
 import { SiVirustotal } from "react-icons/si";
+import { GoSearch } from "react-icons/go";
 import ShowUser from './user/ShowUser';
 import EachUser from './user/EachUser';
 
@@ -80,6 +81,36 @@ const User = () => {
         }
     }
 
+    const [searchKey, setSearchKey] = useState('');
+
+    const handleChange = (e) => {
+        setSearchKey(e.target.value);
+    }
+
+    const handleSearchProduct = async () => {
+        try {
+            const res = await fetch(`/api/user/searchUserAdmin/${searchKey}`, {
+                method: "GET"
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                console.log(data.message);
+                return;
+            }
+            setAllUsers(data);
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+
+    const handleClickSearch = () => {
+        if (searchKey === null || searchKey === "" || searchKey === undefined) {
+            handleFetchUsersInfo();
+        } else {
+            handleSearchProduct();
+        }
+    }
+
     return (
         <div className='py-[20px] px-[40px] max-md:px-[10px] max-w-full h-full overflow-x-scroll overflow-y-scroll bg-gray-100'>
             {
@@ -132,6 +163,15 @@ const User = () => {
                         <div className='flex gap-[10px] items-center'>
                             <MdCategory className='text-[20px]' />
                             <h3 className='text-[16px] font-semibold'>All User</h3>
+                        </div>
+
+                        <div className='flex gap-[10px] items-center justify-start animate__animated animate__fadeInUp'>
+                            <div className='w-[500px] h-[30px] border bg-white text-black rounded-[5px]'>
+                                <input onChange={handleChange} value={searchKey} type="text" placeholder='Search user name ...' className='w-full rounded-[5px] px-[10px] py-[5px]' />
+                            </div>
+                            <div onClick={handleClickSearch} className='w-[50px] h-[30px] bg-white rounded-[10px] flex justify-center items-center cursor-pointer hover:bg-gray-200'>
+                                <GoSearch className='text-[20px]' />
+                            </div>
                         </div>
 
                         <div className='3xl:w-full w-[1300px] overflow-x-scroll max-md:w-full'>

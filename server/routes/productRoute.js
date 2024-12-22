@@ -14,6 +14,7 @@ import {
   getProductPagination,
   getRecentProduct,
   getRecommendProducts,
+  searchProductAdmin,
   updateProduct,
 } from "../controllers/productController.js";
 
@@ -34,5 +35,6 @@ router.post("/getProductByFilter/:filterType", getProductByFilter);
 
 router.get("/getByCategory/:category", getProductByCategory);
 router.get("/getProductCombination/:category", getProductCombination);
+router.get("/searchProductAdmin/:searchKey", verifyToken, searchProductAdmin);
 
 export default router;

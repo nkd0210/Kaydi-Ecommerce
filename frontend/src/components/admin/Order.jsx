@@ -9,11 +9,16 @@ import { MdCalendarMonth } from "react-icons/md";
 import { LiaCalendarWeekSolid } from "react-icons/lia";
 import { SiVirustotal } from "react-icons/si";
 import { FaGripLinesVertical } from "react-icons/fa";
+import { GoSearch } from "react-icons/go";
 
 import EditCategory from './category/EditCategory';
 import SingleOrder from './order/SingleOrder';
 import Loader from '../Loader';
 import CustomerOrder from './order/CustomerOrder';
+
+
+import Modal from '@mui/material/Modal';
+import { IoIosCloseCircleOutline } from "react-icons/io";
 
 const Order = () => {
 
@@ -140,6 +145,40 @@ const Order = () => {
         }
     }
 
+    const [openModalSearch, setOpenModalSearch] = useState(false);
+    const [searchKey, setSearchKey] = useState('');
+    const [findOrders, setFindOrders] = useState([]);
+
+    const handleChange = (e) => {
+        setSearchKey(e.target.value);
+    }
+
+    const handleSearchOrderAdmin = async () => {
+        try {
+            const res = await fetch(`/api/order/searchOrderAdmin/${searchKey}`, {
+                method: "GET"
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                console.log(data.message);
+                return;
+            }
+            setFindOrders(data);
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+
+    const handleClickSearch = async () => {
+        if (searchKey === "" || searchKey === undefined || searchKey === null) {
+            setSearchKey('');
+            setFindOrders([]);
+        } else {
+            handleSearchOrderAdmin();
+        }
+    }
+
+
 
     return (
         <div className='py-[20px] px-[40px] max-md:px-[10px] h-full overflow-y-scroll bg-gray-100'>
@@ -150,6 +189,10 @@ const Order = () => {
                         <h1 className='font-semibold text-[20px] max-md:text-[18px]'>Order Dashboard</h1>
                     </div>
                     <div className='flex gap-[20px] items-center max-md:flex-col max-md:items-start'>
+                        <div onClick={() => setOpenModalSearch(true)} className='flex gap-[10px] rounded-[10px] p-[10px] items-center border bg-white w-[250px] mt-[20px] justify-center shadow-lg cursor-pointer hover:bg-red-400'>
+                            <GoSearch className='text-[20px]' />
+                            <p className='text-[16px]'>Search Order</p>
+                        </div>
                         <div onClick={handleExportExcel} className='flex gap-[10px] rounded-[10px] p-[10px] items-center border bg-white w-[250px] mt-[20px] justify-center shadow-lg cursor-pointer hover:bg-red-400'>
                             <IoIosPrint className='text-[20px]' />
                             <p className='text-[16px]'>Print Excel</p>
@@ -226,6 +269,35 @@ const Order = () => {
                     </div>
                 </div>
             </>
+
+            <Modal
+                open={openModalSearch}
+                onClose={() => { setOpenModalSearch(false) }}
+            >
+                <div className='absolute top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%] shadow-lg w-[1200px] max-md:w-[400px] bg-white text-black h-[600px] overflow-y-scroll rounded-[20px] flex flex-col gap-[20px] p-[20px] max-md:p-[10px] '>
+                    <>
+                        <IoIosCloseCircleOutline onClick={() => { setOpenModalSearch(false); setSearchKey(''); setFindOrders([]) }} className='absolute top-[10px] right-[10px] text-[30px] cursor-pointer hover:text-red-[400]' />
+                        <h2 className='text-center text-[20px] font-semibold'>Search Order</h2>
+                        <div className='w-full flex flex-col gap-[20px]'>
+                            <div className='flex gap-[10px] items-center justify-start'>
+                                <div className='w-[500px] h-[30px] border bg-gray-50 text-black rounded-[5px]'>
+                                    <input onChange={handleChange} value={searchKey} type="text" placeholder='Search order by id or name ...' className='w-full rounded-[5px] border px-[10px] py-[5px] bg-gray-50' />
+                                </div>
+                                <div onClick={handleClickSearch} className='w-[50px] h-[30px] bg-gray-50 border rounded-[10px] flex justify-center items-center cursor-pointer hover:bg-gray-200'>
+                                    <GoSearch className='text-[20px]' />
+                                </div>
+                            </div>
+                            {findOrders?.findOrder?.length > 0 ? (
+                                findOrders.findOrder.map((order, index) => (
+                                    <SingleOrder key={index} order={order} />
+                                ))
+                            ) : (
+                                <p>No orders found.</p>
+                            )}
+                        </div>
+                    </>
+                </div>
+            </Modal>
         </div >
     )
 }

@@ -2,6 +2,7 @@ import User from "../models/userModel.js";
 import bcryptjs from "bcryptjs";
 import ExcelJS from "exceljs";
 import Chat from "../models/chatModel.js";
+import mongoose from "mongoose";
 
 export const getAllUsers = async (req, res, next) => {
   if (!req.user.isAdmin) {
@@ -250,5 +251,38 @@ export const searchUser = async (req, res, next) => {
     return res.status(200).json(findUser);
   } catch (error) {
     return next(error); // Pass the error to your error handler
+  }
+};
+
+export const searchUserAdmin = async (req, res, next) => {
+  if (!req.user.isAdmin) {
+    return res
+      .status(401)
+      .json({ message: "You are not allowed to search users" });
+  }
+
+  const { searchKey } = req.params;
+
+  try {
+    let query = {};
+
+    if (mongoose.Types.ObjectId.isValid(searchKey)) {
+      query._id = searchKey;
+    } else {
+      query.username = {
+        $regex: searchKey,
+        $options: "i",
+      };
+    }
+
+    const findUsers = await User.find(query);
+
+    if (findUsers.length === 0) {
+      return res.json({ message: "User not found" });
+    }
+
+    res.status(200).json(findUsers);
+  } catch (error) {
+    next(error);
   }
 };
