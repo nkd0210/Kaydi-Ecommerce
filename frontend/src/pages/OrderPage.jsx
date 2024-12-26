@@ -35,6 +35,7 @@ const OrderPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  // console.log(products);
 
   const handleShowSucccessMessage = (message) => {
     toast.success(message)
@@ -162,6 +163,7 @@ const OrderPage = () => {
     }
     setLoadingOrder(true);
     try {
+
       if (paymentMethod === "COD") {
         const res = await fetch(`/api/order/createOrder`, {
           method: "POST",
@@ -178,7 +180,9 @@ const OrderPage = () => {
           dispatch(setClearOrder());
           navigate('/profile/history');
         }
-      } else if (paymentMethod === "Stripe") {
+        await handleRemoveProductInCart();
+      }
+      else if (paymentMethod === "Stripe") {
 
         const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY)
 
@@ -201,8 +205,23 @@ const OrderPage = () => {
           return;
         }
       }
+      else if (paymentMethod === "ZaloPay") {
+        const res = await fetch(`/api/payment/createPaymentZaloPay`, {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(orderForm)
+        });
+        const dataResponse = await res.json();
+        if (!res.ok) {
+          handleShowErrorMessage("Đã xảy ra lỗi khi đặt hàng!");
+          return;
+        } else {
+          window.location.href = dataResponse?.data.payment_url;
+        }
 
-      await handleRemoveProductInCart();
+      }
 
     } catch (error) {
       console.log(error.message);
@@ -353,12 +372,12 @@ const OrderPage = () => {
                     </div>
                   </div>
                   <div
-                    className={`border rounded-[20px] cursor-pointer hover:bg-gray-100 w-full p-[10px] flex gap-[20px] items-center ${paymentMethod === 'Zalo' ? 'border-blue-400' : ''}`}
-                    onClick={() => setPaymentMethod('Zalo')}
+                    className={`border rounded-[20px] cursor-pointer hover:bg-gray-100 w-full p-[10px] flex gap-[20px] items-center ${paymentMethod === 'ZaloPay' ? 'border-blue-400' : ''}`}
+                    onClick={() => setPaymentMethod('ZaloPay')}
                   >
                     <img src="/logo/zalo.png" alt="zalo" className='w-[30px] h-[30px] object-cover' />
                     <div className='flex flex-col gap-[10px]'>
-                      <p>Thanh toán qua Zalo</p>
+                      <p>Thanh toán qua ZaloPay</p>
                     </div>
                   </div>
                 </div>

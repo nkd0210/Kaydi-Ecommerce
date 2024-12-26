@@ -44,21 +44,37 @@ const Comment = ({
 
     const handleNextPage = () => {
         if (page < totalPage) {
-            setPage(prevPage => {
-                const newPage = prevPage + 1;
-                handleFetchComment(newPage);
-                return newPage;
-            });
+            if (selectStar && selectStar !== "all") {
+                setPage(prevPage => {
+                    const newPage = prevPage + 1;
+                    handleFetchReviewByStar(newPage);
+                    return newPage;
+                })
+            } else {
+                setPage(prevPage => {
+                    const newPage = prevPage + 1;
+                    handleFetchComment(newPage);
+                    return newPage;
+                });
+            }
         }
     };
 
     const handlePreviousPage = () => {
         if (page > 1) {
-            setPage(prevPage => {
-                const newPage = prevPage - 1;
-                handleFetchComment(newPage);
-                return newPage;
-            });
+            if (selectStar && selectStar !== "all") {
+                setPage(prevPage => {
+                    const newPage = prevPage - 1;
+                    handleFetchReviewByStar(newPage);
+                    return newPage;
+                })
+            } else {
+                setPage(prevPage => {
+                    const newPage = prevPage - 1;
+                    handleFetchComment(newPage);
+                    return newPage;
+                });
+            }
         }
     };
 
