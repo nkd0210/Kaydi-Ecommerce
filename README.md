@@ -68,15 +68,31 @@ Kaydi Ecommerce is a specialized e-commerce platform for men's fashion. Designed
    ```bash
    cd kaydi-ecommerce
    ```
-3. Install dependencies:
+3. Navigate to the frontend folder:
+   ```bash
+   cd frontend
+   ```
+4. Install dependencies:
    ```bash
    npm install
    ```
-4. Start the development server:
+5. Start the development server:
    ```bash
-   npm start
+   npm run dev
    ```
-5. Access the website at `http://localhost:5173`.
+6. Navigate to the frontend folder:
+   ```bash
+   cd server
+   ```
+7. Install dependencies:
+   ```bash
+   npm install
+   ```
+8. Start the development server:
+   ```bash
+   npm run dev
+   ```
+9. Access the website at http://localhost:5173
 
 
 ## License
