@@ -82,12 +82,12 @@ export const signIn = async (req, res, next) => {
       .status(200)
       .cookie("access_token", accessToken, {
         httpOnly: true,
-        secure: isProduction, // // true trong production, false trong localhost
+        secure: isProduction, //true trong production, false trong localhost
         sameSite: isProduction ? "None" : "Lax", // SameSite=None only in production
       })
       .cookie("refresh_token", refreshToken, {
         httpOnly: true,
-        secure: isProduction, // // true trong production, false trong localhost
+        secure: isProduction, //true trong production, false trong localhost
         sameSite: isProduction ? "None" : "Lax", // SameSite=None only in production
       })
       .json(rest);
@@ -116,22 +116,42 @@ export const google = async (req, res, next) => {
   try {
     const user = await User.findOne({ email });
     if (user) {
-      const token = jwt.sign(
+      // Generate Access Token
+      const accessToken = jwt.sign(
         {
           id: user._id,
           username: user.username,
           isAdmin: user.isAdmin,
         },
-        process.env.JWT_SECRET
+        process.env.JWT_SECRET,
+        { expiresIn: "12h" }
+      );
+
+      // Generate Refresh Token
+      const refreshToken = jwt.sign(
+        {
+          id: user._id,
+          username: user.username,
+          isAdmin: user.isAdmin,
+        },
+        process.env.JWT_REFRESH_SECRET,
+        { expiresIn: "1d" }
       );
 
       const { password: pass, ...rest } = user._doc;
-      const expiryDate = new Date(Date.now() + 3600000);
+      const isProduction = process.env.NODE_ENV === "production";
+
       res
         .status(200)
-        .cookie("access_token", token, {
+        .cookie("access_token", accessToken, {
           httpOnly: true,
-          expires: expiryDate,
+          secure: isProduction, // true trong production, false trong localhost
+          sameSite: isProduction ? "None" : "Lax", // SameSite=None only in production
+        })
+        .cookie("refresh_token", refreshToken, {
+          httpOnly: true,
+          secure: isProduction, // true trong production, false trong localhost
+          sameSite: isProduction ? "None" : "Lax", // SameSite=None only in production
         })
         .json(rest);
     } else {
@@ -151,21 +171,41 @@ export const google = async (req, res, next) => {
 
       await newUser.save();
 
-      const token = jwt.sign(
+      // Generate Access Token
+      const accessToken = jwt.sign(
         {
           id: newUser._id,
           username: newUser.username,
           isAdmin: newUser.isAdmin,
         },
-        process.env.JWT_SECRET
+        process.env.JWT_SECRET,
+        { expiresIn: "12h" }
+      );
+
+      // Generate Refresh Token
+      const refreshToken = jwt.sign(
+        {
+          id: newUser._id,
+          username: newUser.username,
+          isAdmin: newUser.isAdmin,
+        },
+        process.env.JWT_REFRESH_SECRET,
+        { expiresIn: "1d" }
       );
 
       const { password: pass, ...rest } = newUser._doc;
 
       res
         .status(200)
-        .cookie("access_token", token, {
+        .cookie("access_token", accessToken, {
           httpOnly: true,
+          secure: isProduction, // true trong production, false trong localhost
+          sameSite: isProduction ? "None" : "Lax", // SameSite=None only in production
+        })
+        .cookie("refresh_token", refreshToken, {
+          httpOnly: true,
+          secure: isProduction, // true trong production, false trong localhost
+          sameSite: isProduction ? "None" : "Lax", // SameSite=None only in production
         })
         .json(rest);
     }

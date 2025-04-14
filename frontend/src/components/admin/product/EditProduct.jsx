@@ -28,8 +28,9 @@ const EditProduct = ({ productId, setOpenEdit, setOpenShow, handleFetchProductsD
     const handleFetchProduct = async () => {
         setProduct({});
         try {
-            const res = await fetch(`/api/product/getEachProduct/${productId}`, {
-                method: "GET"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/product/getEachProduct/${productId}`, {
+                method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -289,12 +290,13 @@ const EditProduct = ({ productId, setOpenEdit, setOpenShow, handleFetchProductsD
         if (formDataImage.listingPhotoPaths) listingForm.listingPhotoPaths = formDataImage.listingPhotoPaths;
 
         try {
-            const res = await fetch(`/api/product/update/${product._id}`, {
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/product/update/${product._id}`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(listingForm)
+                body: JSON.stringify(listingForm),
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -317,8 +319,9 @@ const EditProduct = ({ productId, setOpenEdit, setOpenShow, handleFetchProductsD
     const handleDeleteProduct = async () => {
         setLoadingDelete(true);
         try {
-            const res = await fetch(`/api/product/delete/${productId}`, {
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/product/delete/${productId}`, {
                 method: "DELETE",
+                credentials: 'include',
             });
             if (!res.ok) {
                 handleShowErrorMessage("Delete product failed! Try again.");

@@ -29,8 +29,9 @@ const Review = () => {
     const handleFetchOrder = async () => {
         setLoadingOrder(true);
         try {
-            const res = await fetch(`/api/order/getOrderById/${orderId}`, {
-                method: "GET"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/order/getOrderById/${orderId}`, {
+                method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -154,12 +155,13 @@ const Review = () => {
         if (formDataImage.listingPhotoPaths) reviewForm.image = formDataImage.listingPhotoPaths;
 
         try {
-            const res = await fetch(`/api/review/createReview/${currentUser._id}`, {
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/review/createReview/${currentUser._id}`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(reviewForm)
+                body: JSON.stringify(reviewForm),
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {

@@ -30,7 +30,7 @@ const MessageContainer = ({ currentUser, chatId, messages, setMessages, loadingC
 
     const handleSendMessage = async () => {
         try {
-            const res = await fetch(`/api/message/sendMessage`, {
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/message/sendMessage`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -38,7 +38,8 @@ const MessageContainer = ({ currentUser, chatId, messages, setMessages, loadingC
                 body: JSON.stringify({
                     chatId: chatId,
                     content: inputMessage
-                })
+                }),
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {

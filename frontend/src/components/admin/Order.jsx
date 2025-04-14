@@ -30,8 +30,9 @@ const Order = () => {
     const handleFetchOrder = async (page) => {
         setLoadingOrders(true);
         try {
-            const res = await fetch(`/api/order/getAllOrders?page=${page}&limit=5`, {
-                method: "GET"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/order/getAllOrders?page=${page}&limit=5`, {
+                method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -80,8 +81,9 @@ const Order = () => {
     const handleFetchCustomerOrders = async (page) => {
         setLoadingCustomerOrder(true);
         try {
-            const res = await fetch(`/api/order/getAllOrdersOfCustomer?page=${page}&limit=10`, {
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/order/getAllOrdersOfCustomer?page=${page}&limit=10`, {
                 method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -125,8 +127,9 @@ const Order = () => {
 
     const handleExportExcel = async () => {
         try {
-            const res = await fetch(`/api/order/exportOrders`, {
-                method: "GET"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/order/exportOrders`, {
+                method: "GET",
+                credentials: 'include',
             });
             if (res.ok) {
                 const blob = await res.blob();
@@ -155,8 +158,9 @@ const Order = () => {
 
     const handleSearchOrderAdmin = async () => {
         try {
-            const res = await fetch(`/api/order/searchOrderAdmin/${searchKey}`, {
-                method: "GET"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/order/searchOrderAdmin/${searchKey}`, {
+                method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {

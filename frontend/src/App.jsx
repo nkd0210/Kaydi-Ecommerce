@@ -15,6 +15,7 @@ import Search from './pages/Search';
 import Chat from './pages/Chat';
 import ResetPassword from './pages/ResetPassword';
 import NewPassword from './pages/NewPassword';
+import About from './pages/About';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path='/' element={<Home />} />
         <Route path='/signIn' element={<SignIn />} />
         <Route path='/signUp' element={<SignUp />} />
+        <Route path='/about' element={<About />} />
         <Route path='/resetPassword' element={<ResetPassword />} />
         <Route path='/newPassword/:resetToken' element={<NewPassword />} />
         <Route path='/profile/:activeParam' element={<Profile />} />

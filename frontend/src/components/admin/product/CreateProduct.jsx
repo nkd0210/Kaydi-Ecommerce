@@ -169,12 +169,13 @@ const CreateProduct = ({ setOpenCreate, setOpenShow, handleFetchProductsDashboar
             console.log(productForm)
         }
 
-        const res = await fetch(`/api/product/create`, {
+        const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/product/create`, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(productForm)
+            body: JSON.stringify(productForm),
+            credentials: 'include',
         });
         const data = await res.json();
         if (!res.ok) {

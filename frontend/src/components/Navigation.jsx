@@ -13,8 +13,9 @@ const Navigation = () => {
 
   const handleSignOut = async (e) => {
     e.preventDefault();
-    const res = await fetch(`/api/auth/signout`, {
-      method: "POST"
+    const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/auth/signout`, {
+      method: "POST",
+      credentials: 'include',
     });
     const data = await res.json();
     if (!res.ok) {
@@ -45,7 +46,7 @@ const Navigation = () => {
         <div className='absolute top-[36px] right-[20px] flex flex-col border z-10 bg-white'>
           <span className=' cursor-pointer hover:opacity-70 hover:bg-gray-100 border px-[10px] py-[5px]'>Tham gia KaydiClub</span>
           <span className=' cursor-pointer hover:opacity-70 hover:bg-gray-100 border px-[10px] py-[5px]'>Blog</span>
-          <span className=' cursor-pointer hover:opacity-70 hover:bg-gray-100 border px-[10px] py-[5px]'>Về Kaydi Ecommerce</span>
+          <span onClick={() => navigate('/about')} className=' cursor-pointer hover:opacity-70 hover:bg-gray-100 border px-[10px] py-[5px]'>Về Kaydi Ecommerce</span>
           <span className=' cursor-pointer hover:opacity-70 hover:bg-gray-100 border px-[10px] py-[5px]'>Trung tâm CSKH</span>
           {currentUser ? (
             <span onClick={handleSignOut} className=' cursor-pointer hover:opacity-70 hover:bg-gray-100 border px-[10px] py-[5px]'>Đăng xuất</span>
@@ -57,7 +58,7 @@ const Navigation = () => {
       <div className='flex gap-[20px] max-lg:hidden'>
         <span className='cursor-pointer hover:opacity-70'>Tham gia KaydiClub</span>
         <span className='cursor-pointer hover:opacity-70'>Blog</span>
-        <span className='cursor-pointer hover:opacity-70'>Về Kaydi Ecommerce</span>
+        <span onClick={() => navigate('/about')} className='cursor-pointer hover:opacity-70'>Về Kaydi Ecommerce</span>
         <span className='cursor-pointer hover:opacity-70'>Trung tâm CSKH</span>
         {currentUser ? (
           <span onClick={handleSignOut} className='cursor-pointer hover:opacity-70'>Đăng xuất</span>

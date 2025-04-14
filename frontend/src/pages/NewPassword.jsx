@@ -56,12 +56,13 @@ const ResetPassword = () => {
             return;
         }
         try {
-            const res = await fetch(`/api/auth/resetPassword/${resetToken}`, {
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/auth/resetPassword/${resetToken}`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ newPassword: formData.password })
+                body: JSON.stringify({ newPassword: formData.password }),
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {

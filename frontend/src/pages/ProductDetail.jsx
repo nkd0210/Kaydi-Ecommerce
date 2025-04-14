@@ -48,8 +48,9 @@ const ProductDetail = () => {
 
     const fetchDetailProduct = async () => {
         setLoading(true)
-        const res = await fetch(`/api/product/getEachProduct/${productId}`, {
-            method: "GET"
+        const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/product/getEachProduct/${productId}`, {
+            method: "GET",
+            credentials: 'include',
         });
         const data = await res.json();
         if (!res.ok) {
@@ -85,8 +86,9 @@ const ProductDetail = () => {
 
     const fetchRecommendProduct = async () => {
         setLoadingRecommentProduct(true);
-        const res = await fetch(`/api/product/getRecommendProduct/${productId}`, {
-            method: "GET"
+        const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/product/getRecommendProduct/${productId}`, {
+            method: "GET",
+            credentials: 'include',
         });
         const data = await res.json();
         if (!res.ok) {
@@ -141,12 +143,13 @@ const ProductDetail = () => {
             return;
         }
         try {
-            const res = await fetch(`/api/cart/addToCart`, {
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/cart/addToCart`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(addForm)
+                body: JSON.stringify(addForm),
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -210,8 +213,9 @@ const ProductDetail = () => {
     const handleFetchComment = async (page) => {
         setLoadingComment(true);
         try {
-            const res = await fetch(`/api/review/getProductReview/${productId}?page=${page}&limit=3`, {
-                method: "GET"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/review/getProductReview/${productId}?page=${page}&limit=3`, {
+                method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {

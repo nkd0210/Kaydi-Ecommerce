@@ -130,12 +130,13 @@ const ChatInformation = ({ setSingleGroupChat, singleGroupChat, handleAccessGrou
         if (formDataImage.length > 0) updateGroupChatForm.groupPhoto = formDataImage;
 
         try {
-            const res = await fetch(`/api/chat/updateGroupChat/${singleGroupChat?._id}`, {
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/chat/updateGroupChat/${singleGroupChat?._id}`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(updateGroupChatForm)
+                body: JSON.stringify(updateGroupChatForm),
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -163,8 +164,9 @@ const ChatInformation = ({ setSingleGroupChat, singleGroupChat, handleAccessGrou
     const getAllUsersToAddInGroupChat = async () => {
         setLoadingAllUser(true);
         try {
-            const res = await fetch(`/api/user/getUserToAddInGroupChat/${chatId}`, {
-                method: "GET"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/user/getUserToAddInGroupChat/${chatId}`, {
+                method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -214,8 +216,9 @@ const ChatInformation = ({ setSingleGroupChat, singleGroupChat, handleAccessGrou
 
     const handleSearch = async () => {
         try {
-            const res = await fetch(`/api/user/searchUser?search=${searchKey}`, {
-                method: "GET"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/user/searchUser?search=${searchKey}`, {
+                method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -242,12 +245,13 @@ const ChatInformation = ({ setSingleGroupChat, singleGroupChat, handleAccessGrou
         e.preventDefault();
         setLoadingUpdate(true);
         try {
-            const res = await fetch(`/api/chat/addToGroupChat/${singleGroupChat._id}`, {
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/chat/addToGroupChat/${singleGroupChat._id}`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ userId: selectedUser })
+                body: JSON.stringify({ userId: selectedUser }),
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -271,12 +275,13 @@ const ChatInformation = ({ setSingleGroupChat, singleGroupChat, handleAccessGrou
     const handleRemovePeople = async (e) => {
         setLoadingUpdate(true);
         try {
-            const res = await fetch(`/api/chat/removeFromGroupChat/${singleGroupChat._id}`, {
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/chat/removeFromGroupChat/${singleGroupChat._id}`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ userDeletedId: selectUserDeleted })
+                body: JSON.stringify({ userDeletedId: selectUserDeleted }),
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {

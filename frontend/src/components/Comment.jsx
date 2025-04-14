@@ -85,14 +85,15 @@ const Comment = ({
     }
 
     const handleReplyComment = async () => {
-        const res = await fetch(`/api/review/replyReview/${commentId}`, {
+        const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/review/replyReview/${commentId}`, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 text: text
-            })
+            }),
+            credentials: 'include',
         });
         const data = await res.json();
         if (!res.ok) {
@@ -110,8 +111,9 @@ const Comment = ({
     const handleFetchReviewByStar = async (page) => {
         setLoadingComment(true);
         try {
-            const res = await fetch(`/api/review/getProductReviewByStar/${productId}?star=${selectStar}&page=${page}&limit=2`, {
-                method: "GET"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/review/getProductReviewByStar/${productId}?star=${selectStar}&page=${page}&limit=2`, {
+                method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -134,8 +136,9 @@ const Comment = ({
 
     const handleFetchReviewStatistic = async () => {
         try {
-            const res = await fetch(`/api/review/getReviewStatistic/${productId}`, {
-                method: "GET"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/review/getReviewStatistic/${productId}`, {
+                method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {

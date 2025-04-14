@@ -15,8 +15,9 @@ const History = () => {
   const fetchUserOrder = async (page) => {
     setLoadingUserOrders(true);
     try {
-      const res = await fetch(`/api/order/getUserOrder/${currentUser._id}?page=${page}&limit=3`, {
+      const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/order/getUserOrder/${currentUser._id}?page=${page}&limit=3`, {
         method: "GET",
+        credentials: 'include',
       });
       const data = await res.json();
       if (!res.ok) {

@@ -79,11 +79,12 @@ const OrderPage = () => {
   const fetchVoucherByProducts = async () => {
     const productIds = products.map((item) => item.productId);
     try {
-      const res = await fetch(`/api/voucher/getVoucherByProductIds/${productIds.join(',')}`, {
+      const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/voucher/getVoucherByProductIds/${productIds.join(',')}`, {
         method: "GET",
         headers: {
           'Content-Type': 'application/json'
         },
+        credentials: 'include',
       });
       const data = await res.json();
       if (!res.ok) {
@@ -126,7 +127,7 @@ const OrderPage = () => {
   const [priceAfterApplyVoucher, setPriceAfterApplyVoucher] = useState('');
 
   const handleApplyVoucher = async (voucher) => {
-    const res = await fetch(`/api/voucher/applyVoucher/${currentUser._id}/${voucher.code}`, {
+    const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/voucher/applyVoucher/${currentUser._id}/${voucher.code}`, {
       method: "POST",
       headers: {
         'Content-Type': 'application/json'
@@ -134,7 +135,8 @@ const OrderPage = () => {
       body: JSON.stringify({
         productIds: voucher.applyProducts,
         categories: voucher.applyCategories
-      })
+      }),
+      credentials: 'include',
     });
     const data = await res.json();
     if (!res.ok) {
@@ -165,12 +167,13 @@ const OrderPage = () => {
     try {
 
       if (paymentMethod === "COD") {
-        const res = await fetch(`/api/order/createOrder`, {
+        const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/order/createOrder`, {
           method: "POST",
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(orderForm)
+          body: JSON.stringify(orderForm),
+          credentials: 'include',
         });
         if (!res.ok) {
           handleShowErrorMessage("Đã xảy ra lỗi khi đặt hàng!");
@@ -186,12 +189,13 @@ const OrderPage = () => {
 
         const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY)
 
-        const res = await fetch(`/api/order/paymentWithStripe`, {
+        const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/order/paymentWithStripe`, {
           method: "POST",
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(orderForm)
+          body: JSON.stringify(orderForm),
+          credentials: 'include',
         });
 
         const session = await res.json();
@@ -206,12 +210,13 @@ const OrderPage = () => {
         }
       }
       else if (paymentMethod === "ZaloPay") {
-        const res = await fetch(`/api/payment/createPaymentZaloPay`, {
+        const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/payment/createPaymentZaloPay`, {
           method: "POST",
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(orderForm)
+          body: JSON.stringify(orderForm),
+          credentials: 'include',
         });
         const dataResponse = await res.json();
         if (!res.ok) {
@@ -232,13 +237,14 @@ const OrderPage = () => {
 
   const handleRemoveProductInCart = async () => {
     try {
-      const res = await fetch(`/api/cart/removeItemsInCart`, {
+      const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/cart/removeItemsInCart`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           userId: currentUser?._id,
           productsRemove: products
-        })
+        }),
+        credentials: 'include',
       });
       const data = await res.json();
       if (!res.ok) {

@@ -44,10 +44,10 @@ const Search = () => {
         setProductCount(0);
         setAllProducts([]);
         try {
-            const res = await fetch(
-                `/api/product/getProductPagination?page=${page}&limit=12`,
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/product/getProductPagination?page=${page}&limit=12`,
                 {
                     method: "GET",
+                    credentials: 'include',
                 }
             );
             const data = await res.json();
@@ -72,8 +72,9 @@ const Search = () => {
     const handleFetchAllCategories = async () => {
         setLoadingCategory(true);
         try {
-            const res = await fetch(`/api/category/getAllCategories`, {
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/category/getAllCategories`, {
                 method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -145,10 +146,10 @@ const Search = () => {
         setProductCount(0);
         setAllProducts([]);
         try {
-            const res = await fetch(
-                `/api/product/getProductBySearch/${searchKey}?page=${page}&limit=10`,
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/product/getProductBySearch/${searchKey}?page=${page}&limit=10`,
                 {
                     method: "GET",
+                    credentials: 'include',
                 }
             );
             const data = await res.json();
@@ -173,7 +174,7 @@ const Search = () => {
     const handleFilterProduct = async () => {
         setLoadingProduct(true);
         try {
-            const res = await fetch(`/api/product/getProductByFilter/${sortType}`, {
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/product/getProductByFilter/${sortType}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -181,6 +182,7 @@ const Search = () => {
                 body: JSON.stringify({
                     products: allProducts,
                 }),
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -204,8 +206,9 @@ const Search = () => {
         setAllProducts([]);
 
         try {
-            const res = await fetch(`/api/product/getProductCombination/${categoryName}?minPrice=${minPrice}&maxPrice=${maxPrice}&page=${page}&limit=8`, {
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/product/getProductCombination/${categoryName}?minPrice=${minPrice}&maxPrice=${maxPrice}&page=${page}&limit=8`, {
                 method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {

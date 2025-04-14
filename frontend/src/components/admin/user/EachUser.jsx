@@ -20,8 +20,9 @@ const EachUser = ({ userId }) => {
     const handleFetchUserData = async () => {
         setLoadingUser(true);
         try {
-            const res = await fetch(`/api/user/getuser/${userId}`, {
-                method: "GET"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/user/getuser/${userId}`, {
+                method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -43,8 +44,9 @@ const EachUser = ({ userId }) => {
     const handleFetchUserOrder = async (page) => {
         setLoadingOrder(true);
         try {
-            const res = await fetch(`/api/order/getUserOrder/${userId}?page=${page}&limit=3`, {
-                method: "GET"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/order/getUserOrder/${userId}?page=${page}&limit=3`, {
+                method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -90,8 +92,9 @@ const EachUser = ({ userId }) => {
     const handleFetchUserReview = async (page) => {
         setLoadingReview(true);
         try {
-            const res = await fetch(`/api/review/getUserReview/${userId}?page=${page}&limit=5`, {
-                method: "GET"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/review/getUserReview/${userId}?page=${page}&limit=5`, {
+                method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {

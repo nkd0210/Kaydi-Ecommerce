@@ -29,8 +29,9 @@ const Chat = () => {
     const handleFetchAllChats = async () => {
         setLoadingChats(true);
         try {
-            const res = await fetch(`/api/chat/getAllChatsOfUser`, {
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/chat/getAllChatsOfUser`, {
                 method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -71,12 +72,13 @@ const Chat = () => {
     const handleAccessChat = async (id) => {
         setLoadingChatBox(true);
         try {
-            const res = await fetch(`/api/chat/accessSingleChat`, {
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/chat/accessSingleChat`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({ receiverId: id }),
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -101,11 +103,12 @@ const Chat = () => {
     const handleAccessGroupChat = async (id) => {
         setLoadingChatBox(true);
         try {
-            const res = await fetch(`/api/chat/accessGroupChat/${id}`, {
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/chat/accessGroupChat/${id}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {

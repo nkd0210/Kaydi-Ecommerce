@@ -33,8 +33,9 @@ const Navbar = () => {
 
     const handleFetchCategories = async () => {
         try {
-            const res = await fetch(`/api/category/getAllCategories`, {
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/category/getAllCategories`, {
                 method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -58,8 +59,9 @@ const Navbar = () => {
     const handleFetchUserCart = async () => {
         dispatch(setCartStart());
         try {
-            const res = await fetch(`/api/cart/getUserCart/${currentUser._id}`, {
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/cart/getUserCart/${currentUser._id}`, {
                 method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {

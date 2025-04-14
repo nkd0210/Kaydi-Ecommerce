@@ -11,8 +11,9 @@ const LeftSideBar = () => {
     const params = useParams();
     console.log(params)
     const handleLogout = async () => {
-        const res = await fetch(`/api/auth/signout`, {
-            method: "POST"
+        const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/auth/signout`, {
+            method: "POST",
+            credentials: 'include',
         });
         const data = await res.json();
         if (!res.ok) {

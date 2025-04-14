@@ -22,15 +22,15 @@ const ResetPassword = () => {
             handleShowErrorMessage("Please enter valid email address");
             return;
         }
-        const res = await fetch(`/api/auth/forgotPassword`, {
+        const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/auth/forgotPassword`, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 email: email
-            })
-
+            }),
+            credentials: 'include',
         });
         const data = await res.json();
         if (!res.ok) {

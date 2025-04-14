@@ -28,8 +28,9 @@ const UserCart = () => {
         dispatch(setCartStart());
         setLoading(true);
         try {
-            const res = await fetch(`/api/cart/getUserCart/${currentUser._id}`, {
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/cart/getUserCart/${currentUser._id}`, {
                 method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -61,12 +62,13 @@ const UserCart = () => {
             };
             // setLoading(true);
             try {
-                const res = await fetch(`/api/cart/updateUserCart/${currentUser._id}`, {
+                const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/cart/updateUserCart/${currentUser._id}`, {
                     method: "PUT",
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(formToggle)
+                    body: JSON.stringify(formToggle),
+                    credentials: 'include',
                 });
                 const data = await res.json();
                 if (!res.ok) {
@@ -94,12 +96,13 @@ const UserCart = () => {
             };
             // setLoading(true);
             try {
-                const res = await fetch(`/api/cart/updateUserCart/${currentUser._id}`, {
+                const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/cart/updateUserCart/${currentUser._id}`, {
                     method: "PUT",
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(formToggle)
+                    body: JSON.stringify(formToggle),
+                    credentials: 'include',
                 });
                 const data = await res.json();
                 if (!res.ok) {
@@ -126,12 +129,13 @@ const UserCart = () => {
             };
             setLoading(true);
             try {
-                const res = await fetch(`/api/cart/removeFromCart`, {
+                const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/cart/removeFromCart`, {
                     method: "DELETE",
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(formRemove)
+                    body: JSON.stringify(formRemove),
+                    credentials: 'include',
                 });
                 const data = await res.json();
                 if (!res.ok) {

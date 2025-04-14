@@ -42,12 +42,13 @@ const SingleOrder = ({ order, handleFetchOrder }) => {
     const handleEditOrderStatus = async () => {
         setLoadingEdit(true);
         try {
-            const res = await fetch(`/api/order/editOrder/${orderId}`, {
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/order/editOrder/${orderId}`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ status: editStatus })
+                body: JSON.stringify({ status: editStatus }),
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {

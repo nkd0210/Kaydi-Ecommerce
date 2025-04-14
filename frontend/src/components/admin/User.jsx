@@ -34,8 +34,9 @@ const User = () => {
     const handleFetchUsersInfo = async (page) => {
         setLoadingUser(true);
         try {
-            const res = await fetch(`/api/user/getallusers?page=${page}&limit=10`, {
-                method: "GET"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/user/getallusers?page=${page}&limit=10`, {
+                method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -61,8 +62,9 @@ const User = () => {
 
     const handleExportExcel = async () => {
         try {
-            const res = await fetch(`/api/user/exportUser`, {
-                method: "GET"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/user/exportUser`, {
+                method: "GET",
+                credentials: 'include',
             });
             if (res.ok) {
                 const blob = await res.blob();
@@ -89,8 +91,9 @@ const User = () => {
 
     const handleSearchProduct = async () => {
         try {
-            const res = await fetch(`/api/user/searchUserAdmin/${searchKey}`, {
-                method: "GET"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/user/searchUserAdmin/${searchKey}`, {
+                method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {

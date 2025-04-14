@@ -35,8 +35,9 @@ const OrderDetail = () => {
     const fetchOrder = async () => {
         setLoadingOrderDetail(true);
         try {
-            const res = await fetch(`/api/order/getOrderById/${orderId}`, {
-                method: "GET"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/order/getOrderById/${orderId}`, {
+                method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -73,8 +74,9 @@ const OrderDetail = () => {
     const handleCancelOrder = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch(`/api/order/cancelOrder/${currentUser._id}/${orderId}`, {
-                method: "DELETE"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/order/cancelOrder/${currentUser._id}/${orderId}`, {
+                method: "DELETE",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {

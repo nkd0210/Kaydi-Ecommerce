@@ -51,12 +51,13 @@ const SignIn = () => {
     e.preventDefault();
     dispatch(signInStart());
     try {
-      const res = await fetch(`/api/auth/signin`, {
+      const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/auth/signin`, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
+        credentials: 'include',
       });
       const data = await res.json();
       if (!res.ok) {

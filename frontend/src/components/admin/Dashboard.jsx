@@ -36,8 +36,9 @@ const Dashboard = () => {
 
     const handleFetchTotalAmountPerDay = async () => {
         try {
-            const res = await fetch(`/api/order/getTotalAmountPerDay`, {
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/order/getTotalAmountPerDay`, {
                 method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -53,8 +54,9 @@ const Dashboard = () => {
 
     const handleFetchTotalAmountPerMonth = async () => {
         try {
-            const res = await fetch(`/api/order/getTotalAmountPerMonth`, {
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/order/getTotalAmountPerMonth`, {
                 method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -70,8 +72,9 @@ const Dashboard = () => {
 
     const handleFetchVouchers = async () => {
         try {
-            const res = await fetch(`/api/voucher/getAllVouchers/${currentUser._id}`, {
-                method: "GET"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/voucher/getAllVouchers/${currentUser._id}`, {
+                method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -87,8 +90,9 @@ const Dashboard = () => {
 
     const handleFetchAllOrderStatus = async () => {
         try {
-            const res = await fetch(`/api/order/getAllOrderStatus`, {
-                method: "GET"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/order/getAllOrderStatus`, {
+                method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -104,8 +108,9 @@ const Dashboard = () => {
 
     const handleFetchVoucherStatistic = async (req, res, next) => {
         try {
-            const res = await fetch(`/api/voucher/getVoucherStatistic`, {
-                method: "GET"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/voucher/getVoucherStatistic`, {
+                method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -121,8 +126,9 @@ const Dashboard = () => {
 
     const handleFetchOrderRevenue = async (req, res, next) => {
         try {
-            const res = await fetch(`/api/order/getOrderRevenue`, {
-                method: "GET"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/order/getOrderRevenue`, {
+                method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {

@@ -25,8 +25,9 @@ const RecentProduct = () => {
     const fetchRecentProduct = async () => {
         setLoading(true);
         try {
-            const res = await fetch(`/api/product/getRecentProduct/6`, {
-                method: "GET"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/product/getRecentProduct/6`, {
+                method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {

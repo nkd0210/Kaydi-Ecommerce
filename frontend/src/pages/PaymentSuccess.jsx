@@ -19,9 +19,10 @@ const PaymentSuccess = () => {
     const navigate = useNavigate();
 
     const hanldeUpdatePaymentCheck = async () => {
-        const res = await fetch(`/api/order/updatePaymentCheck/${orderId}`, {
+        const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/order/updatePaymentCheck/${orderId}`, {
             method: "PUT",
-            headers: { "Content-Type": "application/json" }
+            headers: { "Content-Type": "application/json" },
+            credentials: 'include',
         });
         const data = await res.json();
         if (!res.ok) {
@@ -34,13 +35,14 @@ const PaymentSuccess = () => {
 
     const handleRemoveProductInCart = async () => {
         try {
-            const res = await fetch(`/api/cart/removeItemsInCart`, {
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/cart/removeItemsInCart`, {
                 method: "DELETE",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     userId: currentUser?._id,
                     productsRemove: products
-                })
+                }),
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {

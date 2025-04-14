@@ -34,8 +34,9 @@ const Voucher = () => {
 
     const fetchAllVouchers = async () => {
         try {
-            const res = await fetch(`/api/voucher/getAllVouchers/${currentUser._id}`, {
-                method: "GET"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/voucher/getAllVouchers/${currentUser._id}`, {
+                method: "GET",
+                credentials: 'include',
             })
             const data = await res.json();
             if (!res.ok) {
@@ -96,8 +97,9 @@ const Voucher = () => {
     const fetchAllProducts = async () => {
         setLoadingProduct(true);
         try {
-            const res = await fetch(`/api/product/getAllProduct`, {
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/product/getAllProduct`, {
                 method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -127,8 +129,9 @@ const Voucher = () => {
     const fetchAllCategories = async () => {
         setLoadingCategory(true);
         try {
-            const res = await fetch(`/api/category/getAllCategories`, {
-                method: "GET"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/category/getAllCategories`, {
+                method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -179,12 +182,13 @@ const Voucher = () => {
                 return;
             }
 
-            const res = await fetch(`/api/voucher/create/${currentUser._id}`, {
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/voucher/create/${currentUser._id}`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(createForm)
+                body: JSON.stringify(createForm),
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -231,8 +235,9 @@ const Voucher = () => {
     const fetchVoucherById = async (editVoucherId) => {
         setLoadingEditVoucher(true)
         try {
-            const res = await fetch(`/api/voucher/getVoucherById/${currentUser._id}/${editVoucherId}`, {
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/voucher/getVoucherById/${currentUser._id}/${editVoucherId}`, {
                 method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -301,12 +306,13 @@ const Voucher = () => {
         if (categoryApplyEdit.length > 0) editForm.applyCategories = categoryApplyEdit;
 
         try {
-            const res = await fetch(`/api/voucher/updateVoucher/${currentUser._id}/${editVoucherId}`, {
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/voucher/updateVoucher/${currentUser._id}/${editVoucherId}`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(editForm)
+                body: JSON.stringify(editForm),
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -336,8 +342,9 @@ const Voucher = () => {
         e.preventDefault();
         setLoadingDelete(true);
         try {
-            const res = await fetch(`/api/voucher/deleteVoucher/${currentUser._id}/${editVoucherId}`, {
-                method: "DELETE"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/voucher/deleteVoucher/${currentUser._id}/${editVoucherId}`, {
+                method: "DELETE",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -360,8 +367,9 @@ const Voucher = () => {
 
     const handleExportExcel = async () => {
         try {
-            const res = await fetch(`/api/voucher/exportVouchers`, {
-                method: "GET"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/voucher/exportVouchers`, {
+                method: "GET",
+                credentials: 'include',
             });
             if (res.ok) {
                 const blob = await res.blob();

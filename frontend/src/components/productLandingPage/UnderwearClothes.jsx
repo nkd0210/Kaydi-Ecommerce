@@ -28,8 +28,9 @@ const UnderwearClothes = () => {
     const findCategoryByName = async () => {
         setLoadingImage(true);
         try {
-            const res = await fetch(`/api/category/getCategoryByName/${name}`, {
-                method: "GET"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/category/getCategoryByName/${name}`, {
+                method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -47,8 +48,9 @@ const UnderwearClothes = () => {
     const fetchProductByCategory = async () => {
         setLoadingProduct(true);
         try {
-            const res = await fetch(`/api/product/getByCategory/${category}`, {
-                method: "GET"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/product/getByCategory/${category}`, {
+                method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {

@@ -17,8 +17,9 @@ const CreateGroupChat = ({ setOpenModal, setSingleGroupChat, handleFetchAllChats
     const getAllUsersToChat = async () => {
         setLoadingAllUser(true);
         try {
-            const res = await fetch(`/api/user/getAllUsersToChat`, {
-                method: "GET"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/user/getAllUsersToChat`, {
+                method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -69,8 +70,9 @@ const CreateGroupChat = ({ setOpenModal, setSingleGroupChat, handleFetchAllChats
 
     const handleSearch = async () => {
         try {
-            const res = await fetch(`/api/user/searchUser?search=${searchKey}`, {
-                method: "GET"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/user/searchUser?search=${searchKey}`, {
+                method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -113,7 +115,7 @@ const CreateGroupChat = ({ setOpenModal, setSingleGroupChat, handleFetchAllChats
         e.preventDefault();
         setLoadingCreateGroupChat(true);
         try {
-            const res = await fetch(`/api/chat/createGroupChat`, {
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/chat/createGroupChat`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -121,7 +123,8 @@ const CreateGroupChat = ({ setOpenModal, setSingleGroupChat, handleFetchAllChats
                 body: JSON.stringify({
                     chatName: groupName,
                     memberIds: memberIds
-                })
+                }),
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {

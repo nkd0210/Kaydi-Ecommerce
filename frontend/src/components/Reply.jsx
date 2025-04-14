@@ -17,8 +17,9 @@ const Reply = () => {
   const handleFetchUserReview = async (page) => {
     setLoadingReview(true);
     try {
-      const res = await fetch(`/api/review/getUserReview/${currentUser._id}?page=${page}&limit=5`, {
-        method: "GET"
+      const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/review/getUserReview/${currentUser._id}?page=${page}&limit=5`, {
+        method: "GET",
+        credentials: 'include',
       });
       const data = await res.json();
       if (!res.ok) {

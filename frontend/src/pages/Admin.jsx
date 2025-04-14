@@ -50,8 +50,9 @@ const AdminDashboard = () => {
     const navigate = useNavigate();
 
     const handleLogout = async () => {
-        const res = await fetch(`/api/auth/signout`, {
-            method: "POST"
+        const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/auth/signout`, {
+            method: "POST",
+            credentials: 'include',
         });
         const data = await res.json();
         if (!res.ok) {
@@ -131,12 +132,13 @@ const AdminDashboard = () => {
         }
         dispatch(updateStart());
         try {
-            const res = await fetch(`/api/user/update/${currentUser._id}`, {
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/user/update/${currentUser._id}`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(profileForm)
+                body: JSON.stringify(profileForm),
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {

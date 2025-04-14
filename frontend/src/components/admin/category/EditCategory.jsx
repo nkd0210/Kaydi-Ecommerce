@@ -34,8 +34,9 @@ const EditCategory = ({ categories, handleFetchCategories }) => {
     const handleFetchSingleCategory = async (categoryId) => {
         setLoading(true);
         try {
-            const res = await fetch(`/api/category/getEachCategory/${categoryId}`, {
-                method: "GET"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/category/getEachCategory/${categoryId}`, {
+                method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -163,12 +164,13 @@ const EditCategory = ({ categories, handleFetchCategories }) => {
         if (formDataImage.length > 0) updateForm.heroImage = formDataImage;
 
         try {
-            const res = await fetch(`/api/category/update/${categoryId}`, {
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/category/update/${categoryId}`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(updateForm)
+                body: JSON.stringify(updateForm),
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -195,11 +197,12 @@ const EditCategory = ({ categories, handleFetchCategories }) => {
     const handleDeleteCategory = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch(`/api/category/delete/${categoryId}`, {
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/category/delete/${categoryId}`, {
                 method: "DELETE",
                 headers: {
                     'Content-Type': 'application/json'
-                }
+                },
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {

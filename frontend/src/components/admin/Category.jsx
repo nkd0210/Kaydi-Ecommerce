@@ -34,8 +34,9 @@ const Category = () => {
 
     const handleFetchCategories = async () => {
         try {
-            const res = await fetch(`/api/category/getCategoriesFromNewest`, {
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/category/getCategoriesFromNewest`, {
                 method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -132,7 +133,7 @@ const Category = () => {
         e.preventDefault();
         setLoadingCreate(true);
         try {
-            const res = await fetch(`/api/category/create`, {
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/category/create`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -142,7 +143,8 @@ const Category = () => {
                     title: formCreate.title,
                     description: createDesc,
                     heroImage: formDataImage
-                })
+                }),
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -163,8 +165,9 @@ const Category = () => {
 
     const handleExportExcel = async () => {
         try {
-            const res = await fetch(`/api/category/exportCategories`, {
-                method: "GET"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/category/exportCategories`, {
+                method: "GET",
+                credentials: 'include',
             });
             if (res.ok) {
                 const blob = await res.blob();

@@ -37,8 +37,9 @@ const Products = () => {
     const handleFetchProductsDashboard = async () => {
         setLoading(true);
         try {
-            const res = await fetch(`/api/product/getAllProduct`, {
-                method: "GET"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/product/getAllProduct`, {
+                method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -63,8 +64,9 @@ const Products = () => {
 
     const handleExportExcel = async () => {
         try {
-            const res = await fetch(`/api/product/exportProducts`, {
-                method: "GET"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/product/exportProducts`, {
+                method: "GET",
+                credentials: 'include',
             });
             if (res.ok) {
                 const blob = await res.blob();
@@ -91,8 +93,9 @@ const Products = () => {
 
     const handleSearchProduct = async () => {
         try {
-            const res = await fetch(`/api/product/searchProductAdmin/${searchKey}`, {
-                method: "GET"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/product/searchProductAdmin/${searchKey}`, {
+                method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {

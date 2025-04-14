@@ -25,8 +25,9 @@ const Collection = () => {
     const handleFetchCategory = async () => {
         setLoadingCategory(true);
         try {
-            const res = await fetch(`/api/category/getCategoryByName/${category}`, {
-                method: "GET"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/category/getCategoryByName/${category}`, {
+                method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -48,8 +49,9 @@ const Collection = () => {
         setLoadingProduct(true);
 
         try {
-            const res = await fetch(`/api/product/getByCategory/${category}?page=${page}&limit=10`, {
-                method: "GET"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/product/getByCategory/${category}?page=${page}&limit=10`, {
+                method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -76,8 +78,9 @@ const Collection = () => {
         setProductsBySubCategory([]);
         setLoadingProduct(true);
         try {
-            const res = await fetch(`/api/product/getByCategory/${subcategory}?page=${page}&limit=10`, {
-                method: "GET"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/product/getByCategory/${subcategory}?page=${page}&limit=10`, {
+                method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {

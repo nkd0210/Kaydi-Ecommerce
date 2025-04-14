@@ -69,12 +69,13 @@ const Account = () => {
         };
         dispatch(updateStart());
         try {
-            const res = await fetch(`/api/user/update/${currentUser._id}`, {
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/user/update/${currentUser._id}`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(formData),
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -146,7 +147,7 @@ const Account = () => {
             return;
         }
         try {
-            const res = await fetch(`/api/user/update/${currentUser._id}`, {
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/user/update/${currentUser._id}`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json'
@@ -154,7 +155,8 @@ const Account = () => {
                 body: JSON.stringify({
                     email: formAuth.email,
                     password: formAuth.password
-                })
+                }),
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {

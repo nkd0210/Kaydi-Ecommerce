@@ -31,8 +31,9 @@ const Address = () => {
   const fetchUserInfo = async () => {
     setLoadingUserInfo(true);
     try {
-      const res = await fetch(`/api/user/getuser/${currentUser._id}`, {
+      const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/user/getuser/${currentUser._id}`, {
         method: "GET",
+        credentials: 'include',
       });
       const data = await res.json();
       if (!res.ok) {
@@ -91,14 +92,15 @@ const Address = () => {
         updatedAddressList[addressIndex] = newAddress;
       }
 
-      const res = await fetch(`/api/user/update/${currentUser._id}`, {
+      const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/user/update/${currentUser._id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
           addressList: updatedAddressList
-        })
+        }),
+        credentials: 'include',
       });
       const data = await res.json();
       if (!res.ok) {
@@ -123,14 +125,15 @@ const Address = () => {
 
   const handleCreateAddress = async () => {
     try {
-      const res = await fetch(`/api/user/update/${currentUser._id}`, {
+      const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/user/update/${currentUser._id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
           addressList: [...addressList, createAddress]
-        })
+        }),
+        credentials: 'include',
       });
       const data = await res.json();
       if (!res.ok) {
@@ -164,14 +167,15 @@ const Address = () => {
     setLoadingDelete(true);
     try {
       const newAddressList = addressList.filter(address => address !== findAddressToDelete);
-      const res = await fetch(`/api/user/update/${currentUser._id}`, {
+      const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/user/update/${currentUser._id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
           addressList: newAddressList
-        })
+        }),
+        credentials: 'include',
       });
       const data = await res.json();
       if (!res.ok) {

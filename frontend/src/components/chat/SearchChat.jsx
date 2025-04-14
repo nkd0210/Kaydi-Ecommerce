@@ -14,8 +14,9 @@ const SearchChat = ({ setMessages, setSingleChat, setSelectId, setChatId, setIsS
 
     const handleSearch = async () => {
         try {
-            const res = await fetch(`/api/user/searchUser?search=${searchKey}`, {
-                method: "GET"
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/user/searchUser?search=${searchKey}`, {
+                method: "GET",
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
@@ -38,12 +39,13 @@ const SearchChat = ({ setMessages, setSingleChat, setSelectId, setChatId, setIsS
 
     const handleAccessSearchResultChat = async (id) => {
         try {
-            const res = await fetch(`/api/chat/accessSingleChat`, {
+            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/chat/accessSingleChat`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ receiverId: id })
+                body: JSON.stringify({ receiverId: id }),
+                credentials: 'include',
             });
             const data = await res.json();
             if (!res.ok) {
