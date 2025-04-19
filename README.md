@@ -80,7 +80,7 @@ Kaydi Ecommerce is a specialized e-commerce platform for men's fashion. Designed
    ```bash
    npm run dev
    ```
-6. Navigate to the frontend folder:
+6. Navigate to the server folder:
    ```bash
    cd server
    ```
