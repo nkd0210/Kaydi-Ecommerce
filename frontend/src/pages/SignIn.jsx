@@ -7,7 +7,6 @@ import { signInStart, signInSuccess, signInFailure } from '../redux/user/userSli
 
 import { GoogleAuthProvider, signInWithPopup, getAuth } from 'firebase/auth'
 
-
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -66,6 +65,7 @@ const SignIn = () => {
         return;
       } else {
         dispatch(signInSuccess(data));
+        toast.success("Đăng nhập thành công");
         if (data.isAdmin) {
           navigate('/admin')
         } else {
@@ -83,11 +83,11 @@ const SignIn = () => {
       <Navbar />
       <div className='container mx-auto overflow-x-clip'>
         <div className='w-full h-screen flex flex-col justify-center items-center'>
-          <ToastContainer />
+          {/* <ToastContainer /> */}
           <div className='w-3/4 h-[500px] rounded-[10px] flex gap-[20px] animate__animated animate__fadeInLeft'>
 
             <div className='w-1/2 max-md:w-full bg-gray-100 max-md:bg-laptop max-md:bg-cover border border-gray-300 rounded-[10px] text-black max-md:text-white backdrop-blur-sm text-center p-[10px] '>
-              <h1 className='text-[20px] font-semibold pb-[30px]'>Welcome to Kaydi Ecommerce</h1>
+              <h1 className='text-[20px] font-semibold pb-[30px]'>Đăng nhập</h1>
               <form onSubmit={handleSubmit} className='flex flex-col gap-[20px] justify-center items-center '>
 
                 <div className='w-3/4 max-md:w-full border border-blue-300 rounded-[20px] flex items-center text-center gap-[10px] p-[5px] '>
@@ -98,7 +98,7 @@ const SignIn = () => {
                 <div className='w-3/4 max-md:w-full border border-blue-300 rounded-[20px] flex justify-between items-center text-center gap-[10px] p-[5px] '>
                   <div className='flex items-center'>
                     <RiLockPasswordLine className='text-gray-400 mx-[10px] text-[20px]' />
-                    <input onChange={handleChange} id='password' type={showPassword ? 'text' : 'password'} required placeholder='Password' className='mx-[10px] outline-none bg-transparent w-full backdrop-blur-sm' />
+                    <input onChange={handleChange} id='password' type={showPassword ? 'text' : 'password'} required placeholder='Mật khẩu' className='mx-[10px] outline-none bg-transparent w-full backdrop-blur-sm' />
                   </div>
                   <button onClick={handleShowPassword} className='mx-[10px]'>
                     {showPassword ? (
@@ -109,11 +109,11 @@ const SignIn = () => {
                   </button>
                 </div>
                 <div className='w-3/4 flex justify-start'>
-                  <p onClick={() => navigate("/resetPassword")} className='text-blue-400 text-[14px] cursor-pointer hover:text-blue-500'>Forgot your password?</p>
+                  <p onClick={() => navigate("/resetPassword")} className='text-blue-400 text-[14px] cursor-pointer hover:text-blue-500'>Quên mật khẩu?</p>
                 </div>
 
                 <button type='submit' className='w-3/4 max-md:w-full border-blue-300 border rounded-[20px] p-[5px] bg-blue-300 text-white hover:bg-opacity-70 hover:text-black'>
-                  Sign In
+                  Đăng nhập
                 </button>
 
                 <hr className='w-3/4 max-md:w-full bg-gray-300 h-[2px]' />
@@ -123,8 +123,8 @@ const SignIn = () => {
                 </div>
 
                 <div className='text-gray-500 max-md:text-white flex gap-[10px] backdrop-blur-sm'>
-                  Don't have any account ?
-                  <Link to='/signUp' className='hover:text-blue-400'>Sign Up</Link>
+                  Chưa có tài khoản ?
+                  <Link to='/signUp' className='hover:text-blue-400'>Đăng ký</Link>
                 </div>
 
               </form>

@@ -175,7 +175,7 @@ const Account = () => {
 
     return (
         <div className="p-[20px] max-h-[700px] overflow-y-scroll">
-            <ToastContainer />
+            {/* <ToastContainer /> */}
 
             <div className="animate__animated animate__fadeInRight">
                 <h2 className="text-[24px] font-semibold mb-[20px]">Thông tin tài khoản</h2>

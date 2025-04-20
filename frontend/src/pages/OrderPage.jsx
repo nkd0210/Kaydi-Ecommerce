@@ -182,6 +182,7 @@ const OrderPage = () => {
           setLoadingOrder(false);
           dispatch(setClearOrder());
           navigate('/profile/history');
+          toast.success("Đặt hàng thành công!");
         }
         await handleRemoveProductInCart();
       }
@@ -265,7 +266,7 @@ const OrderPage = () => {
       <Navbar />
       <div className='container mx-auto overflow-x-clip'>
         <div className='p-[20px] max-md:p-[10px] w-full overflow-x-scroll'>
-          <ToastContainer />
+          {/* <ToastContainer /> */}
           <h1 className='font-semibold text-[20px] py-[20px] animate__animated animate__fadeInLeft'>Hi, {currentUser.username}!</h1>
           {loadingOrder ? (
             <Loader />

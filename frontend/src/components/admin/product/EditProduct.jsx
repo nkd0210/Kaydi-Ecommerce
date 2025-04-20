@@ -342,7 +342,7 @@ const EditProduct = ({ productId, setOpenEdit, setOpenShow, handleFetchProductsD
 
     return (
         <div className='ml-[10px] mb-[50px] bg-white animate__animated animate__fadeInUp'>
-            <ToastContainer />
+            {/* <ToastContainer /> */}
             {Object.keys(product).length === 0 ? (
                 <h3 onClick={handleClickNoProduct} className='cursor-pointer text-red-500 hover:text-blue-400'>
                     Please select a product!

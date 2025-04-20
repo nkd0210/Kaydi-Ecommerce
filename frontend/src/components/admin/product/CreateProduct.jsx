@@ -192,7 +192,7 @@ const CreateProduct = ({ setOpenCreate, setOpenShow, handleFetchProductsDashboar
 
     return (
         <form onSubmit={handleCreateProduct} className='bg-white border w-[1200px] max-md:w-full p-[30px] max-md:p-[5px] flex flex-col justify-center gap-[30px] shadow-lg mx-[10px] max-md:mx-[5px] animate__animated animate__fadeInUp'>
-            <ToastContainer />
+            {/* <ToastContainer /> */}
             <div className='flex items-center'>
                 <span className='w-[150px]'>Name: </span>
                 <input onChange={handleChange} id='name' type="text" placeholder='Enter product name' className='border w-[500px] rounded-[5px] p-[10px] ' />

@@ -15,6 +15,7 @@ import { IoCameraOutline } from "react-icons/io5";
 import { BiTrash } from 'react-icons/bi';
 
 import 'animate.css';
+import { toast } from 'react-toastify';
 
 const Review = () => {
     const { currentUser } = useSelector((state) => state.user);
@@ -168,7 +169,7 @@ const Review = () => {
                 console.log(data.message);
                 return;
             } else {
-                alert('Đánh giá thành công');
+                toast.success("Đánh giá thành công!");
                 navigate("/profile/reply");
             }
         } catch (error) {

@@ -40,7 +40,7 @@ const OAuth = () => {
 
     return (
         <div onClick={handleClickGoogle}>
-            Signin with Google
+            Đăng nhập với Google
         </div>
     )
 }

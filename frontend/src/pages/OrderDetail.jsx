@@ -107,7 +107,7 @@ const OrderDetail = () => {
                         <Loader />
                     ) : (
                         <div className='p-[20px] max-md:p-[10px] border w-full flex flex-wrap max-md:flex-col gap-[20px] h-[500px] overflow-y-scroll max-md:h-full'>
-                            <ToastContainer />
+                            {/* <ToastContainer /> */}
 
                             <div className='flex flex-col gap-[40px]'>
 

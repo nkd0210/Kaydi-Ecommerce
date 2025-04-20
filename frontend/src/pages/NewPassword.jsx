@@ -84,7 +84,7 @@ const ResetPassword = () => {
             <Navbar />
             <div className='container mx-auto overflow-x-clip'>
                 <div className='w-full flex justify-center items-center'>
-                    <ToastContainer />
+                    {/* <ToastContainer /> */}
                     <div className='w-[500px] h-[300px] max-md:w-full flex flex-col gap-[20px] border shadow-xl p-[10px] mt-[100px] rounded-[10px] '>
                         <FcAdvance className='text-[40px]' />
 

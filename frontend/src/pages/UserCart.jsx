@@ -84,6 +84,7 @@ const UserCart = () => {
 
         }
     }
+
     const handleDecrease = async (item, e) => {
         e.stopPropagation();
         if (item) {
@@ -142,6 +143,7 @@ const UserCart = () => {
                     console.log(data.message);
                 } else {
                     dispatch(setCartSuccess(data));
+                    toast.success("Xóa sản phẩm thành công !")
                 }
             } catch (error) {
                 console.log(error.message);
@@ -208,7 +210,7 @@ const UserCart = () => {
             <div className='container mx-auto overflow-x-clip'>
                 <div className='p-[20px] max-md:p-[10px] w-full overflow-x-scroll h-[600px] max-md:h-[600px] overflow-y-scroll'>
                     <h1 className='text-center text-[24px] font-semibold'>Your Shopping Cart</h1>
-                    <ToastContainer />
+                    {/* <ToastContainer /> */}
                     {loading ? (
                         <Loader />
                     ) : (

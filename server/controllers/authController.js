@@ -11,6 +11,18 @@ export const signUp = async (req, res, next) => {
     return res.status(401).json({ message: "All fields are required" });
   }
 
+  if (!username || username.trim().length < 2 || username.trim().length > 50) {
+    return res
+      .status(400)
+      .json({ message: "Username must be between 2 and 50 characters" });
+  }
+
+  if (password.length < 6 || password.length > 20) {
+    return res
+      .status(400)
+      .json({ message: "Password must be between 6 and 20 characters" });
+  }
+
   const existedUser = await User.findOne({ email });
   if (existedUser) {
     return res.status(400).json({ message: "Email already exists" });

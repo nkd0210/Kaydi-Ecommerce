@@ -19,11 +19,15 @@ import About from './pages/About';
 
 import AdminRoute from './routes/AdminRoute';
 import PrivateRoute from "./routes/PrivateRoute";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   return (
     <BrowserRouter>
+      <ToastContainer position="top-right" autoClose={3000} />
       <Routes>
+
         {/* Admin-only route */}
         <Route path='/admin' element={
           <AdminRoute>

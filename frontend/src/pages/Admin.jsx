@@ -158,7 +158,7 @@ const AdminDashboard = () => {
     return (
         <div className='container mx-auto overflow-x-scroll'>
             <div className='flex'>
-                <ToastContainer />
+                {/* <ToastContainer /> */}
                 <div className='flex flex-col justify-between items-center p-[20px] gap-[20px] h-screen min-w-[200px] text-[18px] bg-black text-white max-md:hidden'>
                     <div className='flex flex-col justify-center items-center'>
                         <div onClick={() => setOpenModal(true)} className='w-[80px] h-[80px] cursor-pointer hover:opacity-70 my-[10px]'>

@@ -156,6 +156,7 @@ const ProductDetail = () => {
                 handleShowErrorMessage("Thêm vào giỏ hàng thất bại !")
             } else {
                 setOpenBox(false);
+                toast.success("Thêm vào giỏ hàng thành công !")
                 navigate('/cart');
             }
         } catch (error) {
@@ -271,7 +272,7 @@ const ProductDetail = () => {
                     <Loader />
                 ) : (
                     <div className='relative py-[20px] px-[70px] max-md:p-[10px]'>
-                        <ToastContainer />
+                        {/* <ToastContainer /> */}
                         {/* PRODUCT */}
                         <div className='box2 h-[700px] max-md:h-full '>
                             {/* IMAGES */}
