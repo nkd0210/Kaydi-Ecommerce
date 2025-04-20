@@ -285,7 +285,7 @@ const Order = () => {
                         <div className='w-full flex flex-col gap-[20px]'>
                             <div className='flex gap-[10px] items-center justify-start'>
                                 <div className='w-[500px] h-[30px] border bg-gray-50 text-black rounded-[5px]'>
-                                    <input onChange={handleChange} value={searchKey} type="text" placeholder='Search order by id or name ...' className='w-full rounded-[5px] border px-[10px] py-[5px] bg-gray-50' />
+                                    <input onChange={handleChange} value={searchKey} type="text" placeholder='Search order by id' className='w-full rounded-[5px] border px-[10px] py-[5px] bg-gray-50' />
                                 </div>
                                 <div onClick={handleClickSearch} className='w-[50px] h-[30px] bg-gray-50 border rounded-[10px] flex justify-center items-center cursor-pointer hover:bg-gray-200'>
                                     <GoSearch className='text-[20px]' />

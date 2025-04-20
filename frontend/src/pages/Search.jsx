@@ -44,7 +44,8 @@ const Search = () => {
         setProductCount(0);
         setAllProducts([]);
         try {
-            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/product/getProductPagination?page=${page}&limit=12`,
+            const res = await fetch(
+                `${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/product/getProductPagination?page=${page}&limit=12`,
                 {
                     method: "GET",
                     credentials: 'include',
@@ -146,7 +147,8 @@ const Search = () => {
         setProductCount(0);
         setAllProducts([]);
         try {
-            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/product/getProductBySearch/${searchKey}?page=${page}&limit=10`,
+            const res = await fetch(
+                `${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/product/getProductBySearch/${searchKey}?page=${page}&limit=10`,
                 {
                     method: "GET",
                     credentials: 'include',
@@ -274,120 +276,122 @@ const Search = () => {
         <>
             <Navigation />
             <Navbar />
-            <div className="h-screen overflow-y-scroll w-full p-[20px] flex flex-col gap-[40px]">
-                <Filter
-                    selectCategory={selectCategory}
-                    newSearchKey={newSearchKey}
-                    setNewSearchKey={setNewSearchKey}
-                    showType={showType}
-                    setShowType={setShowType}
-                    sortType={sortType}
-                    setSortType={setSortType}
-                    productCount={productCount}
-                    handleFetchProductBySearchKey={handleFetchProductBySearchKey}
-                />
-                <div className="flex max-md:flex-col gap-[30px]">
-                    {/* SIDE BAR */}
-                    <SearchSidebar
-                        allCategories={allCategories}
+            <div className="container mx-auto overflow-x-clip">
+                <div className="h-screen overflow-y-scroll w-full p-[20px] flex flex-col gap-[40px]">
+                    <Filter
                         selectCategory={selectCategory}
-                        handleCategoryCheckChange={handleCategoryCheckChange}
-                        loadingCategory={loadingCategory}
-                        setMinPrice={setMinPrice}
-                        setMaxPrice={setMaxPrice}
-                        selectedPriceRange={selectedPriceRange}
-                        setSelectedPriceRange={setSelectedPriceRange}
-                        setSelectCategory={setSelectCategory}
+                        newSearchKey={newSearchKey}
+                        setNewSearchKey={setNewSearchKey}
+                        showType={showType}
+                        setShowType={setShowType}
+                        sortType={sortType}
+                        setSortType={setSortType}
+                        productCount={productCount}
+                        handleFetchProductBySearchKey={handleFetchProductBySearchKey}
                     />
+                    <div className="flex max-md:flex-col gap-[30px]">
+                        {/* SIDE BAR */}
+                        <SearchSidebar
+                            allCategories={allCategories}
+                            selectCategory={selectCategory}
+                            handleCategoryCheckChange={handleCategoryCheckChange}
+                            loadingCategory={loadingCategory}
+                            setMinPrice={setMinPrice}
+                            setMaxPrice={setMaxPrice}
+                            selectedPriceRange={selectedPriceRange}
+                            setSelectedPriceRange={setSelectedPriceRange}
+                            setSelectCategory={setSelectCategory}
+                        />
 
-                    {/* SHOW PRODUCTS */}
-                    <>
-                        {loadingProducts ? (
-                            <div className="flex gap-[10px] items-center">
-                                <Skeleton
-                                    width={300}
-                                    height={400}
-                                    animation="wave"
-                                    sx={{ bgcolor: "grey.100" }}
-                                />
-                                <Skeleton
-                                    width={300}
-                                    height={400}
-                                    animation="wave"
-                                    sx={{ bgcolor: "grey.100" }}
-                                />
-                                <Skeleton
-                                    width={300}
-                                    height={400}
-                                    animation="wave"
-                                    sx={{ bgcolor: "grey.100" }}
-                                />
-                                <Skeleton
-                                    width={300}
-                                    height={400}
-                                    animation="wave"
-                                    sx={{ bgcolor: "grey.100" }}
-                                />
-                                <Skeleton
-                                    width={300}
-                                    height={400}
-                                    animation="wave"
-                                    sx={{ bgcolor: "grey.100" }}
-                                />
-                            </div>
-                        ) : !Array.isArray(allProducts) || allProducts.length === 0 ? (
-                            <p>Không tìm thấy sản phẩm nào!</p>
-                        ) : (
-                            <div className="flex-1 ">
-                                {showType === "grid" ? (
-                                    <div className="flex flex-wrap flex-1 gap-[20px] mb-[40px]">
-                                        {allProducts?.map((product, index) => (
-                                            <ProductCard key={index} product={product} />
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <div className="flex flex-col gap-[20px]">
-                                        {allProducts?.map((product, index) => (
-                                            <div
-                                                key={index}
-                                                onClick={() => {
-                                                    navigate(`/productDetail/${product._id}`);
-                                                }}
-                                                className="flex gap-[10px] animate__animated animate__fadeIn cursor-pointer border rounded-[20px] p-[10px] bg-gray-50"
-                                            >
-                                                <div className="w-[150px] h-[200px] overflow-hidden">
-                                                    <img
-                                                        src={product?.listingPhotoPaths[0]}
-                                                        alt="image"
-                                                        className="w-full h-full object-cover rounded-[20px] transform transition-transform ease-in hover:scale-110"
-                                                    />
-                                                </div>
-                                                <div className="flex flex-col w-[300px] gap-[10px]">
-                                                    <span>{product.name}</span>
-                                                    <span className="font-semibold text-[12px]">
-                                                        {product.price}&#8363;
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                                <div className="flex justify-center items-center gap-[10px] my-[40px]">
-                                    <button
-                                        onClick={handlePreviousPage}
-                                        disabled={page === 1}
-                                    >{`<`}</button>
-                                    <p>
-                                        {page}/{totalPage}
-                                    </p>
-                                    <button
-                                        onClick={handleNextPage}
-                                        disabled={page === totalPage}
-                                    >{`>`}</button>
+                        {/* SHOW PRODUCTS */}
+                        <>
+                            {loadingProducts ? (
+                                <div className="flex gap-[10px] items-center">
+                                    <Skeleton
+                                        width={300}
+                                        height={400}
+                                        animation="wave"
+                                        sx={{ bgcolor: "grey.100" }}
+                                    />
+                                    <Skeleton
+                                        width={300}
+                                        height={400}
+                                        animation="wave"
+                                        sx={{ bgcolor: "grey.100" }}
+                                    />
+                                    <Skeleton
+                                        width={300}
+                                        height={400}
+                                        animation="wave"
+                                        sx={{ bgcolor: "grey.100" }}
+                                    />
+                                    <Skeleton
+                                        width={300}
+                                        height={400}
+                                        animation="wave"
+                                        sx={{ bgcolor: "grey.100" }}
+                                    />
+                                    <Skeleton
+                                        width={300}
+                                        height={400}
+                                        animation="wave"
+                                        sx={{ bgcolor: "grey.100" }}
+                                    />
                                 </div>
-                            </div>
-                        )}
-                    </>
+                            ) : !Array.isArray(allProducts) || allProducts.length === 0 ? (
+                                <p>Không tìm thấy sản phẩm nào!</p>
+                            ) : (
+                                <div className="flex-1 ">
+                                    {showType === "grid" ? (
+                                        <div className="flex flex-wrap flex-1 gap-[20px] mb-[40px]">
+                                            {allProducts?.map((product, index) => (
+                                                <ProductCard key={index} product={product} />
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className="flex flex-col gap-[20px]">
+                                            {allProducts?.map((product, index) => (
+                                                <div
+                                                    key={index}
+                                                    onClick={() => {
+                                                        navigate(`/productDetail/${product._id}`);
+                                                    }}
+                                                    className="flex gap-[10px] animate__animated animate__fadeIn cursor-pointer border rounded-[20px] p-[10px] bg-gray-50"
+                                                >
+                                                    <div className="w-[150px] h-[200px] overflow-hidden">
+                                                        <img
+                                                            src={product?.listingPhotoPaths[0]}
+                                                            alt="image"
+                                                            className="w-full h-full object-cover rounded-[20px] transform transition-transform ease-in hover:scale-110"
+                                                        />
+                                                    </div>
+                                                    <div className="flex flex-col w-[300px] gap-[10px]">
+                                                        <span>{product.name}</span>
+                                                        <span className="font-semibold text-[12px]">
+                                                            {product.price}&#8363;
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                    <div className="flex justify-center items-center gap-[10px] my-[40px]">
+                                        <button
+                                            onClick={handlePreviousPage}
+                                            disabled={page === 1}
+                                        >{`<`}</button>
+                                        <p>
+                                            {page}/{totalPage}
+                                        </p>
+                                        <button
+                                            onClick={handleNextPage}
+                                            disabled={page === totalPage}
+                                        >{`>`}</button>
+                                    </div>
+                                </div>
+                            )}
+                        </>
+                    </div>
                 </div>
             </div>
             <Footer />

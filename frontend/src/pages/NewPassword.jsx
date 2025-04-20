@@ -82,55 +82,57 @@ const ResetPassword = () => {
         <>
             <Navigation />
             <Navbar />
-            <div className='w-full flex justify-center items-center'>
-                <ToastContainer />
-                <div className='w-[500px] h-[300px] max-md:w-full flex flex-col gap-[20px] border shadow-xl p-[10px] mt-[100px] rounded-[10px] '>
-                    <FcAdvance className='text-[40px]' />
+            <div className='container mx-auto overflow-x-clip'>
+                <div className='w-full flex justify-center items-center'>
+                    <ToastContainer />
+                    <div className='w-[500px] h-[300px] max-md:w-full flex flex-col gap-[20px] border shadow-xl p-[10px] mt-[100px] rounded-[10px] '>
+                        <FcAdvance className='text-[40px]' />
 
-                    <div className='flex flex-col gap-[10px]'>
-                        <h3 className='text-[16px] font-semibold'>Enter your new password</h3>
-                        <p className='text-[12px] text-gray-400'>Your new password must be different to previous passwords.</p>
-                    </div>
-
-                    <div className='w-3/4 max-md:w-full border border-blue-300 rounded-[20px] flex justify-between items-center text-center gap-[10px] p-[5px] '>
-                        <div className='flex items-center'>
-                            <RiLockPasswordLine className='text-gray-400 mx-[10px] text-[20px]' />
-                            <input onChange={handleChange} type={showPassword ? 'text' : 'password'} required placeholder='Enter new password' id='password' className='mx-[10px] outline-none bg-transparent w-full backdrop-blur-sm' />
+                        <div className='flex flex-col gap-[10px]'>
+                            <h3 className='text-[16px] font-semibold'>Enter your new password</h3>
+                            <p className='text-[12px] text-gray-400'>Your new password must be different to previous passwords.</p>
                         </div>
-                        <button onClick={handleShowPassword} className='mx-[10px]'>
-                            {showPassword ? (
-                                <FaRegEyeSlash className='text-gray-400' />
-                            ) : (
-                                <FaRegEye className='text-gray-400' />
-                            )}
-                        </button>
-                    </div>
 
-                    <div className='w-3/4 max-md:w-full border border-blue-300 rounded-[20px] flex justify-between items-center text-center gap-[10px] p-[5px] '>
-                        <div className='flex items-center'>
-                            <RiLockPasswordLine className='text-gray-400 mx-[10px] text-[20px]' />
-                            <input onChange={handleConfirmPwd} type={showConfirmPwd ? 'text' : 'password'} required placeholder='Confirm new password' className='mx-[10px] outline-none bg-transparent w-full backdrop-blur-sm' />
+                        <div className='w-3/4 max-md:w-full border border-blue-300 rounded-[20px] flex justify-between items-center text-center gap-[10px] p-[5px] '>
+                            <div className='flex items-center'>
+                                <RiLockPasswordLine className='text-gray-400 mx-[10px] text-[20px]' />
+                                <input onChange={handleChange} type={showPassword ? 'text' : 'password'} required placeholder='Enter new password' id='password' className='mx-[10px] outline-none bg-transparent w-full backdrop-blur-sm' />
+                            </div>
+                            <button onClick={handleShowPassword} className='mx-[10px]'>
+                                {showPassword ? (
+                                    <FaRegEyeSlash className='text-gray-400' />
+                                ) : (
+                                    <FaRegEye className='text-gray-400' />
+                                )}
+                            </button>
                         </div>
-                        <button onClick={handleShowConfirmPwd} className='mx-[10px]'>
-                            {showConfirmPwd ? (
-                                <FaRegEyeSlash className='text-gray-400' />
-                            ) : (
-                                <FaRegEye className='text-gray-400' />
-                            )}
-                        </button>
+
+                        <div className='w-3/4 max-md:w-full border border-blue-300 rounded-[20px] flex justify-between items-center text-center gap-[10px] p-[5px] '>
+                            <div className='flex items-center'>
+                                <RiLockPasswordLine className='text-gray-400 mx-[10px] text-[20px]' />
+                                <input onChange={handleConfirmPwd} type={showConfirmPwd ? 'text' : 'password'} required placeholder='Confirm new password' className='mx-[10px] outline-none bg-transparent w-full backdrop-blur-sm' />
+                            </div>
+                            <button onClick={handleShowConfirmPwd} className='mx-[10px]'>
+                                {showConfirmPwd ? (
+                                    <FaRegEyeSlash className='text-gray-400' />
+                                ) : (
+                                    <FaRegEye className='text-gray-400' />
+                                )}
+                            </button>
+                        </div>
+
+                        <div onClick={handleResetPassword} className='w-[150px] h-[30px] border rounded-[10px] flex justify-center items-center cursor-pointer bg-blue-400 hover:bg-blue-500 text-white hover:text-white'>
+                            <p className='text-[14px] '>
+                                Reset password
+                            </p>
+                        </div>
+
+
                     </div>
 
-                    <div onClick={handleResetPassword} className='w-[150px] h-[30px] border rounded-[10px] flex justify-center items-center cursor-pointer bg-blue-400 hover:bg-blue-500 text-white hover:text-white'>
-                        <p className='text-[14px] '>
-                            Reset password
-                        </p>
-                    </div>
 
 
                 </div>
-
-
-
             </div>
         </>
     )

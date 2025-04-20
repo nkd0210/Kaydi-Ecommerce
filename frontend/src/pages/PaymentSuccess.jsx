@@ -64,17 +64,19 @@ const PaymentSuccess = () => {
     }, [orderId])
 
     return (
-        <div className='h-screen flex justify-center items-center'>
-            <div className='flex max-md:flex-col gap-[20px] p-[30px] justify-center items-center  border border-[#1e894d] rounded-[20px] animate__animated animate__fadeInDown'>
-                {/* left */}
-                <div className='flex flex-col gap-[20px] w-[400px] max-md:justify-center max-md:items-center'>
-                    <h2 className='text-[30px] font-semibold text-[#1e894d] animate__animated animate__bounceIn'>Thanh toán thành công!</h2>
-                    <p>Cảm ơn vì đã chọn nhãn hàng của chúng tôi. Đơn hàng của bạn sẽ được giao trong vòng 1-2 ngày tới.</p>
-                    <div onClick={hanldeUpdatePaymentCheck} className='rounded-[10px] py-[5px] px-[15px] bg-[#1e894d] text-white hover:opacity-80 cursor-pointer w-[200px] text-center'>Trở lại trang chủ </div>
-                </div>
+        <div className='container mx-auto overflow-x-clip'>
+            <div className='h-screen flex justify-center items-center'>
+                <div className='flex max-md:flex-col gap-[20px] p-[30px] justify-center items-center  border border-[#1e894d] rounded-[20px] animate__animated animate__fadeInDown'>
+                    {/* left */}
+                    <div className='flex flex-col gap-[20px] w-[400px] max-md:justify-center max-md:items-center'>
+                        <h2 className='text-[30px] font-semibold text-[#1e894d] animate__animated animate__bounceIn'>Thanh toán thành công!</h2>
+                        <p>Cảm ơn vì đã chọn nhãn hàng của chúng tôi. Đơn hàng của bạn sẽ được giao trong vòng 1-2 ngày tới.</p>
+                        <div onClick={hanldeUpdatePaymentCheck} className='rounded-[10px] py-[5px] px-[15px] bg-[#1e894d] text-white hover:opacity-80 cursor-pointer w-[200px] text-center'>Trở lại trang chủ </div>
+                    </div>
 
-                {/* right */}
-                <img src="/success.png" alt="success" className='w-[300px] h-[300px] object-cover animate__animated animate__tada' style={{ animationDuration: "2s", animationIterationCount: "3" }} />
+                    {/* right */}
+                    <img src="/success.png" alt="success" className='w-[300px] h-[300px] object-cover animate__animated animate__tada' style={{ animationDuration: "2s", animationIterationCount: "3" }} />
+                </div>
             </div>
         </div>
     )

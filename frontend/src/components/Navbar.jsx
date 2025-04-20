@@ -112,7 +112,7 @@ const Navbar = () => {
 
 
     return (
-        <Wrapper >
+        <div className="container mx-auto overflow-x-clip" >
             <div className="relative w-full flex justify-between items-center px-[20px] bg-[#212121] text-white">
                 {/* LOGO */}
                 <div onClick={() => navigate("/")} className="w-[80px] h-[80px]">
@@ -258,7 +258,7 @@ const Navbar = () => {
                     </div>
                 </Drawer>
             </div>
-        </Wrapper>
+        </div>
     );
 };
 

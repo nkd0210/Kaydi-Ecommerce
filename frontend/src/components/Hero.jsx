@@ -21,21 +21,23 @@ const Hero = () => {
   };
 
   return (
-    <div className='max-w-full  h-[600px] max-md:h-[200px] mb-[50px] 3xl:mb-[300px]'>
-      <Slider {...settings}>
-        <div className='w-full h-full'>
-          <img src={hero1} alt="" className='w-full h-full object-cover' loading="lazy" />
-        </div>
-        <div className='w-full h-full]'>
-          <img src={hero2} alt="" className='w-full h-full object-cover' loading="lazy" />
-        </div>
-        <div className='w-full h-full'>
-          <img src={hero3} alt="" className='w-full h-full object-cover' loading="lazy" />
-        </div>
-        <div className='w-full h-full'>
-          <img src={hero4} alt="" className='w-full h-full object-cover' loading="lazy" />
-        </div>
-      </Slider>
+    <div className='container mx-auto overflow-x-clip'>
+      <div className='max-w-full  h-[600px] max-md:h-[200px] mb-[50px] 3xl:mb-[300px]'>
+        <Slider {...settings}>
+          <div className='w-full h-full'>
+            <img src={hero1} alt="" className='w-full h-full object-cover' loading="lazy" />
+          </div>
+          <div className='w-full h-full]'>
+            <img src={hero2} alt="" className='w-full h-full object-cover' loading="lazy" />
+          </div>
+          <div className='w-full h-full'>
+            <img src={hero3} alt="" className='w-full h-full object-cover' loading="lazy" />
+          </div>
+          <div className='w-full h-full'>
+            <img src={hero4} alt="" className='w-full h-full object-cover' loading="lazy" />
+          </div>
+        </Slider>
+      </div>
     </div>
   )
 }

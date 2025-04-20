@@ -31,40 +31,42 @@ const Profile = () => {
         <Wrapper>
             <Navigation />
             <Navbar />
-            <div className="box">
-                {/* MENU */}
-                <div className="animate__animated animate__fadeInLeft">
-                    <div onClick={handleSelectActive} id='account' className={`flex justify-between border p-[10px] ${active === 'account' ? 'bg-black text-white' : 'bg-white text-black'} cursor-pointer hover:bg-opacity-70`}>
-                        Thông tin tài khoản
-                        <FaLongArrowAltRight className="text-[20px]" />
+            <div className="container mx-auto overflow-x-clip">
+                <div className="box">
+                    {/* MENU */}
+                    <div className="animate__animated animate__fadeInLeft">
+                        <div onClick={handleSelectActive} id='account' className={`flex justify-between border p-[10px] ${active === 'account' ? 'bg-black text-white' : 'bg-white text-black'} cursor-pointer hover:bg-opacity-70`}>
+                            Thông tin tài khoản
+                            <FaLongArrowAltRight className="text-[20px]" />
+                        </div>
+                        <div onClick={handleSelectActive} id='history' className={`flex justify-between border p-[10px] ${active === 'history' ? 'bg-black text-white' : 'bg-white text-black'} cursor-pointer hover:bg-opacity-70`}>
+                            Lịch sử đơn hàng
+                            <FaLongArrowAltRight className="text-[20px]" />
+                        </div>
+                        <div onClick={handleSelectActive} id='address' className={`flex justify-between border p-[10px] ${active === 'address' ? 'bg-black text-white' : 'bg-white text-black'} cursor-pointer hover:bg-opacity-70`}>
+                            Sổ địa chỉ
+                            <FaLongArrowAltRight className="text-[20px]" />
+                        </div>
+                        <div onClick={handleSelectActive} id='reply' className={`flex justify-between border p-[10px] ${active === 'reply' ? 'bg-black text-white' : 'bg-white text-black'} cursor-pointer hover:bg-opacity-70`} >
+                            Đánh giá và phản hồi
+                            <FaLongArrowAltRight className="text-[20px]" />
+                        </div>
+                        <div onClick={handleSelectActive} id='policy' className={`flex justify-between border p-[10px] ${active === 'policy' ? 'bg-black text-white' : 'bg-white text-black'} cursor-pointer hover:bg-opacity-70`}>
+                            Chính sách và câu hỏi thường gặp
+                            <FaLongArrowAltRight className="text-[20px]" />
+                        </div>
                     </div>
-                    <div onClick={handleSelectActive} id='history' className={`flex justify-between border p-[10px] ${active === 'history' ? 'bg-black text-white' : 'bg-white text-black'} cursor-pointer hover:bg-opacity-70`}>
-                        Lịch sử đơn hàng
-                        <FaLongArrowAltRight className="text-[20px]" />
-                    </div>
-                    <div onClick={handleSelectActive} id='address' className={`flex justify-between border p-[10px] ${active === 'address' ? 'bg-black text-white' : 'bg-white text-black'} cursor-pointer hover:bg-opacity-70`}>
-                        Sổ địa chỉ
-                        <FaLongArrowAltRight className="text-[20px]" />
-                    </div>
-                    <div onClick={handleSelectActive} id='reply' className={`flex justify-between border p-[10px] ${active === 'reply' ? 'bg-black text-white' : 'bg-white text-black'} cursor-pointer hover:bg-opacity-70`} >
-                        Đánh giá và phản hồi
-                        <FaLongArrowAltRight className="text-[20px]" />
-                    </div>
-                    <div onClick={handleSelectActive} id='policy' className={`flex justify-between border p-[10px] ${active === 'policy' ? 'bg-black text-white' : 'bg-white text-black'} cursor-pointer hover:bg-opacity-70`}>
-                        Chính sách và câu hỏi thường gặp
-                        <FaLongArrowAltRight className="text-[20px]" />
-                    </div>
-                </div>
 
-                {/* DETAIL */}
-                <div className="border rounded-[10px] animate__animated animate__fadeIn">
-                    {active === 'account' && <Account />}
-                    {active === 'history' && <History />}
-                    {active === 'address' && <Address />}
-                    {active === 'reply' && <Reply />}
-                    {active === 'policy' && <Policy />}
-                </div>
+                    {/* DETAIL */}
+                    <div className="border rounded-[10px] animate__animated animate__fadeIn">
+                        {active === 'account' && <Account />}
+                        {active === 'history' && <History />}
+                        {active === 'address' && <Address />}
+                        {active === 'reply' && <Reply />}
+                        {active === 'policy' && <Policy />}
+                    </div>
 
+                </div>
             </div>
             <Footer />
         </Wrapper>
@@ -76,7 +78,7 @@ const Wrapper = styled.section`
     display: grid;
     grid-template-columns: 1fr 3fr;
     gap: 20px;
-    padding: 20px;
+    padding: 20px 0px;
   }
 
   @media (max-width: 500px) {

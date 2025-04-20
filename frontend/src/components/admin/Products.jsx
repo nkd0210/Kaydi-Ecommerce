@@ -195,7 +195,7 @@ const Products = () => {
                     <div onClick={() => setOpenShow(true)}><IoIosArrowDropdown className='text-[20px] text-blue-500' /></div>
                 )}
             </div>
-            <div className='3xl:w-full w-[1300px] max-md:w-full'>
+            <div className='w-full'>
                 {
                     openShow && (
                         <div className='flex flex-col gap-[20px]'>

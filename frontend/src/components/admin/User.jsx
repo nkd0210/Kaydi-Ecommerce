@@ -121,7 +121,7 @@ const User = () => {
                     <Loader />
                 ) : (
                     <div className='flex flex-col gap-[20px] max-w-full overflow-x-scroll'>
-
+                        {/* HEADER */}
                         <div className='flex justify-between max-md:flex-col max-md:flex-start max-md:my-[20px]'>
                             <div className='flex gap-[20px] items-center'>
                                 <MdDashboard className='text-[30px]' />
@@ -139,6 +139,7 @@ const User = () => {
                             <h3 className='text-[16px] font-semibold'>Business Overview</h3>
                         </div>
 
+                        {/* OVERVIEW */}
                         <div className='flex max-md:flex-wrap justify-center max-md:justify-start items-center gap-[20px] py-[30px] animate__animated animate__fadeIn'>
                             <div className='bg-white rounded-[10px] p-[20px] flex items-center justify-center gap-[20px] w-[300px] shadow-md'>
                                 <div className='flex gap-[5px]'>
@@ -177,7 +178,7 @@ const User = () => {
                             </div>
                         </div>
 
-                        <div className='3xl:w-full w-[1300px] overflow-x-scroll max-md:w-full'>
+                        <div className='overflow-x-scroll max-md:w-full'>
                             <ShowUser allUsers={allUsers} openEdit={openEdit} setOpenEdit={setOpenEdit} setUserId={setUserId} />
                         </div>
 

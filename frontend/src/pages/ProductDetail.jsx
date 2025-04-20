@@ -167,8 +167,8 @@ const ProductDetail = () => {
         dots: true,
         infinite: true,
         speed: 500,
-        slidesToShow: Math.min(recommendProduct.length, 6),
-        slidesToScroll: Math.min(recommendProduct.length, 6),
+        slidesToShow: Math.min(recommendProduct.length, 5),
+        slidesToScroll: Math.min(recommendProduct.length, 5),
         arrows: true,
         beforeChange: () => setIsDragging(true),
         afterChange: () => setIsDragging(false),
@@ -266,193 +266,195 @@ const ProductDetail = () => {
         <Wrapper>
             <Navigation />
             <Navbar />
-            {loading ? (
-                <Loader />
-            ) : (
-                <div className='relative py-[20px] px-[70px] max-md:p-[10px]'>
-                    <ToastContainer />
-                    {/* PRODUCT */}
-                    <div className='box2 h-[700px] max-md:h-full '>
-                        {/* IMAGES */}
-                        <div className='h-[500px] overflow-y-scroll  flex max-md:flex-col max-md:p-[10px] gap-[10px] animate__animated animate__fadeInLeft '>
-                            {/* list images */}
-                            <div className='flex flex-col max-md:flex-row gap-[10px]'>
-                                {detailProduct?.listingPhotoPaths?.map((photo, index) => (
-                                    <div onClick={() => setShowImage(photo)} key={index} className='w-[50px] h-[70px] '>
-                                        <img src={photo} alt="" className='w-full h-full object-cover animate__animated animate__zoomIn ' />
-                                    </div>
-                                ))}
-                            </div>
-                            {/* show image */}
-                            <img src={showImage} alt="" className='w-full h-full object-cover rounded-[10px] animate__animated animate__fadeIn ' />
-                        </div>
-                        {/* DETAIL */}
-                        <div className='flex flex-col max-md:p-[10px] h-[700px] max-md:h-screen overflow-y-scroll hide-scrollbar animate__animated animate__fadeInRight'>
-                            <h3 className='text-[30px] font-semibold '>{detailProduct?.name}</h3>
-                            <p className='text-gray-600 whitespace-pre-wrap'>{detailProduct?.description}</p>
-                            <p className='font-semibold py-[10px]'>{detailProduct?.price}&#8363;</p>
-                            <p> Miễn phí giao hàng | Giao hàng 1-2 ngày - Hà Nội & TP. Hồ Chí Minh</p>
-                            <div className='flex flex-col gap-[10px] pt-[10px]'>
-                                <p>Màu sắc: {showColor}</p>
-                                <div className='flex gap-[10px]'>
-                                    {detailProduct?.colors?.map((color, index) => (
-                                        <div
-                                            onClick={(e) => setShowColor(color)}
-                                            key={index}
-                                            id='color'
-                                            className={`w-[20px] h-[20px] rounded-[50%] border-[2px] cursor-pointer ${showColor === color ? 'border-red-400' : 'border-black'}`}
-                                            style={{ backgroundColor: color }}
-                                        >
+            <div className='container mx-auto overflow-x-clip'>
+                {loading ? (
+                    <Loader />
+                ) : (
+                    <div className='relative py-[20px] px-[70px] max-md:p-[10px]'>
+                        <ToastContainer />
+                        {/* PRODUCT */}
+                        <div className='box2 h-[700px] max-md:h-full '>
+                            {/* IMAGES */}
+                            <div className='h-[500px] overflow-y-scroll  flex max-md:flex-col max-md:p-[10px] gap-[10px] animate__animated animate__fadeInLeft '>
+                                {/* list images */}
+                                <div className='flex flex-col max-md:flex-row gap-[10px]'>
+                                    {detailProduct?.listingPhotoPaths?.map((photo, index) => (
+                                        <div onClick={() => setShowImage(photo)} key={index} className='w-[50px] h-[70px] '>
+                                            <img src={photo} alt="" className='w-full h-full object-cover animate__animated animate__zoomIn ' />
                                         </div>
                                     ))}
                                 </div>
-                                <p>Kích thước: {showSize}</p>
-                                <div className='flex gap-[10px]'>
-                                    {detailProduct?.sizes?.map((size, index) => (
-                                        <div
-                                            onClick={(e) => setShowSize(size)}
-                                            key={index}
-                                            id='sizes'
-                                            className="w-[100px] h-[40px] rounded-[10px] text-center border border-black py-[10px] px-[20px] cursor-pointer hover:bg-gray-100"
-                                        >
-                                            {size}
+                                {/* show image */}
+                                <img src={showImage} alt="" className='w-full h-full object-cover rounded-[10px] animate__animated animate__fadeIn ' />
+                            </div>
+                            {/* DETAIL */}
+                            <div className='flex flex-col max-md:p-[10px] h-[700px] max-md:h-screen overflow-y-scroll hide-scrollbar animate__animated animate__fadeInRight'>
+                                <h3 className='text-[30px] font-semibold '>{detailProduct?.name}</h3>
+                                <p className='text-gray-600 whitespace-pre-wrap'>{detailProduct?.description}</p>
+                                <p className='font-semibold py-[10px]'>{detailProduct?.price}&#8363;</p>
+                                <p> Miễn phí giao hàng | Giao hàng 1-2 ngày - Hà Nội & TP. Hồ Chí Minh</p>
+                                <div className='flex flex-col gap-[10px] pt-[10px]'>
+                                    <p>Màu sắc: {showColor}</p>
+                                    <div className='flex gap-[10px]'>
+                                        {detailProduct?.colors?.map((color, index) => (
+                                            <div
+                                                onClick={(e) => setShowColor(color)}
+                                                key={index}
+                                                id='color'
+                                                className={`w-[20px] h-[20px] rounded-[50%] border-[2px] cursor-pointer ${showColor === color ? 'border-red-400' : 'border-black'}`}
+                                                style={{ backgroundColor: color }}
+                                            >
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <p>Kích thước: {showSize}</p>
+                                    <div className='flex gap-[10px]'>
+                                        {detailProduct?.sizes?.map((size, index) => (
+                                            <div
+                                                onClick={(e) => setShowSize(size)}
+                                                key={index}
+                                                id='sizes'
+                                                className="w-[100px] h-[40px] rounded-[10px] text-center border border-black py-[10px] px-[20px] cursor-pointer hover:bg-gray-100"
+                                            >
+                                                {size}
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <p onClick={() => setOpenSize(true)} className='underline hover:text-gray-600 cursor-pointer'>Hướng dẫn chọn size</p>
+                                    <p>Tồn kho: {detailProduct.stock}</p>
+                                    <div className='w-[100px] border border-black p-[10px] rounded-[20px] flex justify-between items-center text-center'>
+                                        <CiCircleMinus className='text-[20px] cursor-pointer' onClick={handleDecreaseQuantity} />
+                                        <p className='text-[18px]'>
+                                            {showQuantity}
+                                        </p>
+                                        <CiCirclePlus className='text-[20px] cursor-pointer' onClick={handleIncreaseQuantity} />
+                                    </div>
+                                    <div className='grid grid-cols-2 gap-[20px] mt-[10px]'>
+                                        <div className='flex gap-[10px] items-center border shadow-lg rounded-[20px] p-[10px]'>
+                                            <LuRefreshCcw />
+                                            <p>Đổi trả cực dễ chỉ cần số điện thoại </p>
                                         </div>
-                                    ))}
-                                </div>
-                                <p onClick={() => setOpenSize(true)} className='underline hover:text-gray-600 cursor-pointer'>Hướng dẫn chọn size</p>
-                                <p>Tồn kho: {detailProduct.stock}</p>
-                                <div className='w-[100px] border border-black p-[10px] rounded-[20px] flex justify-between items-center text-center'>
-                                    <CiCircleMinus className='text-[20px] cursor-pointer' onClick={handleDecreaseQuantity} />
-                                    <p className='text-[18px]'>
-                                        {showQuantity}
-                                    </p>
-                                    <CiCirclePlus className='text-[20px] cursor-pointer' onClick={handleIncreaseQuantity} />
-                                </div>
-                                <div className='grid grid-cols-2 gap-[20px] mt-[10px]'>
-                                    <div className='flex gap-[10px] items-center border shadow-lg rounded-[20px] p-[10px]'>
-                                        <LuRefreshCcw />
-                                        <p>Đổi trả cực dễ chỉ cần số điện thoại </p>
+                                        <div className='flex gap-[10px] items-center border shadow-lg rounded-[20px] p-[10px]'>
+                                            <LuRefreshCcw />
+                                            <p>60 ngày đổi trả vì bất kỳ lý do gì </p>
+                                        </div>
+                                        <div className='flex gap-[10px] items-center border shadow-lg rounded-[20px] p-[10px]'>
+                                            <FiPhoneCall />
+                                            <p>Hotline 1900.27.27.37 hỗ trợ từ 8h30 - 22h mỗi ngày </p>
+                                        </div>
+                                        <div className='flex gap-[10px] items-center border shadow-lg rounded-[20px] p-[10px]'>
+                                            <FiPhoneCall />
+                                            <p>Đến tận nơi nhận hàng trả, hoàn tiền trong 24h </p>
+                                        </div>
                                     </div>
-                                    <div className='flex gap-[10px] items-center border shadow-lg rounded-[20px] p-[10px]'>
-                                        <LuRefreshCcw />
-                                        <p>60 ngày đổi trả vì bất kỳ lý do gì </p>
-                                    </div>
-                                    <div className='flex gap-[10px] items-center border shadow-lg rounded-[20px] p-[10px]'>
-                                        <FiPhoneCall />
-                                        <p>Hotline 1900.27.27.37 hỗ trợ từ 8h30 - 22h mỗi ngày </p>
-                                    </div>
-                                    <div className='flex gap-[10px] items-center border shadow-lg rounded-[20px] p-[10px]'>
-                                        <FiPhoneCall />
-                                        <p>Đến tận nơi nhận hàng trả, hoàn tiền trong 24h </p>
-                                    </div>
-                                </div>
-                                <hr className='border-[2px] my-[20px]' />
+                                    <hr className='border-[2px] my-[20px]' />
 
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    {/* RECOMMEND */}
-                    <div className='mt-[100px] mb-[50px] animate__animated animate__fadeInDown'>
-                        <h3 className='text-center text-[30px] uppercase font-semibold mb-[40px]'>Gợi ý sản phẩm</h3>
-                        {loadingRecommentProduct ? (
-                            <Loader />
+                        {/* RECOMMEND */}
+                        <div className='mt-[100px] mb-[50px] animate__animated animate__fadeInDown'>
+                            <h3 className='text-center text-[30px] uppercase font-semibold mb-[40px]'>Gợi ý sản phẩm</h3>
+                            {loadingRecommentProduct ? (
+                                <Loader />
+                            ) : (
+                                <div className='mt-[20px] max-md:ml-[40px]'>
+                                    <Slider {...settings}>
+                                        {recommendProduct?.map((product, index) => (
+                                            <div onClick={() => {
+                                                if (!isDragging) {
+                                                    navigate(`/productDetail/${product._id}`)
+                                                }
+                                            }}
+                                                key={index}
+                                                className='flex flex-col gap-[10px]'>
+                                                <div className='w-[300px] h-[400px] overflow-hidden'>
+                                                    <img src={product?.listingPhotoPaths[0]} alt="image" className='w-full h-full object-cover rounded-[10px] transform transition-transform ease-in hover:scale-110 cursor-pointer' />
+                                                </div>
+                                                <div className='flex flex-col my-[10px]'>
+                                                    <span>{product.name}</span>
+                                                    <span className='font-semibold text-[12px]'>{product.price}&#8363;</span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </Slider>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Add item to cart */}
+                        {openBox ? (
+                            <div className='fixed  bottom-[10px] max-md:bottom-[50px] right-[10px] w-[400px] rounded-[20px] shadow-xl z-20 bg-gray-100 border px-[10px] py-[30px] flex flex-col gap-[20px] animate__animated animate__rotateInUpRight'>
+                                <BsArrowsCollapse onClick={() => setOpenBox(false)} className='absolute top-[10px] right-[10px] cursor-pointer hover:text-red-400 text-[20px]' />
+                                <div className='flex flex-wrap gap-[10px]'>
+                                    <p> Sản phẩm:</p>
+                                    <p className='font-semibold'>{detailProduct?.name}</p>
+                                </div>
+                                <div className='flex flex-wrap gap-[10px]'>
+                                    <p> Màu sắc:</p>
+                                    <p className='font-semibold'>{showColor}</p>
+                                </div>
+                                <div className='flex flex-wrap gap-[10px]'>
+                                    <p> Kích thước:</p>
+                                    <p className='font-semibold'>{showSize}</p>
+                                </div>
+                                <div className='flex flex-wrap gap-[10px]'>
+                                    <p> Số lượng:</p>
+                                    <p className='font-semibold'>{showQuantity}</p>
+                                </div>
+                                <div onClick={handleAddToCart} className='w-full h-[50px] bg-red-400 text-white rounded-[30px] flex items-center justify-center cursor-pointer hover:bg-opacity-70 hover:text-black'>
+                                    Thêm vào giỏ hàng
+                                </div>
+                            </div>
                         ) : (
-                            <div className='mt-[20px] max-md:ml-[40px]'>
-                                <Slider {...settings}>
-                                    {recommendProduct?.map((product, index) => (
-                                        <div onClick={() => {
-                                            if (!isDragging) {
-                                                navigate(`/productDetail/${product._id}`)
-                                            }
-                                        }}
-                                            key={index}
-                                            className='flex flex-col gap-[10px]'>
-                                            <div className='w-[300px] h-[400px] overflow-hidden'>
-                                                <img src={product?.listingPhotoPaths[0]} alt="image" className='w-full h-full object-cover rounded-[10px] transform transition-transform ease-in hover:scale-110 cursor-pointer' />
-                                            </div>
-                                            <div className='flex flex-col my-[10px]'>
-                                                <span>{product.name}</span>
-                                                <span className='font-semibold text-[12px]'>{product.price}&#8363;</span>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </Slider>
+                            <div onClick={() => setOpenBox(true)} className='fixed border cursor-pointer bottom-[10px] max-md:bottom-[50px] right-[10px] w-[50px] h-[50px] rounded-[20px] shadow-lg z-20 bg-gray-100 p-[10px] flex justify-center items-center '>
+                                <GrBasket className=' text-blue-400 hover:text-red-400 text-[20px]' />
                             </div>
                         )}
+
+                        {/* COMMENT */}
+                        <Comment
+                            productId={productId}
+                            commentInfo={commentInfo}
+                            setCommentInfo={setCommentInfo}
+                            comments={comments}
+                            setComments={setComments}
+                            reviewCount={reviewCount}
+                            setReviewCount={setReviewCount}
+                            handleFetchComment={handleFetchComment}
+                            totalPage={totalPage}
+                            setTotalPage={setTotalPage}
+                            openReply={openReply}
+                            setOpenReply={setOpenReply}
+                            replyCommentIds={replyCommentIds}
+                            commentId={commentId}
+                            setCommentId={setCommentId}
+                            toggleOpenReply={toggleOpenReply}
+                            toggleReply={toggleReply}
+                            loadingComment={loadingComment}
+                            setLoadingComment={setLoadingComment}
+                        />
+
+                        {
+                            openSize && (
+                                <Modal
+                                    open={openSize}
+                                    onClose={() => setOpenSize(false)}
+                                >
+                                    <div className='absolute top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%] shadow-lg w-[1000px] max-md:w-[400px] bg-white text-black h-[600px] overflow-y-scroll rounded-[20px] p-[20px] pt-[50px]'>
+                                        <IoIosCloseCircleOutline onClick={() => setOpenSize(false)} className='absolute top-[10px] right-[10px] text-[30px] cursor-pointer hover:text-red-[400]' />
+                                        <TableSize />
+                                    </div>
+
+                                </Modal>
+                            )
+                        }
+
+
                     </div>
-
-                    {/* Add item to cart */}
-                    {openBox ? (
-                        <div className='fixed  bottom-[10px] max-md:bottom-[50px] right-[10px] w-[400px] rounded-[20px] shadow-xl z-20 bg-gray-100 border px-[10px] py-[30px] flex flex-col gap-[20px] animate__animated animate__rotateInUpRight'>
-                            <BsArrowsCollapse onClick={() => setOpenBox(false)} className='absolute top-[10px] right-[10px] cursor-pointer hover:text-red-400 text-[20px]' />
-                            <div className='flex flex-wrap gap-[10px]'>
-                                <p> Sản phẩm:</p>
-                                <p className='font-semibold'>{detailProduct?.name}</p>
-                            </div>
-                            <div className='flex flex-wrap gap-[10px]'>
-                                <p> Màu sắc:</p>
-                                <p className='font-semibold'>{showColor}</p>
-                            </div>
-                            <div className='flex flex-wrap gap-[10px]'>
-                                <p> Kích thước:</p>
-                                <p className='font-semibold'>{showSize}</p>
-                            </div>
-                            <div className='flex flex-wrap gap-[10px]'>
-                                <p> Số lượng:</p>
-                                <p className='font-semibold'>{showQuantity}</p>
-                            </div>
-                            <div onClick={handleAddToCart} className='w-full h-[50px] bg-red-400 text-white rounded-[30px] flex items-center justify-center cursor-pointer hover:bg-opacity-70 hover:text-black'>
-                                Thêm vào giỏ hàng
-                            </div>
-                        </div>
-                    ) : (
-                        <div onClick={() => setOpenBox(true)} className='fixed border cursor-pointer bottom-[10px] max-md:bottom-[50px] right-[10px] w-[50px] h-[50px] rounded-[20px] shadow-lg z-20 bg-gray-100 p-[10px] flex justify-center items-center '>
-                            <GrBasket className=' text-blue-400 hover:text-red-400 text-[20px]' />
-                        </div>
-                    )}
-
-                    {/* COMMENT */}
-                    <Comment
-                        productId={productId}
-                        commentInfo={commentInfo}
-                        setCommentInfo={setCommentInfo}
-                        comments={comments}
-                        setComments={setComments}
-                        reviewCount={reviewCount}
-                        setReviewCount={setReviewCount}
-                        handleFetchComment={handleFetchComment}
-                        totalPage={totalPage}
-                        setTotalPage={setTotalPage}
-                        openReply={openReply}
-                        setOpenReply={setOpenReply}
-                        replyCommentIds={replyCommentIds}
-                        commentId={commentId}
-                        setCommentId={setCommentId}
-                        toggleOpenReply={toggleOpenReply}
-                        toggleReply={toggleReply}
-                        loadingComment={loadingComment}
-                        setLoadingComment={setLoadingComment}
-                    />
-
-                    {
-                        openSize && (
-                            <Modal
-                                open={openSize}
-                                onClose={() => setOpenSize(false)}
-                            >
-                                <div className='absolute top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%] shadow-lg w-[1000px] max-md:w-[400px] bg-white text-black h-[600px] overflow-y-scroll rounded-[20px] p-[20px] pt-[50px]'>
-                                    <IoIosCloseCircleOutline onClick={() => setOpenSize(false)} className='absolute top-[10px] right-[10px] text-[30px] cursor-pointer hover:text-red-[400]' />
-                                    <TableSize />
-                                </div>
-
-                            </Modal>
-                        )
-                    }
-
-
-                </div>
-            )}
+                )}
+            </div>
             <Footer />
         </Wrapper>
     )
@@ -473,6 +475,7 @@ const Wrapper = styled.section`
             gap: 10px;
         }
     }
+
 `
 
 export default ProductDetail

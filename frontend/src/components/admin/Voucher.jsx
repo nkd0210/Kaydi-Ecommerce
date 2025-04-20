@@ -460,7 +460,7 @@ const Voucher = () => {
                     <h3 className='text-[16px] font-semibold'>Edit Voucher</h3>
                 </div>
 
-                <div className='3xl:w-full w-[1300px] max-md:w-[500px]  overflow-scroll p-[20px] bg-white'>
+                <div className='3xl:w-[1600px] w-[1250px] max-md:w-full p-[20px] bg-white'>
                     <DataTable
                         columns={columns}
                         data={allVouchers}

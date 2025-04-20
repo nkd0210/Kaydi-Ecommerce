@@ -133,7 +133,7 @@ const Collection = () => {
         <>
             <Navigation />
             <Navbar />
-            <div className=''>
+            <div className='container mx-auto overflow-x-clip'>
                 <div className='w-full'>
                     <img src={categoryInfo.heroImage} alt="image" className='w-full h-full object-cover' />
                 </div>

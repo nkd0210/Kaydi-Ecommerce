@@ -90,37 +90,39 @@ const RecentProduct = () => {
     };
 
     return (
-        <div className='p-[20px]'>
-            <div className='rounded-[20px] w-[200px] max-md:w-[150px] text-[20px] max-md:text-[14px] border border-black px-[10px] py-[5px] text-center font-semibold'>Sản phẩm mới</div>
-            {loading ? (
-                <div className='grid grid-cols-1 md:grid-cols-4 ml-[40px] gap-[40px] max-md:gap-[5px] items-center'>
-                    <Skeleton width={300} height={400} animation="wave" sx={{ bgcolor: 'grey.100' }} />
-                    <Skeleton width={300} height={400} animation="wave" sx={{ bgcolor: 'grey.100' }} />
-                    <Skeleton width={300} height={400} animation="wave" sx={{ bgcolor: 'grey.100' }} />
-                    <Skeleton width={300} height={400} animation="wave" sx={{ bgcolor: 'grey.100' }} />
-                </div>
-            ) : (
-                <div className='mt-[20px] ml-[40px] max-w-full'>
-                    <Slider {...settings}>
-                        {recentProducts?.map((product, index) => (
-                            <div
-                                onClick={() => {
-                                    if (!isDragging) { navigate(`/productDetail/${product._id}`) }
-                                }}
-                                key={index}
-                                className='flex flex-col px-[10px] gap-[10px] animate__animated animate__fadeIn'>
-                                <div className='w-[300px] h-[400px] overflow-hidden'>
-                                    <img src={product?.listingPhotoPaths[0]} alt="image" loading="lazy" className='w-full h-full object-cover rounded-[10px] transform transition-transform ease-in hover:scale-110 cursor-pointer' />
+        <div className='container mx-auto overflow-x-clip'>
+            <div className='p-[20px]'>
+                <div className='rounded-[20px] w-[200px] max-md:w-[150px] text-[20px] max-md:text-[14px] border border-black px-[10px] py-[5px] text-center font-semibold'>Sản phẩm mới</div>
+                {loading ? (
+                    <div className='grid grid-cols-1 md:grid-cols-4 ml-[40px] gap-[40px] max-md:gap-[5px] items-center'>
+                        <Skeleton width={300} height={400} animation="wave" sx={{ bgcolor: 'grey.100' }} />
+                        <Skeleton width={300} height={400} animation="wave" sx={{ bgcolor: 'grey.100' }} />
+                        <Skeleton width={300} height={400} animation="wave" sx={{ bgcolor: 'grey.100' }} />
+                        <Skeleton width={300} height={400} animation="wave" sx={{ bgcolor: 'grey.100' }} />
+                    </div>
+                ) : (
+                    <div className='mt-[20px] ml-[40px] max-w-full'>
+                        <Slider {...settings}>
+                            {recentProducts?.map((product, index) => (
+                                <div
+                                    onClick={() => {
+                                        if (!isDragging) { navigate(`/productDetail/${product._id}`) }
+                                    }}
+                                    key={index}
+                                    className='flex flex-col px-[10px] gap-[10px] animate__animated animate__fadeIn'>
+                                    <div className='w-[300px] h-[400px] overflow-hidden'>
+                                        <img src={product?.listingPhotoPaths[0]} alt="image" loading="lazy" className='w-full h-full object-cover rounded-[10px] transform transition-transform ease-in hover:scale-110 cursor-pointer' />
+                                    </div>
+                                    <div className='flex flex-col w-[300px] my-[20px] gap-[10px]'>
+                                        <span>{product.name}</span>
+                                        <span className='font-semibold text-[12px]'>{product.price}&#8363;</span>
+                                    </div>
                                 </div>
-                                <div className='flex flex-col w-[300px] my-[20px] gap-[10px]'>
-                                    <span>{product.name}</span>
-                                    <span className='font-semibold text-[12px]'>{product.price}&#8363;</span>
-                                </div>
-                            </div>
-                        ))}
-                    </Slider>
-                </div>
-            )}
+                            ))}
+                        </Slider>
+                    </div>
+                )}
+            </div>
         </div>
     )
 }

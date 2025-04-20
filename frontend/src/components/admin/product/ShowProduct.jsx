@@ -29,7 +29,7 @@ const ShowProduct = ({ allProducts, setOpenShow, setOpenEdit, setProductId, load
 
 
     return (
-        <div className='w-full overflow-x-scroll overflow-scroll animate__animated animate__fadeInUp'>
+        <div className='3xl:w-[1600px] w-[1250px] max-md:w-full overflow-x-scroll overflow-scroll animate__animated animate__fadeInUp'>
             {loading ? (
                 <Loader />
             ) : (
