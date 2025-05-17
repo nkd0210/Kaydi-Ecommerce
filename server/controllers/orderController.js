@@ -58,7 +58,10 @@ export const createOrder = async (req, res, next) => {
     await newOrder.save();
     res.status(200).json(newOrder);
   } catch (error) {
-    next(error);
+    console.error("❌ Failed to create order:", error.message, error.stack);
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
   }
 };
 

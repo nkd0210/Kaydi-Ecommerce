@@ -2,21 +2,21 @@
  * @jest-environment node
  */
 
-import request from "supertest";
-import express from "express";
-import mongoose from "mongoose";
+const request = require("supertest");
+const express = require("express");
+const mongoose = require("mongoose");
 
-import {
+const {
   connect,
   closeDatabase,
   clearDatabase,
-} from "../setup/mongoMemoryServer.js";
+} = require("../setup/mongoMemoryServer.js");
 
-import reviewController from "../../controllers/reviewController.js";
-import {
+const reviewController = require("../../controllers/reviewController.js");
+const {
   createReview,
   createMultipleReviews,
-} from "../helpers/reviewHelper.js";
+} = require("../helpers/reviewHelper.js");
 
 const app = express();
 app.use(express.json());

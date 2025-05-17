@@ -7,20 +7,24 @@ const cookieParser = require("cookie-parser");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
+process.env.JWT_SECRET = "kaydi";
+process.env.JWT_REFRESH_SECRET = "kaydi0210";
+
 const {
   connect,
   closeDatabase,
   clearDatabase,
 } = require("../setup/mongoMemoryServer");
 
-const User = require("../../models/userModel");
+const User = require("../../models/userModel").default;
+const { createUser } = require("../helpers/userHelper"); // ✅ Import helper
 const authController = require("../../controllers/authController");
 
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-// Bind routes manually
+// Bind routes
 app.post("/auth/signup", authController.signUp);
 app.post("/auth/signin", authController.signIn);
 app.post("/auth/signout", authController.signOut);
@@ -48,16 +52,22 @@ describe("Auth Controller - Happy Path", () => {
 
   test("#TC002 - sign in with correct credentials", async () => {
     const hashed = bcrypt.hashSync("TestPass123", 10);
-    await User.create({
+
+    await createUser({
       username: "testuser",
       email: "test@example.com",
       password: hashed,
-    });
+    }); // ✅ Use helper
 
     const res = await request(app).post("/auth/signin").send({
       email: "test@example.com",
       password: "TestPass123",
     });
+
+    // Debug print
+    if (res.status !== 200) {
+      console.error("❌ Response body:", res.body);
+    }
 
     expect(res.status).toBe(200);
     expect(res.headers["set-cookie"]).toBeDefined();

@@ -11,4 +11,15 @@ async function createUser(overrides = {}) {
   return await User.create({ ...defaultData, ...overrides });
 }
 
-module.exports = { createUser };
+async function createAdminUser(overrides = {}) {
+  const defaultData = {
+    username: "adminuser",
+    email: "admin@example.com",
+    password: "hashedpassword",
+    profilePic: "admin.jpg",
+    isAdmin: true,
+  };
+  return await User.create({ ...defaultData, ...overrides });
+}
+
+module.exports = { createUser, createAdminUser };

@@ -21,7 +21,10 @@ export const createCategory = async (req, res, next) => {
     const savedCategory = await newCategory.save();
     return res.status(201).json(savedCategory);
   } catch (error) {
-    next(error);
+    console.error("❌ Category Creation Failed:", error);
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
   }
 };
 

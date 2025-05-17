@@ -2,17 +2,16 @@
  * @jest-environment node
  */
 
-import request from "supertest";
-import express from "express";
-import mongoose from "mongoose";
-import orderController from "../../controllers/orderController.js";
-import Order from "../../models/orderModel.js";
-import {
+const request = require("supertest");
+const express = require("express");
+const orderController = require("../../controllers/orderController");
+const {
   connect,
   clearDatabase,
   closeDatabase,
-} from "../setup/mongoMemoryServer.js";
-import { createOrder, createAdminUser } from "../helpers/orderHelper.js";
+} = require("../setup/mongoMemoryServer");
+const { createOrderPayload, createOrder } = require("../helpers/orderHelper");
+const { createAdminUser } = require("../helpers/userHelper");
 
 const app = express();
 app.use(express.json());
@@ -55,29 +54,39 @@ afterAll(async () => await closeDatabase());
 
 describe("OrderController Integration", () => {
   test("#TC001 - should create an order with COD method", async () => {
-    const payload = await createOrder(admin._id);
+    const payload = await createOrderPayload(admin._id); // Just the payload, not saved yet
+
     const res = await request(app).post("/orders").send(payload);
+
+    if (res.status !== 200) {
+      console.error("❌ Failed with:", res.body);
+    }
+
     expect(res.status).toBe(200);
     expect(res.body.totalAmount).toBe(payload.totalAmount);
     expect(res.body.paymentMethod).toBe("COD");
   });
 
   test("#TC002 - should get all orders (paginated)", async () => {
-    await createOrder(admin._id);
+    await request(app)
+      .post("/orders")
+      .send(await createOrderPayload(admin._id));
     const res = await request(app).get("/orders?page=1&limit=5");
     expect(res.status).toBe(200);
     expect(res.body.numberOfOrder).toBeGreaterThanOrEqual(1);
   });
 
   test("#TC003 - should export orders to Excel", async () => {
-    await createOrder(admin._id);
+    await request(app)
+      .post("/orders")
+      .send(await createOrderPayload(admin._id));
     const res = await request(app).get("/orders/export");
     expect(res.status).toBe(200);
     expect(res.headers["content-type"]).toContain("spreadsheetml");
   });
 
   test("#TC004 - should update order status to processing", async () => {
-    const payload = await createOrder(admin._id);
+    const payload = await createOrderPayload(admin._id);
     const createRes = await request(app).post("/orders").send(payload);
     const orderId = createRes.body._id;
     const res = await request(app)
@@ -88,7 +97,7 @@ describe("OrderController Integration", () => {
   });
 
   test("#TC005 - should cancel an order", async () => {
-    const payload = await createOrder(admin._id);
+    const payload = await createOrderPayload(admin._id);
     const createRes = await request(app).post("/orders").send(payload);
     const orderId = createRes.body._id;
     const res = await request(app).delete(`/orders/${admin._id}/${orderId}`);
@@ -97,7 +106,7 @@ describe("OrderController Integration", () => {
   });
 
   test("#TC006 - should get user orders", async () => {
-    const payload = await createOrder(admin._id);
+    const payload = await createOrderPayload(admin._id);
     await request(app).post("/orders").send(payload);
     const res = await request(app).get(`/orders/user/${admin._id}`);
     expect(res.status).toBe(200);
@@ -105,7 +114,7 @@ describe("OrderController Integration", () => {
   });
 
   test("#TC007 - should get order detail by ID", async () => {
-    const payload = await createOrder(admin._id);
+    const payload = await createOrderPayload(admin._id);
     const { body } = await request(app).post("/orders").send(payload);
     const res = await request(app).get(`/orders/detail/${body._id}`);
     expect(res.status).toBe(200);
@@ -113,9 +122,12 @@ describe("OrderController Integration", () => {
   });
 
   test("#TC008 - should update paymentCheck to true", async () => {
-    const payload = await createOrder(admin._id);
-    const { body } = await request(app).post("/orders").send(payload);
-    const res = await request(app).patch(`/orders/payment/${body._id}`);
+    // Create the order directly in the database
+    const order = await createOrder(admin._id);
+
+    // Now call the PATCH endpoint to update paymentCheck
+    const res = await request(app).patch(`/orders/payment/${order._id}`);
+
     expect(res.status).toBe(200);
     expect(res.body.paymentCheck).toBe(true);
   });

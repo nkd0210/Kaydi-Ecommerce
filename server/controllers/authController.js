@@ -104,7 +104,10 @@ export const signIn = async (req, res, next) => {
       })
       .json(rest);
   } catch (error) {
-    next(error);
+    console.error("🔥 signIn error:", error); // Add this line
+    return res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
   }
 };
 

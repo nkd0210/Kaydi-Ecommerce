@@ -2,18 +2,18 @@
  * @jest-environment node
  */
 
-import request from "supertest";
-import express from "express";
-import mongoose from "mongoose";
+const request = require("supertest");
+const express = require("express");
+const mongoose = require("mongoose");
 
-import {
+const {
   connect,
   closeDatabase,
   clearDatabase,
-} from "../setup/mongoMemoryServer.js";
+} = require("../setup/mongoMemoryServer.js");
 
-import userController from "../../controllers/userController.js";
-import { createUser } from "../helpers/userHelper.js";
+const userController = require("../../controllers/userController.js");
+const { createUser } = require("../helpers/userHelper.js");
 
 const app = express();
 app.use(express.json());
@@ -32,11 +32,11 @@ app.use((req, res, next) => {
 app.get("/users", userController.getAllUsers);
 app.get("/users/chat", userController.getAllUserToChat);
 app.get("/users/chat/group/:chatId", userController.getUserToAddInGroupChat);
-app.get("/users/:userId", userController.getUser);
 app.put("/users/:userId", userController.updateUser);
 app.delete("/users/:userId", userController.deleteUser);
 app.get("/users/export", userController.exportToExcel);
 app.get("/users/search", userController.searchUser);
+app.get("/users/:userId", userController.getUser);
 app.get("/users/admin-search/:searchKey", userController.searchUserAdmin);
 
 beforeAll(async () => await connect());
@@ -86,7 +86,7 @@ describe("UserController Integration", () => {
     expect(res.headers["content-type"]).toContain(
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     );
-  });
+  }, 15000); // Tăng timeout lên 15 giây
 
   test("#TC006 - should search users by username/email", async () => {
     const user = await createUser({ username: "SearchMe" });

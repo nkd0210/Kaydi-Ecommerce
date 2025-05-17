@@ -102,7 +102,7 @@ describe("Chat Controller - Happy Path", () => {
     expect(res.body.chatName).toBe("New Name");
   });
 
-  test("#TC005 - add member to group chat", async () => {
+  test("#TC005 - createGroupChat", async () => {
     const newUser = await createUser({
       email: "join@me.com",
       username: "joinme",
@@ -119,8 +119,8 @@ describe("Chat Controller - Happy Path", () => {
     });
 
     expect(res.status).toBe(200);
-    expect(res.body.members).toEqual(
-      expect.arrayContaining([expect.objectContaining({ _id: newUser._id })])
+    expect(res.body.members.map((m) => m._id.toString())).toEqual(
+      expect.arrayContaining([newUser._id.toString()])
     );
   });
 

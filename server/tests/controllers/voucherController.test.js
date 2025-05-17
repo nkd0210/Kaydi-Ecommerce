@@ -2,19 +2,19 @@
  * @jest-environment node
  */
 
-import request from "supertest";
-import express from "express";
-import mongoose from "mongoose";
+const request = require("supertest");
+const express = require("express");
+const mongoose = require("mongoose");
 
-import {
+const {
   connect,
   closeDatabase,
   clearDatabase,
-} from "../setup/mongoMemoryServer.js";
+} = require("../setup/mongoMemoryServer");
 
-import Product from "../../models/productModel.js";
-import voucherController from "../../controllers/voucherController.js";
-import { createVoucher } from "../helpers/voucherHelper.js";
+const Product = require("../../models/productModel").default;
+const voucherController = require("../../controllers/voucherController");
+const { createVoucher } = require("../helpers/voucherHelper");
 
 const app = express();
 app.use(express.json());
