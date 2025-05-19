@@ -218,4 +218,71 @@ describe("OrderController › createOrder", () => {
     expect(res.status).toBe(404);
     expect(res.body.message).toBe("Order not found");
   });
+  test("#TC009 - invalid phone length", async () => {
+    const product = await Product.create({
+      name: "Test Shirt",
+      price: 100000,
+      stock: 5,
+    });
+
+    const orderPayload = {
+      userId: userId.toString(),
+      receiverName: "Alice",
+      receiverPhone: "01234", // too short
+      receiverNote: "Leave at door",
+      products: [
+        {
+          productId: product._id.toString(),
+          name: "Test Shirt",
+          quantity: 1,
+          price: 100000,
+          color: "Red",
+          size: "M",
+          image: "image.jpg",
+        },
+      ],
+      totalAmount: 100000,
+      shippingAddress: "123 Main St",
+      paymentMethod: "COD",
+    };
+
+    const res = await request(app).post("/orders").send(orderPayload);
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch("Invalid phone number length");
+  });
+
+  test("#TC010 - non-numeric phone number", async () => {
+    const product = await Product.create({
+      name: "Test Shirt",
+      price: 100000,
+      stock: 5,
+    });
+
+    const orderPayload = {
+      userId: userId.toString(),
+      receiverName: "Bob",
+      receiverPhone: "01234ABC89", // contains letters
+      receiverNote: "Urgent",
+      products: [
+        {
+          productId: product._id.toString(),
+          name: "Test Shirt",
+          quantity: 1,
+          price: 100000,
+          color: "Blue",
+          size: "L",
+          image: "image.jpg",
+        },
+      ],
+      totalAmount: 100000,
+      shippingAddress: "456 Main St",
+      paymentMethod: "COD",
+    };
+
+    const res = await request(app).post("/orders").send(orderPayload);
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(
+      "Phone number contains digital numbers only"
+    );
+  });
 });

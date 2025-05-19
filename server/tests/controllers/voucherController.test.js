@@ -277,4 +277,18 @@ describe("VoucherController Integration", () => {
     expect(res.status).toBe(400);
     expect(res.body.message).toMatch(/already exists/i);
   });
+
+  test("#TC019 - create voucher with invalid discount (exceed)", async () => {
+    const res = await request(app)
+      .post(`/vouchers/${adminId}`)
+      .send({
+        code: "PLUS101",
+        discount: 101,
+        expiryDate: new Date(Date.now() + 86400000), // 1 day later
+        usageLimit: 10,
+      });
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch("Invalid Discount");
+  });
 });
