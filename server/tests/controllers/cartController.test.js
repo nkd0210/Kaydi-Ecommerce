@@ -35,7 +35,10 @@ app.put("/cart/update/:userId", cartController.updateUserCart);
 app.post("/cart/items", cartController.getItemsInCart);
 app.post("/cart/remove-items", cartController.removeItemsFromCart);
 
-beforeAll(async () => await connect());
+beforeAll(async () => {
+  await connect();
+  console.log("🧪 Test userId:", userId.toString());
+});
 afterEach(async () => await clearDatabase());
 afterAll(async () => await closeDatabase());
 

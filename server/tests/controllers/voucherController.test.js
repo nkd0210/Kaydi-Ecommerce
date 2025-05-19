@@ -226,4 +226,55 @@ describe("VoucherController Integration", () => {
     expect(res.status).toBe(401);
     expect(res.body.message).toContain("not authorized");
   });
+
+  test("#TC016 - create voucher with invalid discount (negative)", async () => {
+    const res = await request(app)
+      .post(`/vouchers/${adminId}`)
+      .send({
+        code: "NEGATIVE10",
+        discount: -10,
+        expiryDate: new Date(Date.now() + 86400000), // 1 day later
+        usageLimit: 10,
+      });
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch("Invalid Discount");
+  });
+
+  test("#TC017 - create voucher with invalid usageLimit (zero)", async () => {
+    const res = await request(app)
+      .post(`/vouchers/${adminId}`)
+      .send({
+        code: "ZERO_USAGE",
+        discount: 10,
+        expiryDate: new Date(Date.now() + 86400000),
+        usageLimit: 0,
+      });
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/usage limit must be greater than zero/i);
+  });
+
+  test("#TC018 - create voucher with duplicate code", async () => {
+    await request(app)
+      .post(`/vouchers/${adminId}`)
+      .send({
+        code: "DUPLICATE",
+        discount: 10,
+        expiryDate: new Date(Date.now() + 86400000),
+        usageLimit: 5,
+      });
+
+    const res = await request(app)
+      .post(`/vouchers/${adminId}`)
+      .send({
+        code: "DUPLICATE",
+        discount: 15,
+        expiryDate: new Date(Date.now() + 86400000),
+        usageLimit: 10,
+      });
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/already exists/i);
+  });
 });
