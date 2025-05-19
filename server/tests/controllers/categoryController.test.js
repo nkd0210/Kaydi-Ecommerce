@@ -116,4 +116,47 @@ describe("Category Controller - Happy Path", () => {
     expect(res.status).toBe(200);
     expect(res.body.title).toBe("By Name");
   });
+
+  test("#TC008 - block with user is not admin", async () => {
+    const nonAdminApp = express();
+    nonAdminApp.use(express.json());
+
+    // Inject isAdmin: false for this test only
+    nonAdminApp.use((req, res, next) => {
+      req.user = { id: "nonadmin123", isAdmin: false };
+      next();
+    });
+
+    // Bind the same route
+    nonAdminApp.post("/category", categoryController.createCategory);
+
+    const res = await request(nonAdminApp)
+      .post("/category")
+      .send({
+        name: "unauthorized",
+        title: "Should Not Work",
+        description: ["This shouldn't be allowed"],
+        heroImage: "unauth.jpg",
+      });
+
+    expect(res.status).toBe(401);
+    expect(res.body.message).toBe("You are not allowed to create category");
+  });
+
+  test("#TC009 - required fields are missing", async () => {
+    const res = await request(app).post("/category").send({
+      // Missing 'name', which is required in the schema
+      title: "Missing Fields Test",
+    });
+
+    expect(res.status).toBe(500);
+    expect(res.body.message).toBe("Internal server error");
+  });
+
+  test("#TC010 - get category with no categories found", async () => {
+    const res = await request(app).get("/category");
+
+    expect(res.status).toBe(404);
+    expect(res.body.message).toBe("No category found");
+  });
 });

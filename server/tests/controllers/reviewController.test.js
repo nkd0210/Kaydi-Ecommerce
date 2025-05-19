@@ -1,7 +1,6 @@
 /**
  * @jest-environment node
  */
-
 const request = require("supertest");
 const express = require("express");
 const mongoose = require("mongoose");
@@ -18,37 +17,44 @@ const {
   createMultipleReviews,
 } = require("../helpers/reviewHelper.js");
 
-const app = express();
-app.use(express.json());
+const createAppWithAuth = (user) => {
+  const app = express();
+  app.use(express.json());
+  app.use((req, res, next) => {
+    req.user = user;
+    next();
+  });
 
-const sampleUserId = new mongoose.Types.ObjectId().toString();
-const sampleProductId = new mongoose.Types.ObjectId().toString();
+  app.post("/reviews/:userId", reviewController.createReview);
+  app.get("/reviews/product/:productId", reviewController.getProductReview);
+  app.delete("/reviews/:reviewId", reviewController.deleteProductReview);
+  app.put("/reviews/:reviewId", reviewController.editReview);
+  app.get("/reviews/user/:userId", reviewController.getUserReview);
+  app.post("/reviews/reply/:reviewId", reviewController.replyReview);
+  app.get("/reviews/star/:productId", reviewController.sortReviewStar);
+  app.get("/reviews/statistic/:productId", reviewController.getReviewStatistic);
 
-// Middleware to simulate authenticated user
-app.use((req, res, next) => {
-  req.user = {
-    id: sampleUserId,
-    isAdmin: true,
-  };
-  next();
+  return app;
+};
+
+let sampleUserId = new mongoose.Types.ObjectId().toString();
+let sampleProductId = new mongoose.Types.ObjectId().toString();
+let app;
+
+beforeAll(async () => {
+  await connect();
 });
 
-// Routes
-app.post("/reviews/:userId", reviewController.createReview);
-app.get("/reviews/product/:productId", reviewController.getProductReview);
-app.delete("/reviews/:reviewId", reviewController.deleteProductReview);
-app.put("/reviews/:reviewId", reviewController.editReview);
-app.get("/reviews/user/:userId", reviewController.getUserReview);
-app.post("/reviews/reply/:reviewId", reviewController.replyReview);
-app.get("/reviews/star/:productId", reviewController.sortReviewStar);
-app.get("/reviews/statistic/:productId", reviewController.getReviewStatistic);
-
-beforeAll(async () => await connect());
 afterEach(async () => await clearDatabase());
+
 afterAll(async () => await closeDatabase());
 
 describe("ReviewController Integration", () => {
-  test("#TC001 - should create a review", async () => {
+  beforeEach(() => {
+    app = createAppWithAuth({ id: sampleUserId, isAdmin: true });
+  });
+
+  test("#TC001 -  create a review", async () => {
     const res = await request(app)
       .post(`/reviews/${sampleUserId}`)
       .send({
@@ -63,7 +69,7 @@ describe("ReviewController Integration", () => {
     expect(res.body[0].comment).toBe("Excellent");
   });
 
-  test("#TC002 - should get product reviews with pagination and average rating", async () => {
+  test("#TC002 -  get product reviews with pagination and average rating", async () => {
     await createMultipleReviews({
       count: 3,
       commonFields: { product: sampleProductId },
@@ -75,7 +81,7 @@ describe("ReviewController Integration", () => {
     expect(res.body).toHaveProperty("averageRating");
   });
 
-  test("#TC003 - should delete a review", async () => {
+  test("#TC003 -  delete a review", async () => {
     const review = await createReview({ creator: sampleUserId });
 
     const res = await request(app).delete(`/reviews/${review._id}`);
@@ -83,7 +89,7 @@ describe("ReviewController Integration", () => {
     expect(res.body.message).toBe("Delete review of this product successfully");
   });
 
-  test("#TC004 - should update a review", async () => {
+  test("#TC004 -  update a review", async () => {
     const review = await createReview({ creator: sampleUserId });
 
     const res = await request(app).put(`/reviews/${review._id}`).send({
@@ -95,7 +101,7 @@ describe("ReviewController Integration", () => {
     expect(res.body.comment).toBe("Updated comment");
   });
 
-  test("#TC005 - should fetch reviews by user", async () => {
+  test("#TC005 -  fetch reviews by user", async () => {
     await createMultipleReviews({
       count: 2,
       commonFields: { creator: sampleUserId },
@@ -106,7 +112,7 @@ describe("ReviewController Integration", () => {
     expect(res.body.findUserReview.length).toBeGreaterThan(0);
   });
 
-  test("#TC006 - should reply to a review as admin", async () => {
+  test("#TC006 -  reply to a review as admin", async () => {
     const review = await createReview();
 
     const res = await request(app)
@@ -116,7 +122,7 @@ describe("ReviewController Integration", () => {
     expect(res.body.reply.length).toBeGreaterThan(0);
   });
 
-  test("#TC007 - should filter reviews by star rating", async () => {
+  test("#TC007 -  filter reviews by star rating", async () => {
     await createMultipleReviews({
       count: 5,
       commonFields: { product: sampleProductId, rating: 5 },
@@ -129,7 +135,7 @@ describe("ReviewController Integration", () => {
     expect(res.body.reviews.length).toBeGreaterThan(0);
   });
 
-  test("#TC008 - should get review statistics", async () => {
+  test("#TC008 - get review statistics", async () => {
     await createMultipleReviews({
       count: 4,
       commonFields: { product: sampleProductId },
@@ -139,5 +145,61 @@ describe("ReviewController Integration", () => {
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty("total");
     expect(res.body.total).toBeGreaterThan(0);
+  });
+
+  test("#TC009 - create review - unauthorized", async () => {
+    const appNonOwner = createAppWithAuth({ id: "otheruser", isAdmin: false });
+
+    const res = await request(appNonOwner)
+      .post(`/reviews/${sampleUserId}`)
+      .send({
+        productIds: [sampleProductId],
+        order: new mongoose.Types.ObjectId(),
+        rating: 3,
+        comment: " not allow",
+      });
+
+    expect(res.status).toBe(401);
+    expect(res.body.message).toBe("You are not allowed to create review");
+  });
+
+  test("#TC010 - reply review - not admin", async () => {
+    const review = await createReview();
+    const appNotAdmin = createAppWithAuth({ id: "user", isAdmin: false });
+
+    const res = await request(appNotAdmin)
+      .post(`/reviews/reply/${review._id}`)
+      .send({ text: "Nice" });
+
+    expect(res.status).toBe(401);
+    expect(res.body.message).toBe("You are not allowed to reply this review");
+  });
+
+  test("#TC011 - reply review - missing text", async () => {
+    const review = await createReview();
+
+    const res = await request(app)
+      .post(`/reviews/reply/${review._id}`)
+      .send({});
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toBe("Reply text is required");
+  });
+
+  test("#TC012 - get user review - unauthorized", async () => {
+    const otherUserId = new mongoose.Types.ObjectId().toString();
+    const appOtherUser = createAppWithAuth({ id: "random", isAdmin: false });
+
+    const res = await request(appOtherUser).get(`/reviews/user/${otherUserId}`);
+    expect(res.status).toBe(401);
+    expect(res.body.message).toBe("You are not allowed to view this");
+  });
+
+  test("#TC013 - sort by star - invalid star value", async () => {
+    const res = await request(app).get(
+      `/reviews/star/${sampleProductId}?star=7`
+    );
+    expect(res.status).toBe(400);
+    expect(res.body.message).toBe("Invalid star rating.");
   });
 });

@@ -1,6 +1,29 @@
 // tests/helpers/voucherHelper.js
 import Voucher from "../../models/voucherModel.js";
+import Product from "../../models/productModel.js";
+import Category from "../../models/categoryModel.js";
 import mongoose from "mongoose";
+
+export async function createMockProduct(overrides = {}) {
+  const defaultProduct = {
+    name: "Test Product",
+    price: 100,
+    stock: 10,
+    ...overrides,
+  };
+
+  return await Product.create(defaultProduct);
+}
+
+export async function createMockCategory(overrides = {}) {
+  const defaultCategory = {
+    name: "Test Category",
+    description: "Sample category",
+    ...overrides,
+  };
+
+  return await Category.create(defaultCategory);
+}
 
 export async function createVoucher(overrides = {}) {
   const defaultVoucher = {

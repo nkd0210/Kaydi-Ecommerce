@@ -1,7 +1,6 @@
 /**
  * @jest-environment node
  */
-
 const request = require("supertest");
 const express = require("express");
 const mongoose = require("mongoose");
@@ -14,55 +13,66 @@ const {
 
 const Product = require("../../models/productModel").default;
 const voucherController = require("../../controllers/voucherController");
-const { createVoucher } = require("../helpers/voucherHelper");
+const {
+  createVoucher,
+  createMockCategory,
+  createMockProduct,
+} = require("../helpers/voucherHelper");
 
-const app = express();
-app.use(express.json());
+const createAppWithAuth = (user) => {
+  const app = express();
+  app.use(express.json());
+  app.use((req, res, next) => {
+    req.user = user;
+    next();
+  });
+
+  app.post("/vouchers/:userId", voucherController.createVoucher);
+  app.get("/vouchers/:userId", voucherController.getAllVouchers);
+  app.get(
+    "/vouchers/detail/:userId/:voucherId",
+    voucherController.getVoucherById
+  );
+  app.put("/vouchers/:userId/:voucherId", voucherController.updateVoucher);
+  app.delete("/vouchers/:userId/:voucherId", voucherController.deleteVoucher);
+  app.post("/vouchers/apply/:userId/:code", voucherController.applyVoucher);
+  app.get(
+    "/vouchers/by-products/:productIds",
+    voucherController.getVoucherByProductIds
+  );
+  app.get("/vouchers/export/all", voucherController.exportVouchers);
+  app.get("/vouchers/statistic/all", voucherController.getVoucherStatistic);
+
+  return app;
+};
 
 let adminId;
-
-// Middleware to simulate authenticated admin user
-app.use((req, res, next) => {
-  req.user = { id: adminId.toString(), isAdmin: true };
-  next();
-});
-
-// Routes
-app.post("/vouchers/:userId", voucherController.createVoucher);
-app.get("/vouchers/:userId", voucherController.getAllVouchers);
-app.get(
-  "/vouchers/detail/:userId/:voucherId",
-  voucherController.getVoucherById
-);
-app.put("/vouchers/:userId/:voucherId", voucherController.updateVoucher);
-app.delete("/vouchers/:userId/:voucherId", voucherController.deleteVoucher);
-app.post("/vouchers/apply/:userId/:code", voucherController.applyVoucher);
-app.get(
-  "/vouchers/by-products/:productIds",
-  voucherController.getVoucherByProductIds
-);
-app.get("/vouchers/export/all", voucherController.exportVouchers);
-app.get("/vouchers/statistic/all", voucherController.getVoucherStatistic);
 
 beforeAll(async () => {
   await connect();
   adminId = new mongoose.Types.ObjectId();
 });
+
 afterEach(async () => await clearDatabase());
+
 afterAll(async () => await closeDatabase());
 
 describe("VoucherController Integration", () => {
-  test("#TC001 - should create a new voucher", async () => {
+  let app;
+
+  beforeEach(() => {
+    app = createAppWithAuth({ id: adminId.toString(), isAdmin: true });
+  });
+
+  test("#TC001- apply voucher with valid product", async () => {
+    const product = await createMockProduct();
+    await createVoucher({ applyProducts: [product._id] });
+
     const res = await request(app)
-      .post(`/vouchers/${adminId}`)
-      .send(
-        await createVoucher({
-          code: "SALE10",
-          usageLimit: 2,
-        })
-      );
-    expect(res.status).toBe(201);
-    expect(res.body.code).toBe("SALE10");
+      .post(`/vouchers/apply/${adminId}/DISCOUNT10`)
+      .send({ productIds: [product._id.toString()], categories: [] });
+
+    expect(res.status).toBe(200);
   });
 
   test("#TC002 - should get all vouchers", async () => {
@@ -114,5 +124,106 @@ describe("VoucherController Integration", () => {
     expect(res.status).toBe(200);
     expect(res.body.mostUsed.code).toBe("TOP1");
     expect(res.body.leastUsed.code).toBe("LOW1");
+  });
+
+  // NEGATIVE TEST CASES
+
+  test("#TC007 - create voucher - unauthorized user", async () => {
+    const appNotAdmin = createAppWithAuth({
+      id: "fake0idAdmin",
+      isAdmin: false,
+    });
+    const res = await request(appNotAdmin)
+      .post(`/vouchers/fakeOidAdmin`)
+      .send({
+        code: "DISCOUNT10",
+        discount: 10,
+        expiryDate: new Date(Date.now() + 86400000),
+        usageLimit: 5,
+        applyProducts: [],
+        applyCategories: [],
+      });
+    expect(res.status).toBe(401);
+    expect(res.body.message).toContain("You are not admin");
+  });
+
+  test("#TC008 - get all vouchers - unauthorized user", async () => {
+    await createVoucher();
+    const appNotAdmin = createAppWithAuth({ id: "fakeId", isAdmin: false });
+    const res = await request(appNotAdmin).get(`/vouchers/fakeId`);
+    expect(res.status).toBe(401);
+    expect(res.body.message).toContain("You are not admin");
+  });
+
+  test("#TC009 - apply voucher with wrong product", async () => {
+    const validProduct = await createMockProduct();
+    await createVoucher({
+      code: "MISMATCH",
+      applyProducts: [validProduct._id],
+    });
+    const res = await request(app)
+      .post(`/vouchers/apply/${adminId}/MISMATCH`)
+      .send({
+        productIds: [new mongoose.Types.ObjectId().toString()],
+        categories: [],
+      });
+    expect(res.status).toBe(400);
+    expect(res.body.message).toContain("not applicable");
+  });
+
+  test("#TC010 - apply voucher - expired", async () => {
+    const expiredDate = new Date(Date.now() - 1000 * 60 * 60 * 24); // yesterday
+    const voucher = await createVoucher({
+      code: "EXPIRED",
+      expiryDate: expiredDate,
+    });
+    const res = await request(app)
+      .post(`/vouchers/apply/${adminId}/EXPIRED`)
+      .send({ productIds: [], categories: [] });
+    expect(res.status).toBe(400);
+    expect(res.body.message).toContain("expired");
+  });
+
+  test("#TC011 - apply voucher - usage limit exceeded", async () => {
+    const voucher = await createVoucher({
+      code: "LIMITED",
+      usageLimit: 1,
+      usedCount: 1,
+    });
+    const res = await request(app)
+      .post(`/vouchers/apply/${adminId}/LIMITED`)
+      .send({ productIds: [], categories: [] });
+    expect(res.status).toBe(400);
+    expect(res.body.message).toContain("usage limit");
+  });
+
+  test("#TC012 - get voucher by ID - not found", async () => {
+    const res = await request(app).get(
+      `/vouchers/detail/${adminId}/000000000000000000000000`
+    );
+    expect(res.status).toBe(404);
+    expect(res.body.message).toBe("Voucher not found");
+  });
+
+  test("#TC013 - delete voucher - not found", async () => {
+    const res = await request(app).delete(
+      `/vouchers/${adminId}/000000000000000000000000`
+    );
+    expect(res.status).toBe(404);
+    expect(res.body.message).toBe("Voucher not found");
+  });
+
+  test("#TC014 - export vouchers - unauthorized", async () => {
+    const appNotAdmin = createAppWithAuth({ id: "user", isAdmin: false });
+    const res = await request(appNotAdmin).get("/vouchers/export/all");
+    expect(res.status).toBe(401);
+    expect(res.body.message).toBe("You are not allowed to export vouchers");
+  });
+
+  test("#TC015 - get statistic - unauthorized", async () => {
+    const appNotAdmin = createAppWithAuth({ id: "user", isAdmin: false });
+    const res = await request(appNotAdmin).get("/vouchers/statistic/all");
+    expect(res.status).toBe(401);
+    expect(res.body.message).toContain("not authorized");
   });
 });

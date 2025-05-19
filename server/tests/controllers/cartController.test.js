@@ -41,7 +41,7 @@ afterAll(async () => await closeDatabase());
 
 describe("CartController Integration", () => {
   // #TC001 - Add to cart
-  test("should add new product to cart and verify DB state", async () => {
+  test("#TC001- add new product to cart and verify DB state", async () => {
     const newProduct = await createProduct({
       _id: new mongoose.Types.ObjectId("507f1f77bcf86cd799439011"),
     });
@@ -69,7 +69,7 @@ describe("CartController Integration", () => {
   });
 
   // #TC002 - Remove from cart
-  test("should remove product from cart", async () => {
+  test("#TC002 -  remove product from cart", async () => {
     const newProduct = await createProduct({ price: 50 });
 
     await request(app).post("/cart/add").send({
@@ -95,7 +95,7 @@ describe("CartController Integration", () => {
   });
 
   // #TC003 - Get user cart
-  test("should return cart for correct user", async () => {
+  test("#TC003 -  return cart for correct user", async () => {
     const newProduct = await createProduct({ price: 75 });
 
     await request(app).post("/cart/add").send({
@@ -113,7 +113,7 @@ describe("CartController Integration", () => {
   });
 
   // #TC004 - Update cart
-  test("should increase quantity of product in cart", async () => {
+  test("#TC004 - increase quantity of product in cart", async () => {
     const newProduct = await createProduct({ price: 40 });
 
     await request(app).post("/cart/add").send({
@@ -139,7 +139,7 @@ describe("CartController Integration", () => {
   });
 
   // #TC005 - Get items in cart
-  test("should return specific items in cart", async () => {
+  test("#TC005 - return specific items in cart", async () => {
     const newProduct = await createProduct({ price: 60 });
 
     await request(app).post("/cart/add").send({
@@ -168,7 +168,7 @@ describe("CartController Integration", () => {
   });
 
   // #TC006 - Remove multiple items
-  test("should remove multiple items from cart", async () => {
+  test("#TC006 - remove multiple items from cart", async () => {
     const p1 = await createProduct({ price: 10 });
     const p2 = await createProduct({ price: 20 });
 
@@ -200,5 +200,134 @@ describe("CartController Integration", () => {
 
     expect(res.status).toBe(200);
     expect(res.body.cart.products).toHaveLength(0);
+  });
+
+  test("#TC007 - Add to cart - unauthorized user", async () => {
+    const newProduct = await createProduct();
+
+    const res = await request(app).post("/cart/add").send({
+      userId: "fakeUserId123", // different from req.user.id
+      productId: newProduct._id.toString(),
+      quantity: 1,
+      color: "Red",
+      size: "M",
+    });
+
+    expect(res.status).toBe(401);
+    expect(res.body.message).toBe(
+      "You are not allowed to add this product to cart"
+    );
+  });
+
+  test("#TC008 - Add to cart - product not found", async () => {
+    const res = await request(app).post("/cart/add").send({
+      userId: userId.toString(),
+      productId: new mongoose.Types.ObjectId().toString(),
+      quantity: 1,
+      color: "Red",
+      size: "M",
+    });
+
+    expect(res.status).toBe(404);
+    expect(res.body.message).toBe("Product not found");
+  });
+
+  test("#TC009 - Remove from cart - cart not found", async () => {
+    const res = await request(app).post("/cart/remove").send({
+      userId: userId.toString(),
+      productId: new mongoose.Types.ObjectId().toString(),
+      color: "Blue",
+      size: "L",
+    });
+
+    expect(res.status).toBe(404);
+    expect(res.body.message).toBe("Cart not found");
+  });
+
+  test("#TC010 - Remove from cart - product not found", async () => {
+    await Cart.create({ userId: userId.toString(), products: [] });
+
+    const res = await request(app).post("/cart/remove").send({
+      userId: userId.toString(),
+      productId: new mongoose.Types.ObjectId().toString(),
+      color: "Red",
+      size: "M",
+    });
+
+    expect(res.status).toBe(404);
+    expect(res.body.message).toBe("Product not found in cart");
+  });
+
+  test("#TC011 - Update cart - product not found", async () => {
+    await Cart.create({ userId: userId.toString(), products: [] });
+
+    const res = await request(app).put(`/cart/update/${userId}`).send({
+      productId: new mongoose.Types.ObjectId().toString(),
+      color: "Red",
+      size: "M",
+      quantity: 1,
+      actionType: "inc",
+    });
+
+    expect(res.status).toBe(404);
+    expect(res.body.message).toBe("Product not found in cart");
+  });
+
+  test("#TC012 - Get items in cart - no items matched", async () => {
+    await Cart.create({ userId: userId.toString(), products: [] });
+
+    const res = await request(app)
+      .post("/cart/items")
+      .send({
+        userId: userId.toString(),
+        chooseItems: [
+          {
+            productId: new mongoose.Types.ObjectId().toString(),
+            color: "Red",
+            size: "M",
+          },
+        ],
+      });
+
+    expect(res.status).toBe(404);
+    expect(res.body.message).toBe("No items found in cart");
+  });
+
+  test("#TC013 - Remove multiple items - cart not found", async () => {
+    const res = await request(app)
+      .post("/cart/remove-items")
+      .send({
+        userId: userId.toString(),
+        productsRemove: [
+          {
+            productId: new mongoose.Types.ObjectId().toString(),
+            color: "Red",
+            size: "M",
+          },
+        ],
+      });
+
+    expect(res.status).toBe(404);
+    expect(res.body.message).toBe("Cart not found");
+  });
+
+  test("#TC014 - Remove multiple items - one product not found", async () => {
+    await Cart.create({ userId: userId.toString(), products: [] });
+
+    const res = await request(app)
+      .post("/cart/remove-items")
+      .send({
+        userId: userId.toString(),
+        productsRemove: [
+          {
+            productId: new mongoose.Types.ObjectId().toString(),
+            color: "Red",
+            size: "M",
+          },
+        ],
+      });
+
+    expect(res.status).toBe(404);
+    expect(res.body.message).toBe("Product not found");
   });
 });

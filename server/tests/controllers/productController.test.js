@@ -10,7 +10,7 @@ const {
   clearDatabase,
 } = require("../setup/mongoMemoryServer");
 
-const Product = require("../../models/productModel");
+const Product = require("../../models/productModel").default;
 const productController = require("../../controllers/productController");
 const { createProduct } = require("../helpers/productHelper");
 
@@ -52,7 +52,7 @@ beforeAll(async () => await connect());
 afterEach(async () => await clearDatabase());
 afterAll(async () => await closeDatabase());
 
-describe("Product Controller - Happy Path", () => {
+describe("Product Controller", () => {
   test("#TC001 - create product and check DB", async () => {
     const res = await request(app)
       .post("/product/create")
@@ -197,5 +197,151 @@ describe("Product Controller - Happy Path", () => {
     const res = await request(app).get("/product/search-admin/AdminProd");
     expect(res.status).toBe(200);
     expect(res.body.length).toBeGreaterThan(0);
+  });
+
+  test("#TC015 - create product - unauthorized user", async () => {
+    const appNonAdmin = express();
+    appNonAdmin.use(express.json());
+    appNonAdmin.use((req, res, next) => {
+      req.user = { id: "user123", isAdmin: false };
+      next();
+    });
+    appNonAdmin.post("/product/create", productController.createProduct);
+
+    const res = await request(appNonAdmin).post("/product/create").send({
+      name: "Fake",
+      price: 100,
+    });
+
+    expect(res.status).toBe(401);
+    expect(res.body.message).toBe("You are not allowed to create product");
+  });
+
+  test("#TC016 - get recent product - no products", async () => {
+    const res = await request(app).get("/product/recent/5");
+    expect(res.status).toBe(404);
+    expect(res.body.message).toBe("No product found");
+  });
+
+  test("#TC017 - get all products - empty DB", async () => {
+    const res = await request(app).get("/product/all");
+    expect(res.status).toBe(404);
+    expect(res.body.message).toBe("No product found");
+  });
+
+  test("#TC018 - get pagination - no products", async () => {
+    const res = await request(app).get("/product/pagination?page=1&limit=1");
+    expect(res.status).toBe(404);
+    expect(res.body.message).toBe("No product found");
+  });
+
+  test("#TC019 - update product - not admin", async () => {
+    const product = await createProduct({ name: "ToUpdate" });
+
+    const appNonAdmin = express();
+    appNonAdmin.use(express.json());
+    appNonAdmin.use((req, res, next) => {
+      req.user = { id: "user123", isAdmin: false };
+      next();
+    });
+    appNonAdmin.put(
+      "/product/update/:productId",
+      productController.updateProduct
+    );
+
+    const res = await request(appNonAdmin)
+      .put(`/product/update/${product._id}`)
+      .send({ name: "FailUpdate" });
+
+    expect(res.status).toBe(401);
+    expect(res.body.message).toBe("You are not allowed to update product");
+  });
+
+  test("#TC020 - delete product - not admin", async () => {
+    const product = await createProduct();
+
+    const appNonAdmin = express();
+    appNonAdmin.use(express.json());
+    appNonAdmin.use((req, res, next) => {
+      req.user = { id: "user123", isAdmin: false };
+      next();
+    });
+    appNonAdmin.delete(
+      "/product/delete/:productId",
+      productController.deleteProduct
+    );
+
+    const res = await request(appNonAdmin).delete(
+      `/product/delete/${product._id}`
+    );
+
+    expect(res.status).toBe(401);
+    expect(res.body.message).toBe("You are not allowed to delete product");
+  });
+
+  test("#TC021 - get product by ID - not found", async () => {
+    const id = new mongoose.Types.ObjectId();
+    const res = await request(app).get(`/product/each/${id}`);
+
+    expect(res.status).toBe(404);
+  });
+
+  test("#TC022 - search product - keyword not matched", async () => {
+    const res = await request(app).get("/product/search/nonexistent");
+    expect(res.body.message).toBe("No product found with this name");
+  });
+
+  test("#TC023 - filter by category - empty", async () => {
+    const res = await request(app).get("/product/category/fake-category");
+    expect(res.body.message).toBe("No product match in this category");
+  });
+
+  test("#TC024 - invalid filter type", async () => {
+    const res = await request(app)
+      .post("/product/filter/invalidFilter")
+      .send({ products: [] });
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toBe("Invalid filter type!");
+  });
+
+  test("#TC025 - combination filter - no match", async () => {
+    const res = await request(app).get(
+      "/product/combination/shirt?minPrice=9999&maxPrice=10000"
+    );
+    expect(res.status).toBe(404);
+    expect(res.body.message).toBe("No products match your criteria.");
+  });
+
+  test("#TC026 - recommend - no match", async () => {
+    const prod = await createProduct({ name: "Solo", categories: ["rare"] });
+    const res = await request(app).get(`/product/recommend/${prod._id}`);
+    expect(res.body.message).toBe("No product match in this category");
+  });
+
+  test("#TC027 - search as admin - unauthorized", async () => {
+    const appNonAdmin = express();
+    appNonAdmin.use(express.json());
+    appNonAdmin.use((req, res, next) => {
+      req.user = { id: "nonadmin", isAdmin: false };
+      next();
+    });
+    appNonAdmin.get(
+      "/product/search-admin/:searchKey",
+      productController.searchProductAdmin
+    );
+
+    const res = await request(appNonAdmin).get("/product/search-admin/Test");
+    expect(res.status).toBe(403);
+    expect(res.body.message).toBe("You are not admin to perform this action.");
+  });
+
+  test("#TC028 - filter - invalid payload", async () => {
+    const res = await request(app)
+      .post("/product/filter/nameAZ")
+      .send({ products: "not-an-array" });
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toBe("Invalid products data!");
   });
 });

@@ -6,6 +6,7 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 
 process.env.JWT_SECRET = "kaydi";
 process.env.JWT_REFRESH_SECRET = "kaydi0210";
@@ -29,12 +30,13 @@ app.post("/auth/signup", authController.signUp);
 app.post("/auth/signin", authController.signIn);
 app.post("/auth/signout", authController.signOut);
 app.post("/auth/refresh", authController.refreshToken);
+app.post("/auth/reset-password/:token", authController.resetPassword); // TC016-TC018
 
 beforeAll(async () => await connect());
 afterEach(async () => await clearDatabase());
 afterAll(async () => await closeDatabase());
 
-describe("Auth Controller - Happy Path", () => {
+describe("Auth Controller - Test", () => {
   test("#TC001 - sign up with valid credentials", async () => {
     const res = await request(app).post("/auth/signup").send({
       username: "testuser",
@@ -80,7 +82,7 @@ describe("Auth Controller - Happy Path", () => {
     expect(res.body.message).toBe("User signed out successfully");
   });
 
-  test("#TC004 - refresh token should return new access token", async () => {
+  test("#TC004 - refresh token return new access token", async () => {
     const fakeUser = {
       id: "123abc",
       username: "testuser",
@@ -101,5 +103,191 @@ describe("Auth Controller - Happy Path", () => {
     expect(res.status).toBe(200);
     expect(res.body.message).toBe("Token refreshed successfully");
     expect(res.headers["set-cookie"]).toBeDefined();
+  });
+
+  // #TC005 - Missing email or password
+  test("#TC005 - Sign up with email or password is missing", async () => {
+    const res = await request(app).post("/auth/signup").send({
+      username: "testuser",
+      email: "",
+      password: "",
+    });
+
+    expect(res.status).toBe(401);
+    expect(res.body.message).toBe("All fields are required");
+  });
+
+  // #TC006 - Username too short
+  test("#TC006 - Sign up with username is too short", async () => {
+    const res = await request(app).post("/auth/signup").send({
+      username: "a",
+      email: "short@example.com",
+      password: "validpass123",
+    });
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toBe(
+      "Username must be between 2 and 50 characters"
+    );
+  });
+
+  // #TC007 - Username too long
+  test("#TC007 - Sign up with username is too long", async () => {
+    const longName = "a".repeat(51);
+    const res = await request(app).post("/auth/signup").send({
+      username: longName,
+      email: "longname@example.com",
+      password: "validpass123",
+    });
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toBe(
+      "Username must be between 2 and 50 characters"
+    );
+  });
+
+  // #TC008 - Password too short
+  test("#TC008 - Sign up with password is too short", async () => {
+    const res = await request(app).post("/auth/signup").send({
+      username: "user1",
+      email: "shortpass@example.com",
+      password: "123",
+    });
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toBe(
+      "Password must be between 6 and 20 characters"
+    );
+  });
+
+  // #TC009 - Password too long
+  test("#TC009 - Sign up with password is too long", async () => {
+    const longPassword = "a".repeat(21);
+    const res = await request(app).post("/auth/signup").send({
+      username: "user2",
+      email: "longpass@example.com",
+      password: longPassword,
+    });
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toBe(
+      "Password must be between 6 and 20 characters"
+    );
+  });
+
+  // #TC010 - Email already exists
+  test("#TC010 - Sign up with email already exists", async () => {
+    await User.create({
+      username: "existinguser",
+      email: "exist@example.com",
+      password: "hashedpassword",
+    });
+
+    const res = await request(app).post("/auth/signup").send({
+      username: "newuser",
+      email: "exist@example.com",
+      password: "validpassword",
+    });
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toBe("Email already exists");
+  });
+  // #TC011 - missing email or password
+  test("#TC011 - Sign in with email or password is missing", async () => {
+    const res = await request(app).post("/auth/signin").send({
+      email: "",
+      password: "",
+    });
+
+    expect(res.status).toBe(401);
+    expect(res.body.message).toBe("All fields are required");
+  });
+
+  // #TC012 - email not found
+  test("#TC012 - Sign in with user is not exist", async () => {
+    const res = await request(app).post("/auth/signin").send({
+      email: "nonexistent@example.com",
+      password: "anyPassword123",
+    });
+
+    expect(res.status).toBe(401);
+    expect(res.body.message).toBe("User not found");
+  });
+
+  // #TC013 - incorrect password
+  test("#TC013 - Sign in with password is incorrect", async () => {
+    await User.create({
+      username: "wrongpassuser",
+      email: "wrongpass@example.com",
+      password: bcrypt.hashSync("correctPassword", 10),
+    });
+
+    const res = await request(app).post("/auth/signin").send({
+      email: "wrongpass@example.com",
+      password: "incorrectPassword",
+    });
+
+    expect(res.status).toBe(401);
+    expect(res.body.message).toBe("Invalid password");
+  });
+
+  // TC014 - Refresh token missing
+  test("#TC014 - refresh token is missing", async () => {
+    const res = await request(app).post("/auth/refresh"); // or .post depending on your route method
+
+    expect(res.status).toBe(404);
+    expect(res.body.message).toBe("Refresh token is missing");
+  });
+
+  // TC015 - Invalid refresh token
+  test("#TC015 - refresh token is invalid", async () => {
+    const res = await request(app)
+      .post("/auth/refresh")
+      .set("Cookie", ["refresh_token=invalidtoken"]);
+
+    expect(res.status).toBe(404);
+    expect(res.body.message).toBe("Invalid refresh token");
+  });
+
+  // TC016 - invalid token
+
+  test("#TC016 - reset password with token is invalid or expired", async () => {
+    const res = await request(app)
+      .post("/auth/reset-password/invalidtoken123")
+      .send({ newPassword: "NewSecurePass123" });
+
+    expect(res.status).toBe(404);
+    expect(res.body.message).toBe("Invalid token or expired");
+  });
+
+  // TC017 - valid token
+  test("#TC017 -  reset password successfully with valid token", async () => {
+    const plainToken = "resettoken123";
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(plainToken)
+      .digest("hex");
+
+    const user = await User.create({
+      username: "resetuser",
+      email: "reset@example.com",
+      password: bcrypt.hashSync("oldpass", 10),
+      resetPasswordToken: hashedToken,
+      resetPasswordExpires: Date.now() + 3600000, // 1 hour later
+    });
+
+    const res = await request(app)
+      .post(`/auth/reset-password/${plainToken}`)
+      .send({ newPassword: "NewStrongPass123" });
+
+    expect(res.status).toBe(200);
+    expect(res.body.message).toBe("Password reset successfully");
+
+    const updatedUser = await User.findById(user._id);
+    const isPasswordCorrect = bcrypt.compareSync(
+      "NewStrongPass123",
+      updatedUser.password
+    );
+    expect(isPasswordCorrect).toBe(true);
   });
 });
