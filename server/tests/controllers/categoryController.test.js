@@ -159,4 +159,29 @@ describe("Category Controller - Happy Path", () => {
     expect(res.status).toBe(404);
     expect(res.body.message).toBe("No category found");
   });
+
+  test("#TC011 - create new category with duplicate name", async () => {
+    await createCategory({ name: "duplicate", title: "Original Title" });
+
+    const res = await request(app)
+      .post("/category")
+      .send({
+        name: "duplicate",
+        title: "Duplicate Title",
+        description: ["Trying to duplicate"],
+        heroImage: "dup.jpg",
+      });
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/category with this name already exists/i);
+  });
+
+  test("#TC012 - delete category with non-existent ID", async () => {
+    const nonExistentId = "507f191e810c19729de860ea"; // Valid ObjectId but not in DB
+
+    const res = await request(app).delete(`/category/${nonExistentId}`);
+
+    expect(res.status).toBe(404);
+    expect(res.body.message).toBe("Category not found");
+  });
 });

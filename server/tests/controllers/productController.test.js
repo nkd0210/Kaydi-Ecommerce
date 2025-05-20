@@ -344,4 +344,22 @@ describe("Product Controller", () => {
     expect(res.status).toBe(400);
     expect(res.body.message).toBe("Invalid products data!");
   });
+
+  test("#TC029 - search by keyword with and without diacritics", async () => {
+    await createProduct({ name: "áo polo" });
+
+    const resWithoutDiacritics = await request(app).get(
+      "/product/search/ao polo"
+    );
+    expect(resWithoutDiacritics.status).toBe(200);
+    expect(resWithoutDiacritics.body.findProducts.length).toBeGreaterThan(0);
+  });
+
+  test("#TC030 - search by keyword with slight misspelling", async () => {
+    await createProduct({ name: "Áo Polo" });
+
+    const res = await request(app).get("/product/search/Ao Polo");
+    expect(res.status).toBe(200);
+    expect(res.body.findProducts.length).toBeGreaterThan(0);
+  });
 });

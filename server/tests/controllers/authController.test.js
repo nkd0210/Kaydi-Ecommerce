@@ -290,4 +290,53 @@ describe("Auth Controller - Test", () => {
     );
     expect(isPasswordCorrect).toBe(true);
   });
+  test("#TC018 - sign up with special characters in username", async () => {
+    const res = await request(app).post("/auth/signup").send({
+      username: "user!@#",
+      email: "specialchar@example.com",
+      password: "ValidPass123",
+    });
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch("Not allowed special characters");
+  });
+  test("#TC019 - new password is same as old password", async () => {
+    const plainToken = "sameoldtoken123";
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(plainToken)
+      .digest("hex");
+
+    const hashedPassword = bcrypt.hashSync("SameOldPassword123", 10);
+
+    const user = await User.create({
+      username: "sameuser",
+      email: "same@example.com",
+      password: hashedPassword,
+      resetPasswordToken: hashedToken,
+      resetPasswordExpires: Date.now() + 3600000, // valid for 1 hour
+    });
+
+    const res = await request(app)
+      .post(`/auth/reset-password/${plainToken}`)
+      .send({ newPassword: "SameOldPassword123" }); // same as old
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(
+      /new password must be different from old password/i
+    );
+  });
+  test("#TC020 - sign up with invalid email format", async () => {
+    const res = await request(app).post("/auth/signup").send({
+      username: "testuser",
+      email: "invalid-email-format",
+      password: "TestPass123",
+    });
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toBe("Invalid email format");
+
+    const userInDb = await User.findOne({ email: "invalid-email-format" });
+    expect(userInDb).toBeNull();
+  });
 });

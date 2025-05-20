@@ -17,7 +17,7 @@ const cartController = require("../../controllers/cartController");
 const { createProduct } = require("../helpers/productHelper");
 
 // ✅ Generate a valid ObjectId to be used for testing
-const userId = new mongoose.Types.ObjectId();
+const userId = new mongoose.Types.ObjectId("682a952865eb470e47971738");
 
 app.use(express.json());
 
@@ -332,5 +332,68 @@ describe("CartController Integration", () => {
 
     expect(res.status).toBe(404);
     expect(res.body.message).toBe("Product not found");
+  });
+
+  test("#TC015 - add to cart with quantity exceeding stock", async () => {
+    const newProduct = await createProduct({
+      stock: 5,
+      price: 100,
+      _id: new mongoose.Types.ObjectId("507f1f77bcf86cd799439012"),
+    });
+
+    const payload = {
+      userId: userId.toString(),
+      productId: newProduct._id.toString(),
+      quantity: 10, // Exceeds available stock
+      color: "Blue",
+      size: "M",
+    };
+
+    const res = await request(app).post("/cart/add").send(payload);
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/exceeds available stock/i);
+
+    const cartInDb = await Cart.findOne({ userId });
+    expect(cartInDb?.products?.length || 0).toBe(0);
+  });
+
+  test("#TC016 - add to cart with quantity = 0", async () => {
+    const newProduct = await createProduct({
+      stock: 10,
+      price: 100,
+      _id: new mongoose.Types.ObjectId("507f1f77bcf86cd799439013"),
+    });
+
+    const payload = {
+      userId: userId.toString(),
+      productId: newProduct._id.toString(),
+      quantity: 0,
+      color: "Green",
+      size: "S",
+    };
+
+    const res = await request(app).post("/cart/add").send(payload);
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/quantity must be greater than zero/i);
+  });
+
+  test("#TC017 - add to cart with quantity = -1", async () => {
+    const newProduct = await createProduct({
+      stock: 10,
+      price: 100,
+      _id: new mongoose.Types.ObjectId("507f1f77bcf86cd799439014"),
+    });
+
+    const payload = {
+      userId: userId.toString(),
+      productId: newProduct._id.toString(),
+      quantity: -1,
+      color: "Black",
+      size: "XL",
+    };
+
+    const res = await request(app).post("/cart/add").send(payload);
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/quantity must be greater than zero/i);
   });
 });
