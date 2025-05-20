@@ -23,7 +23,6 @@ const createAppWithAuth = (user) => {
   });
 
   app.get("/users", userController.getAllUsers);
-  app.get("/users/chat", userController.getAllUserToChat);
   app.put("/users/:userId", userController.updateUser);
   app.delete("/users/:userId", userController.deleteUser);
   app.get("/users/export", userController.exportToExcel);
@@ -191,5 +190,78 @@ describe("UserController Integration", () => {
     const res = await request(app).get("/users/admin-search/nomatchuser");
     expect(res.status).toBe(200);
     expect(res.body.message).toBe("User not found");
+  });
+  test("#TC017 - update profile with name exceeding maximum length", async () => {
+    const user = await createUser();
+    app = createAppWithAuth({ id: user._id.toString(), isAdmin: false });
+
+    const longName = "A".repeat(101); // Assuming max is 100 chars
+
+    const res = await request(app)
+      .put(`/users/${user._id}`)
+      .send({ username: longName });
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/username.*too long/i);
+  });
+
+  test("#TC018 - update profile with name less than minimum length", async () => {
+    const user = await createUser();
+    app = createAppWithAuth({ id: user._id.toString(), isAdmin: false });
+
+    const res = await request(app)
+      .put(`/users/${user._id}`)
+      .send({ username: "A" });
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/username.*too short/i);
+  });
+
+  test("#TC019 - update profile with invalid phone number format", async () => {
+    const user = await createUser();
+    app = createAppWithAuth({ id: user._id.toString(), isAdmin: false });
+
+    const res = await request(app)
+      .put(`/users/${user._id}`)
+      .send({ phoneNumber: "abc123" });
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/invalid phone number/i);
+  });
+
+  test("#TC020 - update profile with special characters in name", async () => {
+    const user = await createUser();
+    app = createAppWithAuth({ id: user._id.toString(), isAdmin: false });
+
+    const res = await request(app)
+      .put(`/users/${user._id}`)
+      .send({ username: "@@@!!!" });
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/username.*invalid characters/i);
+  });
+
+  test("#TC021 - update profile with only spaces in name", async () => {
+    const user = await createUser();
+    app = createAppWithAuth({ id: user._id.toString(), isAdmin: false });
+
+    const res = await request(app)
+      .put(`/users/${user._id}`)
+      .send({ username: "     " });
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/username.*cannot be empty/i);
+  });
+
+  test("#TC022 - update profile without changing any information", async () => {
+    const user = await createUser({ username: "SameUser" });
+    app = createAppWithAuth({ id: user._id.toString(), isAdmin: false });
+
+    const res = await request(app)
+      .put(`/users/${user._id}`)
+      .send({ username: "SameUser" });
+
+    expect(res.status).toBe(400);
+    expect(res.body.username).toBe("SameUser");
   });
 });

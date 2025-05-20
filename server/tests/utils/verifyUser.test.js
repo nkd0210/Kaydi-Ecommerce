@@ -53,6 +53,6 @@ describe("verifyToken middleware", () => {
 
     expect(jwt.verify).toHaveBeenCalled();
     expect(req.user).toEqual(fakeUser);
-    expect(next).toHaveBeenCalledWith(); // no error
+    expect(next).toHaveBeenCalledWith();
   });
 });

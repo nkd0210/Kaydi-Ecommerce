@@ -202,4 +202,38 @@ describe("ReviewController Integration", () => {
     expect(res.status).toBe(400);
     expect(res.body.message).toBe("Invalid star rating.");
   });
+
+  test("#TC014 - reject review if image contains invalid file types", async () => {
+    const res = await request(app)
+      .post(`/reviews/${sampleUserId}`)
+      .send({
+        productIds: [sampleProductId],
+        order: new mongoose.Types.ObjectId(),
+        rating: 4,
+        comment: "Bad image extension",
+        image: ["invalid.bmp", "script.exe"],
+      });
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(
+      /must be a valid file with \.jpg, \.jpeg, \.png, or \.webp extension/i
+    );
+  });
+
+  test("#TC015 - reject review if image size exceeds 20MB", async () => {
+    const oversizedBase64 = `data:image/jpeg;base64,${"A".repeat(27_999_999)}`; // ~21MB
+
+    const res = await request(app)
+      .post(`/reviews/${sampleUserId}`)
+      .send({
+        productIds: [sampleProductId],
+        order: new mongoose.Types.ObjectId(),
+        rating: 4,
+        comment: "Too large image",
+        image: [oversizedBase64],
+      });
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/valid image.*< 20MB/i);
+  });
 });
