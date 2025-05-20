@@ -149,8 +149,8 @@ describe("Category Controller - Happy Path", () => {
       title: "Missing Fields Test",
     });
 
-    expect(res.status).toBe(500);
-    expect(res.body.message).toBe("Internal server error");
+    expect(res.status).toBe(400);
+    expect(res.body.message).toBe("Missing Fields");
   });
 
   test("#TC010 - get category with no categories found", async () => {

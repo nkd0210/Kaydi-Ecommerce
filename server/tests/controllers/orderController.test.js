@@ -285,4 +285,61 @@ describe("OrderController › createOrder", () => {
       "Phone number contains digital numbers only"
     );
   });
+
+  test("#TC011 - cancel order successfully if pending", async () => {
+    const product = await Product.create({
+      name: "Cancel Shirt",
+      price: 100000,
+      stock: 10,
+    });
+
+    const order = await Order.create({
+      userId: userId.toString(),
+      receiverName: "Charlie",
+      receiverPhone: "0111222333",
+      products: [
+        {
+          productId: product._id.toString(),
+          name: "Cancel Shirt",
+          quantity: 1,
+          price: 100000,
+          color: "Black",
+          size: "S",
+          image: "image.jpg",
+        },
+      ],
+      totalAmount: 100000,
+      shippingAddress: "789 Sunset Blvd",
+      paymentMethod: "COD",
+      status: "pending",
+    });
+
+    const res = await request(app).delete(
+      `/orders/cancel/${userId}/${order._id}`
+    );
+    expect(res.status).toBe(200);
+    expect(res.body.message).toBe("Order canceled successfully");
+
+    const deletedOrder = await Order.findById(order._id);
+    expect(deletedOrder).toBeNull();
+  });
+
+  test("#TC012 - cannot cancel if order is processing", async () => {
+    const order = await Order.create({
+      userId: userId.toString(),
+      receiverName: "Dana",
+      receiverPhone: "0123456789",
+      products: [],
+      totalAmount: 0,
+      shippingAddress: "123 Main St",
+      paymentMethod: "COD",
+      status: "processing",
+    });
+
+    const res = await request(app).delete(
+      `/orders/cancel/${userId}/${order._id}`
+    );
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/can not be cancel/i);
+  });
 });
