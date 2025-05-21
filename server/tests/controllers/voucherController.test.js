@@ -291,4 +291,18 @@ describe("VoucherController Integration", () => {
     expect(res.status).toBe(400);
     expect(res.body.message).toMatch("Invalid Discount");
   });
+
+  test("#TC020 - create voucher with invalid expiryDate (in the past)", async () => {
+    const res = await request(app)
+      .post(`/vouchers/${adminId}`)
+      .send({
+        code: "EXPIRED101",
+        discount: 10,
+        expiryDate: new Date(Date.now() - 86400000), // 1 day before
+        usageLimit: 10,
+      });
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch("Expired Date");
+  });
 });
