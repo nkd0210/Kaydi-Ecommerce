@@ -305,4 +305,33 @@ describe("VoucherController Integration", () => {
     expect(res.status).toBe(400);
     expect(res.body.message).toMatch("Expired Date");
   });
+  test("#TC021 - should NOT update a voucher with usedCount > 0", async () => {
+    const voucher = await createVoucher({
+      code: "USEDVOUCHER",
+      discount: 10,
+      usedCount: 1, // Simulate already used
+    });
+
+    const res = await request(app)
+      .put(`/vouchers/${adminId}/${voucher._id}`)
+      .send({ code: "NEWCODE", discount: 25 });
+
+    expect(res.status).toBe(400); // or 403 depending on how your app handles it
+    expect(res.body.message).toMatch("Cant update voucher that is used");
+  });
+
+  test("#TC022 - should NOT delete a voucher with usedCount > 0", async () => {
+    const voucher = await createVoucher({
+      code: "NODELETE",
+      discount: 15,
+      usedCount: 2, // Simulate already used
+    });
+
+    const res = await request(app).delete(
+      `/vouchers/${adminId}/${voucher._id}`
+    );
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch("Cant delete voucher that is used");
+  });
 });
